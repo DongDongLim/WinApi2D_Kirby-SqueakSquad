@@ -29,9 +29,16 @@ void CRenderManager::init()
 	D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &m_pFactory);
 
 	// 지정한 윈도우의 클라이언트 영역에 그림을 그리기 위한 Render Target을 생성
+	/*
 	m_pFactory->CreateHwndRenderTarget(RenderTargetProperties(),
 		HwndRenderTargetProperties(hWnd, SizeU(rc.right, rc.bottom)),
 		&m_pRenderTarget);
+	*/
+	m_pFactory->CreateHwndRenderTarget(RenderTargetProperties(),
+		HwndRenderTargetProperties(hWnd, SizeU(rc.right, rc.bottom),
+			D2D1_PRESENT_OPTIONS::D2D1_PRESENT_OPTIONS_IMMEDIATELY),
+		&m_pRenderTarget);
+
 
 	// WICImagingFactory 생성
 	if (S_OK == CoInitialize(nullptr))

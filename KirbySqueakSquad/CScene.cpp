@@ -160,7 +160,7 @@ void CScene::CreateTile(UINT xSize, UINT ySize)
     m_iTileX = xSize;
     m_iTileY = ySize;
 
-    CD2DImage* pImg = CResourceManager::getInst()->LoadD2DImage(L"Tile", L"texture\\tile\\tilemap.bmp");
+    CD2DImage* pImg = CResourceManager::getInst()->LoadD2DImage(L"Tile", L"texture\\Tile\\tilemap.bmp");
 
     for (UINT i = 0; i < ySize; i++)
     {

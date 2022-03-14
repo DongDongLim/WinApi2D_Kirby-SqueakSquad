@@ -45,12 +45,12 @@ void CTile::render()
 		m_pImg,
 		fptRenderPos.x,
 		fptRenderPos.y,
-		fptScale.x,
-		fptScale.y,
-		iCurCol * fptScale.x,
-		iCurRow * fptScale.y,
-		fptScale.x,
-		fptScale.y
+		fptRenderPos.x + fptScale.x,
+		fptRenderPos.y + fptScale.y,
+		(int)(iCurCol * fptScale.x),
+		(int)(iCurRow * fptScale.y),
+		(int)((iCurCol + 1) * fptScale.x),
+		(int)((iCurRow + 1) * fptScale.y)
 	);
 }
 

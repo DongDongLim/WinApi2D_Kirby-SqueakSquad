@@ -53,7 +53,7 @@ void CScene_Tool::update()
 
 void ChangeScene(DWORD_PTR, DWORD_PTR)
 {
-	ChangeScn(GROUP_SCENE::START);
+	//ChangeScn(GROUP_SCENE::START);
 }
 
 void ButtonClicked(DWORD_PTR, DWORD_PTR)
@@ -70,6 +70,9 @@ void CScene_Tool::Enter()
 	m_hWnd = CreateDialog(hInst, MAKEINTRESOURCE(IDD_TILEBOX), hWnd, TileWinProc);
 	ShowWindow(m_hWnd, SW_SHOW);
 
+	CResourceManager::getInst()->LoadTextrue(L"Tile", L"texture\\tile\\tilemap.bmp");
+
+	/*
 	// UI 생성
 	CPanelUI* pPanelUI = new CPanelUI();
 	pPanelUI->SetScale(fPoint(200.f, 80.f));
@@ -92,6 +95,7 @@ void CScene_Tool::Enter()
 	pBtnUI->SetPos(fPoint(100.f, 100.f));
 	pBtnUI->SetClickedCallBack(ChangeScene, 0, 0);
 	AddObject(pBtnUI, GROUP_GAMEOBJ::UI);
+	*/
 }
 
 void CScene_Tool::Exit()
@@ -163,7 +167,7 @@ void CScene_Tool::SaveTileData()
 	ofn.lpstrFile = szName; // 나중에 완성된 경로가 채워질 버퍼 지정.
 	ofn.nMaxFile = sizeof(szName); // lpstrFile에 지정된 버퍼의 문자 수.
 	ofn.lpstrFilter = L"ALL\0*.*\0tile\0*.tile"; // 필터 설정
-	ofn.nFilterIndex = 0; // 기본 필터 세팅. 0는 all로 초기 세팅됨. 처음꺼.
+	ofn.nFilterIndex = 1; // 기본 필터 세팅. 0는 all로 초기 세팅됨. 처음꺼.
 	ofn.lpstrFileTitle = nullptr; // 타이틀 바
 	ofn.nMaxFileTitle = 0; // 타이틀 바 문자열 크기. nullptr이면 0.
 	wstring strTileFolder = CPathManager::getInst()->GetContentPath();
@@ -187,7 +191,7 @@ void CScene_Tool::LoadTileData()
 	ofn.lpstrFile = szName; // 나중에 완성된 경로가 채워질 버퍼 지정.
 	ofn.nMaxFile = sizeof(szName); // lpstrFile에 지정된 버퍼의 문자 수.
 	ofn.lpstrFilter = L"ALL\0*.*\0tile\0*.tile"; // 필터 설정
-	ofn.nFilterIndex = 0; // 기본 필터 세팅. 0는 all로 초기 세팅됨. 처음꺼.
+	ofn.nFilterIndex = 1; // 기본 필터 세팅. 0는 all로 초기 세팅됨. 처음꺼.
 	ofn.lpstrFileTitle = nullptr; // 타이틀 바
 	ofn.nMaxFileTitle = 0; // 타이틀 바 문자열 크기. nullptr이면 0.
 	wstring strTileFolder = CPathManager::getInst()->GetContentPath();
@@ -256,6 +260,7 @@ INT_PTR CALLBACK TileWinProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			assert(pToolScene);
 
 			CTexture* pTex = CResourceManager::getInst()->FindTexture(L"Tile");
+
 
 			UINT iWidth = pTex->GetBmpWidth();
 			UINT iHeight = pTex->GetBmpHeight();
