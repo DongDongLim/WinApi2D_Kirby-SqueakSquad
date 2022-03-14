@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Engin">
+      <UniqueIdentifier>{5178caac-4acc-4ad7-8297-1225cd05fa0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engin\Component">
+      <UniqueIdentifier>{b4cec1e0-122f-4854-984a-24a220b711ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engin\Core">
+      <UniqueIdentifier>{5c2315c8-f246-4573-8ab0-e79e451f64c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engin\Manager">
+      <UniqueIdentifier>{6a0e69a0-e587-4558-9c1d-6a5863c27340}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engin\Component\Animator">
+      <UniqueIdentifier>{9565eca0-9db8-4a0a-a8b6-7e6fb1b5ad55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engin\Component\Collider">
+      <UniqueIdentifier>{8c5474f9-f39c-43ac-8add-a118856fe550}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engin\Component\Animator\Animation">
+      <UniqueIdentifier>{5cdb421c-4023-414f-8234-cc59a0145c5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{fd6e1ef5-739f-4a42-9be5-766c1942d345}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Character">
+      <UniqueIdentifier>{53790f15-6364-41d6-8564-fd72a8e1d8ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Tile">
+      <UniqueIdentifier>{d6ffc31f-513f-43fe-98ab-38b7790829a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\UI">
+      <UniqueIdentifier>{0d1f99cb-d65b-44ad-be3f-b0b0cccdef96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resouce">
+      <UniqueIdentifier>{69eb0c16-a2ed-45c7-b798-a9f4b15c6223}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resouce\CD2DImage">
+      <UniqueIdentifier>{1cc3286b-de12-4eac-abfa-8664ec7692c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resouce\Sound">
+      <UniqueIdentifier>{c4ebe41d-896a-4568-8ac2-680eefe05cac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resouce\Texture">
+      <UniqueIdentifier>{910cb728-f356-4aae-90f7-43d6c5528f95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{ae17ccb5-b6c5-42c5-8066-e9559ce792fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{48df5aa7-75ba-4fa3-8665-c2d016e699ce}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="KirbySqueakSquad.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CAnimation.h">
+      <Filter>Engin\Component\Animator\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="CAnimator.h">
+      <Filter>Engin\Component\Animator</Filter>
+    </ClInclude>
+    <ClInclude Include="CCollider.h">
+      <Filter>Engin\Component\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="CCore.h">
+      <Filter>Engin\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="CCameraManager.h">
+      <Filter>Engin\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CCollisionManager.h">
+      <Filter>Engin\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CEventManager.h">
+      <Filter>Engin\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CKeyManager.h">
+      <Filter>Engin\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CPathManager.h">
+      <Filter>Engin\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CRenderManager.h">
+      <Filter>Engin\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CResourceManager.h">
+      <Filter>Engin\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CSceneManager.h">
+      <Filter>Engin\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CUIManager.h">
+      <Filter>Engin\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CTimeManager.h">
+      <Filter>Engin\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CSoundManager.h">
+      <Filter>Engin\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CTile.h">
+      <Filter>Object\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="CButtonUI.h">
+      <Filter>Object\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CPanelUI.h">
+      <Filter>Object\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CUI.h">
+      <Filter>Object\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CGameObject.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="CResource.h">
+      <Filter>Resouce</Filter>
+    </ClInclude>
+    <ClInclude Include="CD2DImage.h">
+      <Filter>Resouce\CD2DImage</Filter>
+    </ClInclude>
+    <ClInclude Include="CSound.h">
+      <Filter>Resouce\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="CTexture.h">
+      <Filter>Resouce\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="CScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="CScene_Tool.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="SingleTon.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Map_Start.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="KirbySqueakSquad.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimation.cpp">
+      <Filter>Engin\Component\Animator\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimator.cpp">
+      <Filter>Engin\Component\Animator</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollider.cpp">
+      <Filter>Engin\Component\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="CCore.cpp">
+      <Filter>Engin\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="CCameraManager.cpp">
+      <Filter>Engin\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CCollisionManager.cpp">
+      <Filter>Engin\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CEventManager.cpp">
+      <Filter>Engin\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CKeyManager.cpp">
+      <Filter>Engin\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CPathManager.cpp">
+      <Filter>Engin\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CRenderManager.cpp">
+      <Filter>Engin\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CResourceManager.cpp">
+      <Filter>Engin\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CSceneManager.cpp">
+      <Filter>Engin\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CUIManager.cpp">
+      <Filter>Engin\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CTimeManager.cpp">
+      <Filter>Engin\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CSoundManager.cpp">
+      <Filter>Engin\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CTile.cpp">
+      <Filter>Object\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="CButtonUI.cpp">
+      <Filter>Object\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CPanelUI.cpp">
+      <Filter>Object\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CUI.cpp">
+      <Filter>Object\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CGameObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="CResource.cpp">
+      <Filter>Resouce</Filter>
+    </ClCompile>
+    <ClCompile Include="CD2DImage.cpp">
+      <Filter>Resouce\CD2DImage</Filter>
+    </ClCompile>
+    <ClCompile Include="CSound.cpp">
+      <Filter>Resouce\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="CTexture.cpp">
+      <Filter>Resouce\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene_Tool.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Map_Start.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="KirbySqueakSquad.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="KirbySqueakSquad.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
