@@ -30,10 +30,6 @@ public:
 	virtual void Enter();
 	virtual void Exit();
 	
-	void (CPlayer::* SetEnter)(DWORD_PTR, DWORD_PTR);
-	void (CPlayer::* SetUpdage)(DWORD_PTR, DWORD_PTR);
-	void (CPlayer::* SetExit)(DWORD_PTR, DWORD_PTR);
-
 
 	void SetEnterCallBack(ONER_FUNC pFunc, DWORD_PTR param1, DWORD_PTR param2);
 

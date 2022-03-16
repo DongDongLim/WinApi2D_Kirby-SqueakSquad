@@ -9,11 +9,13 @@
 
 void CPlayer::playerIdle(DWORD_PTR, DWORD_PTR)
 {
+	GetAnimator()->Play(L"Idle");
 }
 
 void CPlayer::playerMove(DWORD_PTR, DWORD_PTR)
 {
 	fPoint pos = GetPos();
+	GetAnimator()->Play(L"Move");
 
 	pos.x += m_dir * m_fVelocity * fDT;
 
@@ -71,7 +73,7 @@ CPlayer::CPlayer()
 	m_wAnimKey[0]->push_back(L"Down");
 	m_wAnimKey[1]->push_back(L"Move");
 	m_wAnimKey[2]->push_back(L"Dash");
-	m_wAnimKey[2]->push_back(L"QUICKSTOP");
+	m_wAnimKey[2]->push_back(L"QuickStop");
 	m_wAnimKey[3]->push_back(L"DownSlide");
 	m_wAnimKey[4]->push_back(L"Jump");
 	m_wAnimKey[5]->push_back(L"Eat");
@@ -106,7 +108,7 @@ CPlayer::CPlayer()
 		fPoint(0.f, 0.f), 0.5f, 1);
 
 	GetAnimator()->CreateAnimation(
-		m_wAnimKey[2]->at(1),
+		m_wAnimKey[2]->at(0),
 		m_pImg[0],
 		fPoint(0.f, 0.f),
 		fPoint(pixelSize, pixelSize),
@@ -157,10 +159,10 @@ CPlayer::CPlayer()
 
 
 	CState* pIdle = new CState(this);
-	//pIdle->SetUpdageCallBack(&playerIdle, 0, 0);
+	pIdle->SetUpdageCallBack(&CPlayer::playerIdle, 0, 0);
 	CStateManager::getInst()->AddState(PLAYERSTATE::IDLE, pIdle);
 	CState* pMove = new CState(this);
-	pMove->SetUpdageCallBack(&playerMove, 0, 0);
+	pMove->SetUpdageCallBack(&CPlayer::playerMove, 0, 0);
 	CStateManager::getInst()->AddState(PLAYERSTATE::MOVE, pMove);
 
 	CState* pLEFT = new CState(this);
@@ -193,7 +195,7 @@ void CPlayer::update()
 		Key(VK_LEFT) ? CStateManager::getInst()->ChangeState(PLAYERSTATE::LEFT, m_pDirState) : CStateManager::getInst()->ChangeState(PLAYERSTATE::RIGHT, m_pDirState);
 		CStateManager::getInst()->ChangeState(PLAYERSTATE::MOVE, m_pCurAtiveState);
 	}
-
+	m_pCurAtiveState->update();
 	GetAnimator()->update();
 }
 
