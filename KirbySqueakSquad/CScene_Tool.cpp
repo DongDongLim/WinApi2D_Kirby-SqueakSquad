@@ -29,7 +29,7 @@ void CScene_Tool::update()
 
 	if (KeyDown(VK_TAB))
 	{
-		ChangeScn(GROUP_SCENE::START);
+		ChangeScn(GROUP_SCENE::STAGE_01);
 	}
 
 	if (Key('A'))
@@ -73,10 +73,10 @@ void CScene_Tool::Enter()
 
 	CResourceManager::getInst()->LoadTextrue(L"Tile", L"texture\\tile\\tilemap.bmp");
 
-	Map_Start* m_defaltMap = new Map_Start();	
-	m_defaltMap->SetScale(fPoint(528, 256));
-	m_defaltMap->SetPos(fPoint(m_defaltMap->GetScale().x / 2, 128));
-	AddObject(m_defaltMap, GROUP_GAMEOBJ::TILEBG);
+	Map_Start* pDefaltMap = new Map_Start();
+	pDefaltMap->SetScale(fPoint(528, 256));
+	pDefaltMap->SetPos(fPoint(0, 0));
+	AddObject(pDefaltMap, GROUP_GAMEOBJ::TILEBG);
 
 	/*
 	// UI »ý¼º

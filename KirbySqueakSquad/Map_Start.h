@@ -5,8 +5,12 @@ class CD2DImage;
 
 class Map_Start : public CGameObject
 {
+private:
+	int m_indexBG;
+
 public:
-	CD2DImage* pimg;
+	CD2DImage* pimgBG;
+	CD2DImage* pimgMap;
 
 	Map_Start();
 	~Map_Start();

@@ -182,6 +182,7 @@ ID2D1Bitmap* CRenderManager::GetBitmap()
 	return m_pBitmap;
 }
 
+
 ID2D1HwndRenderTarget* CRenderManager::GetRenderTarget()
 {
 	return m_pRenderTarget;

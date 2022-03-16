@@ -41,5 +41,8 @@ public:
 	ID2D1HwndRenderTarget* GetRenderTarget();
 	IWICImagingFactory* GetImageFactory();
 	IDWriteFactory* GetWriteFactory();
+
+
+	fPoint GetImageSize(CD2DImage* img);
 };
 

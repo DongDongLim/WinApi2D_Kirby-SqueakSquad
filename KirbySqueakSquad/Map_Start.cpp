@@ -4,8 +4,11 @@
 
 Map_Start::Map_Start()
 {
-    pimg = new CD2DImage;
-    pimg = CResourceManager::getInst()->LoadD2DImage(L"stage", L"texture\\map\\stage1.png");
+    m_indexBG = 1;
+    pimgBG = new CD2DImage;
+    pimgMap = new CD2DImage;
+    pimgBG = CResourceManager::getInst()->LoadD2DImage(L"bg", L"texture\\bg\\background.png");
+    pimgMap = CResourceManager::getInst()->LoadD2DImage(L"stage", L"texture\\map\\stage1.png");
 }
 
 Map_Start::~Map_Start()
@@ -53,12 +56,27 @@ void Map_Start::render()
 
     // 카메라 영향
     pos = CCameraManager::getInst()->GetRenderPos(pos);
+    
+    // 배경 및 맵은 좌상단 기준으로 그려줌
+    // TODO : 크기 정리
+    CRenderManager::getInst()->RenderFrame(
+        pimgBG,
+        pos.x,
+        pos.y,
+        pos.x + 512,
+        pos.y + 192,
+        0,
+        192 * m_indexBG,
+        512,
+        192 * (m_indexBG + 1)
+    );
+
 
     CRenderManager::getInst()->RenderImage(
-        pimg,
-        pos.x - scale.x / 2.f,
-        pos.y - scale.y / 2.f,
-        pos.x + scale.x / 2.f,
-        pos.y + scale.y / 2.f
+        pimgMap,
+        pos.x,
+        pos.y,
+        pos.x + scale.x,
+        pos.y + scale.y
     );
 }
