@@ -64,6 +64,9 @@
     <Filter Include="Util">
       <UniqueIdentifier>{48df5aa7-75ba-4fa3-8665-c2d016e699ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\State">
+      <UniqueIdentifier>{ad72a7e3-394f-46a5-b0ed-539ee1e050b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -174,6 +177,15 @@
     <ClInclude Include="CPlayer.h">
       <Filter>Object\Character</Filter>
     </ClInclude>
+    <ClInclude Include="CState.h">
+      <Filter>Object\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CStateManager.h">
+      <Filter>Engin\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="CStageMove.h">
+      <Filter>Object\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KirbySqueakSquad.cpp">
@@ -265,6 +277,15 @@
     </ClCompile>
     <ClCompile Include="CPlayer.cpp">
       <Filter>Object\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="CState.cpp">
+      <Filter>Object\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CStateManager.cpp">
+      <Filter>Engin\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="CStageMove.cpp">
+      <Filter>Object\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

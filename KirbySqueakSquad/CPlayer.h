@@ -1,17 +1,12 @@
 #pragma once
 #include "CGameObject.h"
 
-
+class CState;
 class CD2DImage;
 
 class CPlayer : public CGameObject
 {
 private:
-	// 플레이어 방향
-	int m_iDir;
-
-	// Fly 애니메이션 상태인가 체크
-	bool m_isFly;
 
 	// 플레이어 애니메이션 재생을 위한 이미지들
 	vector<CD2DImage*> m_pImg;
@@ -20,23 +15,26 @@ private:
 	// 플레이어 애니메이션 동작의 키값
 	vector<vector<wstring>*> m_wAnimKey;
 
+	CState* m_pCurAtiveState;
+	CState* m_pDirState;
+
+	int m_dir = 1;
+
 	float m_fVelocity = 200;
 
-	// 이동
-	void Move();
-	// 날기
-	void Fly();
-	// 점프
-	void Jump();
-	// 방향 세팅
-	void SetDir();
+	void playerIdle(DWORD_PTR, DWORD_PTR);
+
+	void playerMove(DWORD_PTR, DWORD_PTR);
+
+	void playerRight(DWORD_PTR, DWORD_PTR);
+
+	void playerLeft(DWORD_PTR, DWORD_PTR);
 
 
 public:
 	CPlayer();
 	~CPlayer();
 	virtual CPlayer* Clone();
-
 	
 	virtual void update();
 	virtual void render();

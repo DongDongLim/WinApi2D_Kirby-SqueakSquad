@@ -4,7 +4,31 @@
 #include "CAnimator.h"
 #include "CAnimation.h"
 #include "CD2DImage.h"
+#include "CState.h"
 
+
+void CPlayer::playerIdle(DWORD_PTR, DWORD_PTR)
+{
+}
+
+void CPlayer::playerMove(DWORD_PTR, DWORD_PTR)
+{
+	fPoint pos = GetPos();
+
+	pos.x += m_dir * m_fVelocity * fDT;
+
+	SetPos(pos);
+}
+
+void CPlayer::playerRight(DWORD_PTR, DWORD_PTR)
+{
+	m_dir = 1;
+}
+
+void CPlayer::playerLeft(DWORD_PTR, DWORD_PTR)
+{
+	m_dir = -1;
+}
 
 CPlayer::CPlayer()
 {
@@ -47,6 +71,7 @@ CPlayer::CPlayer()
 	m_wAnimKey[0]->push_back(L"Down");
 	m_wAnimKey[1]->push_back(L"Move");
 	m_wAnimKey[2]->push_back(L"Dash");
+	m_wAnimKey[2]->push_back(L"QUICKSTOP");
 	m_wAnimKey[3]->push_back(L"DownSlide");
 	m_wAnimKey[4]->push_back(L"Jump");
 	m_wAnimKey[5]->push_back(L"Eat");
@@ -79,6 +104,20 @@ CPlayer::CPlayer()
 		fPoint(pixelSize, 0.f),
 		fPoint(pixelSize, pixelSize),
 		fPoint(0.f, 0.f), 0.5f, 1);
+
+	GetAnimator()->CreateAnimation(
+		m_wAnimKey[2]->at(1),
+		m_pImg[0],
+		fPoint(0.f, 0.f),
+		fPoint(pixelSize, pixelSize),
+		fPoint(pixelSize, 0.f), 0.1f, 8);
+
+	GetAnimator()->CreateAnimation(
+		m_wAnimKey[2]->at(1),
+		m_pImg[0],
+		fPoint((float)(pixelSize * 8), 0.f),
+		fPoint(pixelSize, pixelSize),
+		fPoint(pixelSize, 0.f), 0.5f, 1);
 
 	GetAnimator()->CreateAnimation(
 		m_wAnimKey[7]->at(0),
@@ -115,6 +154,22 @@ CPlayer::CPlayer()
 	pAni->GetFrame(0).fptOffset = fPoint(0.f, 5.f);
 	pAni = GetAnimator()->FindAnimation(L"Down");
 	pAni->GetFrame(0).fptOffset = fPoint(0.f, 5.f);
+
+
+	CState* pIdle = new CState(this);
+	//pIdle->SetUpdageCallBack(&playerIdle, 0, 0);
+	CStateManager::getInst()->AddState(PLAYERSTATE::IDLE, pIdle);
+	CState* pMove = new CState(this);
+	pMove->SetUpdageCallBack(&playerMove, 0, 0);
+	CStateManager::getInst()->AddState(PLAYERSTATE::MOVE, pMove);
+
+	CState* pLEFT = new CState(this);
+	CStateManager::getInst()->AddState(PLAYERSTATE::LEFT, pLEFT);
+	CState* pRIGHT = new CState(this);
+	CStateManager::getInst()->AddState(PLAYERSTATE::RIGHT, pRIGHT);
+
+	m_pCurAtiveState = pIdle;
+	m_pDirState = pRIGHT;
 }
 
 CPlayer::~CPlayer()
@@ -132,28 +187,12 @@ CPlayer* CPlayer::Clone()
 
 void CPlayer::update()
 {
-	fPoint pos = GetPos();
 
-	if (Key(VK_LEFT))
+	if (Key(VK_LEFT) || Key(VK_RIGHT))
 	{
-		pos.x -= m_fVelocity * fDT;
+		Key(VK_LEFT) ? CStateManager::getInst()->ChangeState(PLAYERSTATE::LEFT, m_pDirState) : CStateManager::getInst()->ChangeState(PLAYERSTATE::RIGHT, m_pDirState);
+		CStateManager::getInst()->ChangeState(PLAYERSTATE::MOVE, m_pCurAtiveState);
 	}
-	if (Key(VK_RIGHT))
-	{
-		pos.x += m_fVelocity * fDT;
-		GetAnimator()->Play(L"Move");
-	}
-	if (Key(VK_UP))
-	{
-		pos.y -= m_fVelocity * fDT;
-	}
-	if (Key(VK_DOWN))
-	{
-		pos.y += m_fVelocity * fDT;
-	}
-
-	SetPos(pos);
-
 
 	GetAnimator()->update();
 }
