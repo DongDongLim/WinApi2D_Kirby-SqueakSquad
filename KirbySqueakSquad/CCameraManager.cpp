@@ -110,13 +110,14 @@ fPoint CCameraManager::GetLookAt()
 
 fPoint CCameraManager::GetRenderPos(fPoint objPos)
 {
-	return objPos - m_fptDiff;
+	// imagerender에서 그려지는 좌표가 g_winScale의 배율만큼 늘어나기 때문에 그만큼 줄여줌
+	return (objPos - m_fptDiff) / g_winScale;
 }
 
 fPoint CCameraManager::GetRealPos(fPoint renderPos)
 {
 	// 렌더링 좌표에서 차이값만큼 더해주면 절대 좌표가 나옴.
-	return renderPos + m_fptDiff;
+	return (renderPos * g_winScale) + m_fptDiff;
 }
 
 void CCameraManager::FadeIn(float duration)
@@ -160,6 +161,9 @@ void CCameraManager::Scroll(fVec2 vec, float velocity)
 
 void CCameraManager::CalDiff()
 {
+	// 커비는 카메라가 바로 이동
+	m_fptCurLookAt = m_fptLookAt;
+	/*
 	m_fAccTime += fDT;
 
 	// 시간이 지나면, 도착한것으로 간주
@@ -175,4 +179,5 @@ void CCameraManager::CalDiff()
 		m_fptDiff = m_fptCurLookAt - fptCenter;
 		m_fptPrevLookAt = m_fptCurLookAt;
 	}
+	*/
 }

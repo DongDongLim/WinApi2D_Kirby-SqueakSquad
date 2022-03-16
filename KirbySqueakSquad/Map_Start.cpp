@@ -67,7 +67,7 @@ void Map_Start::render()
         pos.y + 192,
         0,
         192 * m_indexBG,
-        512,
+        553,
         192 * (m_indexBG + 1)
     );
 

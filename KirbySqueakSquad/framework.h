@@ -95,7 +95,7 @@ enum class TYPE_EVENT
 #define WINSTARTX   100
 #define WINSTARTY   100
 #define WINSIZEX	256 * g_winScale
-#define	WINSIZEY	208 * g_winScale
+#define	WINSIZEY	192 * g_winScale
 #define WINSTYLE	WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
 
 #define DT				CTimeManager::getInst()->GetDT()

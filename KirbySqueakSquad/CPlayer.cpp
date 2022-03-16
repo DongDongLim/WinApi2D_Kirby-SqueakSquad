@@ -20,23 +20,23 @@ CPlayer::CPlayer()
 
 
 	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[0], L"texture\\sprite0.bmp"));
+		LoadD2DImage(m_wImgKey[0], L"texture\\Animation\\sprite0.png"));
 	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[1], L"texture\\sprite1.bmp"));
+		LoadD2DImage(m_wImgKey[1], L"texture\\Animation\\sprite1.png"));
 	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[2], L"texture\\sprite2.bmp"));
+		LoadD2DImage(m_wImgKey[2], L"texture\\Animation\\sprite2.png"));
 	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[3], L"texture\\sprite3.bmp"));
+		LoadD2DImage(m_wImgKey[3], L"texture\\Animation\\sprite3.png"));
 	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[4], L"texture\\sprite4.bmp"));
+		LoadD2DImage(m_wImgKey[4], L"texture\\Animation\\sprite4.png"));
 	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[5], L"texture\\sprite5.bmp"));
+		LoadD2DImage(m_wImgKey[5], L"texture\\Animation\\sprite5.png"));
 	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[6], L"texture\\sprite6.bmp"));
+		LoadD2DImage(m_wImgKey[6], L"texture\\Animation\\sprite6.png"));
 	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[7], L"texture\\sprite7.bmp"));
+		LoadD2DImage(m_wImgKey[7], L"texture\\Animation\\sprite7.png"));
 	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[8], L"texture\\sprite8.bmp"));
+		LoadD2DImage(m_wImgKey[8], L"texture\\Animation\\sprite8.png"));
 
 	for (int i = 0; i < m_pImg.size(); ++i)
 	{
@@ -65,6 +65,35 @@ CPlayer::CPlayer()
 
 	CreateAnimator();
 	float pixelSize = 32.f;
+
+	GetAnimator()->CreateAnimation(
+		m_wAnimKey[0]->at(0),
+		m_pImg[0],
+		fPoint(0.f, 0.f),
+		fPoint(pixelSize, pixelSize),
+		fPoint(0.f, 0.f), 0.5f, 1);
+
+	GetAnimator()->CreateAnimation(
+		m_wAnimKey[0]->at(1),
+		m_pImg[0],
+		fPoint(pixelSize, 0.f),
+		fPoint(pixelSize, pixelSize),
+		fPoint(0.f, 0.f), 0.5f, 1);
+
+	GetAnimator()->CreateAnimation(
+		m_wAnimKey[7]->at(0),
+		m_pImg[0],
+		fPoint(0.f, 0.f),
+		fPoint(pixelSize, pixelSize),
+		fPoint(pixelSize, 0.f), 0.1f, 2);
+
+	GetAnimator()->CreateAnimation(
+		m_wAnimKey[7]->at(1),
+		m_pImg[0],
+		fPoint((float)(pixelSize * 2), 0.f),
+		fPoint(pixelSize, pixelSize),
+		fPoint(pixelSize, 0.f), 0.1f, 2);
+
 	for (int i = 0; i < m_wAnimKey.size(); ++i)
 	{
 		if (1 == m_wAnimKey[i]->size())
@@ -76,38 +105,9 @@ CPlayer::CPlayer()
 				m_pImg[i],
 				fPoint(0.f, 0.f),
 				fPoint(pixelSize, pixelSize),
-				fPoint(pixelSize, 0.f), 0.3f, frameCount);
+				fPoint(pixelSize, 0.f), 0.1f, frameCount);
 		}
 	}
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[0]->at(0),
-		m_pImg[0],
-		fPoint(0.f, 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(0.f, 0.f), 0.3f, 1);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[0]->at(1),
-		m_pImg[0],
-		fPoint(pixelSize, 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(0.f, 0.f), 0.3f, 1);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[7]->at(0),
-		m_pImg[0],
-		fPoint(0.f, 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.3f, 2);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[7]->at(1),
-		m_pImg[0],
-		fPoint((float)(pixelSize * 2), 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.3f, 2);
-
 	GetAnimator()->Play(L"Idle");
 
 	CAnimation* pAni;
@@ -115,7 +115,6 @@ CPlayer::CPlayer()
 	pAni->GetFrame(0).fptOffset = fPoint(0.f, 5.f);
 	pAni = GetAnimator()->FindAnimation(L"Down");
 	pAni->GetFrame(0).fptOffset = fPoint(0.f, 5.f);
-
 }
 
 CPlayer::~CPlayer()
@@ -138,12 +137,11 @@ void CPlayer::update()
 	if (Key(VK_LEFT))
 	{
 		pos.x -= m_fVelocity * fDT;
-		GetAnimator()->Play(L"LeftMove");
 	}
 	if (Key(VK_RIGHT))
 	{
 		pos.x += m_fVelocity * fDT;
-		GetAnimator()->Play(L"RightMove");
+		GetAnimator()->Play(L"Move");
 	}
 	if (Key(VK_UP))
 	{
