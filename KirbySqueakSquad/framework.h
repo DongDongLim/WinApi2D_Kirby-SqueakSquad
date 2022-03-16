@@ -39,7 +39,9 @@ using namespace std;
 enum class GROUP_GAMEOBJ
 {
 	DEFAULT,
+	BG,
 	TILE,
+	TILEBG,
 	PLAYER,
 	MONSTER,
 	MISSILE_PLAYER,
@@ -92,8 +94,8 @@ enum class TYPE_EVENT
 
 #define WINSTARTX   100
 #define WINSTARTY   100
-#define WINSIZEX	1280
-#define	WINSIZEY	720
+#define WINSIZEX	256 * g_winScale
+#define	WINSIZEY	208 * g_winScale
 #define WINSTYLE	WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
 
 #define DT				CTimeManager::getInst()->GetDT()
@@ -115,3 +117,6 @@ enum class TYPE_EVENT
 
 extern HINSTANCE hInst;
 extern HWND hWnd;
+
+// TODO : 윈도우 메뉴를 통해 사이즈 배율 조절
+const static int g_winScale = 3;

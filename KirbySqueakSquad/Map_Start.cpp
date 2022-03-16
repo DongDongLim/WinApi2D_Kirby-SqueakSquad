@@ -5,7 +5,7 @@
 Map_Start::Map_Start()
 {
     pimg = new CD2DImage;
-    pimg = CResourceManager::getInst()->LoadD2DImage(L"test", L"texture\\map\\Test.png");
+    pimg = CResourceManager::getInst()->LoadD2DImage(L"stage", L"texture\\map\\stage1.png");
 }
 
 Map_Start::~Map_Start()
@@ -19,6 +19,7 @@ Map_Start* Map_Start::Clone()
 
 void Map_Start::update()
 {
+    /*
     fPoint pos = GetPos();
 
     if (Key(VK_LEFT))
@@ -42,12 +43,16 @@ void Map_Start::update()
     }
 
     SetPos(pos);
+    */
 }
 
 void Map_Start::render()
 {
     fPoint pos = GetPos();
     fPoint scale = GetScale();
+
+    // 카메라 영향
+    pos = CCameraManager::getInst()->GetRenderPos(pos);
 
     CRenderManager::getInst()->RenderImage(
         pimg,

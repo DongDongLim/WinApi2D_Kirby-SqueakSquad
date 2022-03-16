@@ -8,6 +8,7 @@
 #include "CUI.h"
 #include "CPanelUI.h"
 #include "CButtonUI.h"
+#include "Map_Start.h"
 
 INT_PTR CALLBACK TileWinProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -71,6 +72,11 @@ void CScene_Tool::Enter()
 	ShowWindow(m_hWnd, SW_SHOW);
 
 	CResourceManager::getInst()->LoadTextrue(L"Tile", L"texture\\tile\\tilemap.bmp");
+
+	Map_Start* m_defaltMap = new Map_Start();	
+	m_defaltMap->SetScale(fPoint(528, 256));
+	m_defaltMap->SetPos(fPoint(m_defaltMap->GetScale().x / 2, 128));
+	AddObject(m_defaltMap, GROUP_GAMEOBJ::TILEBG);
 
 	/*
 	// UI »ý¼º
