@@ -15,6 +15,7 @@ void CPlayer::playerIdle(DWORD_PTR, DWORD_PTR)
 void CPlayer::playerMove(DWORD_PTR, DWORD_PTR)
 {
 	fPoint pos = GetPos();
+	GetAnimator()->SetReverse(m_dir < 0 ? true : false);
 	GetAnimator()->Play(L"Move");
 
 	pos.x += m_dir * m_fVelocity * fDT;
@@ -166,8 +167,10 @@ CPlayer::CPlayer()
 	CStateManager::getInst()->AddState(PLAYERSTATE::MOVE, pMove);
 
 	CState* pLEFT = new CState(this);
+	pLEFT->SetUpdageCallBack(&CPlayer::playerLeft, 0, 0);
 	CStateManager::getInst()->AddState(PLAYERSTATE::LEFT, pLEFT);
 	CState* pRIGHT = new CState(this);
+	pRIGHT->SetUpdageCallBack(&CPlayer::playerRight, 0, 0);
 	CStateManager::getInst()->AddState(PLAYERSTATE::RIGHT, pRIGHT);
 
 	m_pCurAtiveState = pIdle;
@@ -195,6 +198,9 @@ void CPlayer::update()
 		Key(VK_LEFT) ? CStateManager::getInst()->ChangeState(PLAYERSTATE::LEFT, m_pDirState) : CStateManager::getInst()->ChangeState(PLAYERSTATE::RIGHT, m_pDirState);
 		CStateManager::getInst()->ChangeState(PLAYERSTATE::MOVE, m_pCurAtiveState);
 	}
+
+
+	m_pDirState->update();
 	m_pCurAtiveState->update();
 	GetAnimator()->update();
 }

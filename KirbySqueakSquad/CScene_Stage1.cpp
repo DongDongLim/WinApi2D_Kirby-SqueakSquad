@@ -27,7 +27,7 @@ void CScene_Stage1::Enter()
 	AddObject(pDefaltMap, GROUP_GAMEOBJ::TILEBG);
 
 	CPlayer* pPlayer = new CPlayer();
-	pPlayer->SetPos(fPoint(50, 150));
+	pPlayer->SetPos(fPoint(150, 300));
 	AddObject(pPlayer, GROUP_GAMEOBJ::PLAYER);
 	
 	// Camera Look ÁöÁ¤

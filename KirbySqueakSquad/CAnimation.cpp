@@ -37,6 +37,11 @@ tAniFrm& CAnimation::GetFrame(int frmIndex)
     return m_vecFrm[frmIndex];
 }
 
+void CAnimation::SetReverse(bool reverse)
+{
+    m_bReverse = reverse;
+}
+
 void CAnimation::update()
 {
     m_fAccTime += fDT;

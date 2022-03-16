@@ -35,6 +35,8 @@ public:
 	void SetFrame(int frmIndex);
 	tAniFrm& GetFrame(int frmIndex);
 
+	void SetReverse(bool reverse);
+
 	void update();
 	void render();	
 

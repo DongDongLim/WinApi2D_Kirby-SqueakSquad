@@ -64,6 +64,11 @@ CAnimation* CAnimator::FindAnimation(const wstring& strName)
 	return iter->second;
 }
 
+void CAnimator::SetReverse(bool reverse)
+{
+	m_pCurAni->SetReverse(reverse);
+}
+
 void CAnimator::Play(const wstring& strName)
 {
 	m_pCurAni = FindAnimation(strName);

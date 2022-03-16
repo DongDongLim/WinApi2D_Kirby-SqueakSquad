@@ -25,6 +25,9 @@ public:
 	void CreateAnimation(const wstring& strName, CD2DImage* tex, fPoint lt, fPoint slice,
 						fPoint step, float duration, UINT frmCount);
 	CAnimation* FindAnimation(const wstring& strName);
+
+	void SetReverse(bool reverse);
+
 	void Play(const wstring& strName);
 };
 
