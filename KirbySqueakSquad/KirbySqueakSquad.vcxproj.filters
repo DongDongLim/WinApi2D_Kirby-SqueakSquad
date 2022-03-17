@@ -67,6 +67,9 @@
     <Filter Include="Object\State">
       <UniqueIdentifier>{ad72a7e3-394f-46a5-b0ed-539ee1e050b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Character\Player">
+      <UniqueIdentifier>{52b508b6-1545-4969-943f-159867e9edcc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -174,17 +177,14 @@
     <ClInclude Include="CScene_Stage1.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="CPlayer.h">
-      <Filter>Object\Character</Filter>
-    </ClInclude>
     <ClInclude Include="CState.h">
       <Filter>Object\State</Filter>
     </ClInclude>
     <ClInclude Include="CStateManager.h">
       <Filter>Engin\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="CStageMove.h">
-      <Filter>Object\State</Filter>
+    <ClInclude Include="CPlayer.h">
+      <Filter>Object\Character\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -275,17 +275,26 @@
     <ClCompile Include="CScene_Stage1.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="CPlayer.cpp">
-      <Filter>Object\Character</Filter>
-    </ClCompile>
     <ClCompile Include="CState.cpp">
       <Filter>Object\State</Filter>
     </ClCompile>
     <ClCompile Include="CStateManager.cpp">
       <Filter>Engin\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="CStageMove.cpp">
-      <Filter>Object\State</Filter>
+    <ClCompile Include="CPlayer.cpp">
+      <Filter>Object\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerMove.cpp">
+      <Filter>Object\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerIdle.cpp">
+      <Filter>Object\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerRight.cpp">
+      <Filter>Object\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerLeft.cpp">
+      <Filter>Object\Character\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

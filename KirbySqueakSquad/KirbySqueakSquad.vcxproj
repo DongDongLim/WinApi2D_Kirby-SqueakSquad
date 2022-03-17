@@ -168,7 +168,6 @@
     <ClInclude Include="CScene_Tool.h" />
     <ClInclude Include="CSound.h" />
     <ClInclude Include="CSoundManager.h" />
-    <ClInclude Include="CStageMove.h" />
     <ClInclude Include="CState.h" />
     <ClInclude Include="CStateManager.h" />
     <ClInclude Include="CTexture.h" />
@@ -209,7 +208,6 @@
     <ClCompile Include="CScene_Tool.cpp" />
     <ClCompile Include="CSound.cpp" />
     <ClCompile Include="CSoundManager.cpp" />
-    <ClCompile Include="CStageMove.cpp" />
     <ClCompile Include="CState.cpp" />
     <ClCompile Include="CStateManager.cpp" />
     <ClCompile Include="CTexture.cpp" />
@@ -219,6 +217,10 @@
     <ClCompile Include="CUIManager.cpp" />
     <ClCompile Include="KirbySqueakSquad.cpp" />
     <ClCompile Include="Map_Start.cpp" />
+    <ClCompile Include="PlayerIdle.cpp" />
+    <ClCompile Include="PlayerLeft.cpp" />
+    <ClCompile Include="PlayerMove.cpp" />
+    <ClCompile Include="PlayerRight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="KirbySqueakSquad.rc" />

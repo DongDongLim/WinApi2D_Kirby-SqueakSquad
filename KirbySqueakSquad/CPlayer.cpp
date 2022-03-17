@@ -7,32 +7,6 @@
 #include "CState.h"
 
 
-void CPlayer::playerIdle(DWORD_PTR, DWORD_PTR)
-{
-	GetAnimator()->Play(L"Idle");
-}
-
-void CPlayer::playerMove(DWORD_PTR, DWORD_PTR)
-{
-	fPoint pos = GetPos();
-	GetAnimator()->SetReverse(m_dir < 0 ? true : false);
-	GetAnimator()->Play(L"Move");
-
-	pos.x += m_dir * m_fVelocity * fDT;
-
-	SetPos(pos);
-}
-
-void CPlayer::playerRight(DWORD_PTR, DWORD_PTR)
-{
-	m_dir = 1;
-}
-
-void CPlayer::playerLeft(DWORD_PTR, DWORD_PTR)
-{
-	m_dir = -1;
-}
-
 CPlayer::CPlayer()
 {
 	m_wImgKey.push_back(L"PlayerImg0");
@@ -160,17 +134,17 @@ CPlayer::CPlayer()
 
 
 	CState* pIdle = new CState(this);
-	pIdle->SetUpdageCallBack(&CPlayer::playerIdle, 0, 0);
+	pIdle->SetUpdageCallBack(&CPlayer::PlayerIdle, 0, 0);
 	CStateManager::getInst()->AddState(PLAYERSTATE::IDLE, pIdle);
 	CState* pMove = new CState(this);
-	pMove->SetUpdageCallBack(&CPlayer::playerMove, 0, 0);
+	pMove->SetUpdageCallBack(&CPlayer::PlayerMove, 0, 0);
 	CStateManager::getInst()->AddState(PLAYERSTATE::MOVE, pMove);
 
 	CState* pLEFT = new CState(this);
-	pLEFT->SetUpdageCallBack(&CPlayer::playerLeft, 0, 0);
+	pLEFT->SetUpdageCallBack(&CPlayer::PlayerLeft, 0, 0);
 	CStateManager::getInst()->AddState(PLAYERSTATE::LEFT, pLEFT);
 	CState* pRIGHT = new CState(this);
-	pRIGHT->SetUpdageCallBack(&CPlayer::playerRight, 0, 0);
+	pRIGHT->SetUpdageCallBack(&CPlayer::PlayerRight, 0, 0);
 	CStateManager::getInst()->AddState(PLAYERSTATE::RIGHT, pRIGHT);
 
 	m_pCurAtiveState = pIdle;

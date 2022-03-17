@@ -22,13 +22,13 @@ private:
 
 	float m_fVelocity = 200;
 
-	void playerIdle(DWORD_PTR, DWORD_PTR);
+	void PlayerIdle(DWORD_PTR, DWORD_PTR);
 
-	void playerMove(DWORD_PTR, DWORD_PTR);
+	void PlayerMove(DWORD_PTR, DWORD_PTR);
 
-	void playerRight(DWORD_PTR, DWORD_PTR);
+	void PlayerRight(DWORD_PTR, DWORD_PTR);
 
-	void playerLeft(DWORD_PTR, DWORD_PTR);
+	void PlayerLeft(DWORD_PTR, DWORD_PTR);
 
 
 public:

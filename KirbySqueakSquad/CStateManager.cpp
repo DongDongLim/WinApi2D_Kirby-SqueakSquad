@@ -28,7 +28,7 @@ void CStateManager::ChangeState(PLAYERSTATE state, CState*& curstate)
 	CState* pState = FindState(state);
 	if (nullptr != pState)
 	{
-		if (nullptr != curstate)
+		if (nullptr != curstate)//현재 상태
 			curstate->Exit();
 		pState->Enter();
 		curstate = pState;
