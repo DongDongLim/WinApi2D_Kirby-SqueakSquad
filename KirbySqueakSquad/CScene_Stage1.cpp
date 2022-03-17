@@ -26,16 +26,16 @@ void CScene_Stage1::Enter()
 	AddObject(map, GROUP_GAMEOBJ::MAP);
 	
 	CBackGround* backGround = new CBackGround;
-	backGround->Load(L"BackGround_Start", L"texture\\bg\\background.png");
+	backGround->Load(L"BackGround_Start", L"texture\\bg\\background1.png");
 	AddObject(backGround, GROUP_GAMEOBJ::BACKGROUND);
 
 	CPlayer* pPlayer = new CPlayer();
-	pPlayer->SetPos(fPoint(0, 0));
+	pPlayer->SetPos(fPoint(50, 130));
 	AddObject(pPlayer, GROUP_GAMEOBJ::PLAYER);
 	
 	// Camera Look ÁöÁ¤
 	CCameraManager::getInst()->SetTargetObj(pPlayer);
-	
+	//CCameraManager::getInst()->SetLookAt(fPoint(WINSIZEX / g_winScale / 2.f, WINSIZEY / g_winScale / 2.f));
 }
 
 void CScene_Stage1::Exit()

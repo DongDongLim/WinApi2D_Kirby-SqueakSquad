@@ -172,6 +172,10 @@ void CPlayer::update()
 		Key(VK_LEFT) ? CStateManager::getInst()->ChangeState(PLAYERSTATE::LEFT, m_pDirState) : CStateManager::getInst()->ChangeState(PLAYERSTATE::RIGHT, m_pDirState);
 		CStateManager::getInst()->ChangeState(PLAYERSTATE::MOVE, m_pCurAtiveState);
 	}
+	else
+	{
+		CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE, m_pCurAtiveState);
+	}
 
 
 	m_pDirState->update();

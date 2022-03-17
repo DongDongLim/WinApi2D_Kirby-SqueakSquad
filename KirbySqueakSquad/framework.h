@@ -69,6 +69,10 @@ enum class GROUP_TILE
 	PLATFORM,
 	WALL,
 	SLOPE,
+	GATE,
+	BREAK,
+	INSTUNTKILL,
+	LADDER,
 
 	SIZE,
 };

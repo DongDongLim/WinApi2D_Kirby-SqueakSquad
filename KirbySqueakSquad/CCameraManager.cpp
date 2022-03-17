@@ -101,7 +101,7 @@ fPoint CCameraManager::GetLookAt()
 
 fPoint CCameraManager::GetRenderPos(fPoint objPos)
 {
-	return (objPos * g_winScale) - m_fptDiff;
+	return objPos - m_fptDiff;
 }
 
 fPoint CCameraManager::GetRealPos(fPoint renderPos)
@@ -153,6 +153,10 @@ void CCameraManager::CalDiff()
 {
 	// 커비는 카메라가 바로 따라옴
 	m_fptCurLookAt = m_fptLookAt;
+	fPoint fptCenter = fPoint(WINSIZEX / 2.f, WINSIZEY / 2.f);
+	// 렌더링이 g_winScale배 늘어났기 때문에 카메라는 그만큼 줄여줌
+	m_fptDiff = m_fptCurLookAt - (fptCenter / g_winScale);
+
 	/*
 	m_fAccTime += fDT;
 
