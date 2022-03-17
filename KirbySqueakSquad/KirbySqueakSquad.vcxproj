@@ -223,10 +223,6 @@
     <ClCompile Include="CUIManager.cpp" />
     <ClCompile Include="KirbySqueakSquad.cpp" />
     <ClCompile Include="Map_Start.cpp" />
-    <ClCompile Include="PlayerIdle.cpp" />
-    <ClCompile Include="PlayerLeft.cpp" />
-    <ClCompile Include="PlayerMove.cpp" />
-    <ClCompile Include="PlayerRight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="KirbySqueakSquad.rc" />

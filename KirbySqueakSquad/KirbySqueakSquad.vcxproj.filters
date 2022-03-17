@@ -296,18 +296,6 @@
     <ClCompile Include="CPlayer.cpp">
       <Filter>Object\Character\Player</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerMove.cpp">
-      <Filter>Object\Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerIdle.cpp">
-      <Filter>Object\Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerRight.cpp">
-      <Filter>Object\Character\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerLeft.cpp">
-      <Filter>Object\Character\Player</Filter>
-    </ClCompile>
     <ClCompile Include="CTileButton.cpp">
       <Filter>Object\UI</Filter>
     </ClCompile>

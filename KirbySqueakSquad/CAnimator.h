@@ -22,9 +22,12 @@ public:
 	void update();
 	void render();
 
+	void SetReverce(bool reverce);
 	void CreateAnimation(const wstring& strName, CD2DImage* tex, fPoint lt, fPoint slice,
 		fPoint step, float duration, UINT frmCount, bool reverse = false);
 	CAnimation* FindAnimation(const wstring& strName);
 	void Play(const wstring& strName);
+	int GetAnimSize();
+	float GetFrameSpeed();
 };
 

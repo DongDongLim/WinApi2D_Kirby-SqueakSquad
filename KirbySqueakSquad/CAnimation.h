@@ -32,8 +32,11 @@ public:
 	void SetName(const wstring& strName);
 	const wstring& GetName();
 
+	void SetReverse(bool reverse);
 	void SetFrame(int frmIndex);
-	tAniFrm& GetFrame(int frmIndex);
+	tAniFrm& GetFrame(int frmIndex);	
+	int GetAnimSize();
+	float GetFrameSpeed();
 
 	void update();
 	void render();

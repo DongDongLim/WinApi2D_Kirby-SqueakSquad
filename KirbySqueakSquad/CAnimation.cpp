@@ -27,6 +27,11 @@ const wstring& CAnimation::GetName()
     return m_strName;
 }
 
+void CAnimation::SetReverse(bool reverse)
+{
+    m_bReverse = reverse;
+}
+
 void CAnimation::SetFrame(int frmIndex)
 {
     m_iCurFrm = frmIndex;
@@ -35,6 +40,16 @@ void CAnimation::SetFrame(int frmIndex)
 tAniFrm& CAnimation::GetFrame(int frmIndex)
 {
     return m_vecFrm[frmIndex];
+}
+
+int CAnimation::GetAnimSize()
+{
+    return m_vecFrm.size();
+}
+
+float CAnimation::GetFrameSpeed()
+{
+    return m_vecFrm[0].fDuration;
 }
 
 void CAnimation::update()

@@ -39,6 +39,11 @@ void CAnimator::render()
 	}
 }
 
+void CAnimator::SetReverce(bool reverce)
+{
+	m_pCurAni->SetReverse(reverce);
+}
+
 void CAnimator::CreateAnimation(const wstring& strName, CD2DImage* tex, fPoint lt, fPoint slice, fPoint step, float duration, UINT frmCount, bool reverse)
 {
 	CAnimation* pAni = FindAnimation(strName);
@@ -68,4 +73,14 @@ CAnimation* CAnimator::FindAnimation(const wstring& strName)
 void CAnimator::Play(const wstring& strName)
 {
 	m_pCurAni = FindAnimation(strName);
+}
+
+int CAnimator::GetAnimSize()
+{
+	return m_pCurAni->GetAnimSize();
+}
+
+float CAnimator::GetFrameSpeed()
+{
+	return m_pCurAni->GetFrameSpeed();
 }

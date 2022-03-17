@@ -9,6 +9,7 @@ enum class PLAYERSTATE
 	DOWN,
 	FLY,
 	EAT,
+	INHALE,
 	TRANSFORM,
 	RIGHT,
 	LEFT,
@@ -28,7 +29,7 @@ private:
 
 public:
 	void AddState(PLAYERSTATE state, CState* stateclass);
-	void ChangeState(PLAYERSTATE state, CState*& curstate);
+	void ChangeState(PLAYERSTATE state, PLAYERSTATE& curstate);
 
 	CState* FindState(PLAYERSTATE state);
 };

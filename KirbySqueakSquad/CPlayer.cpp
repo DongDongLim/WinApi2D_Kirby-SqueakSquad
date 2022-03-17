@@ -6,9 +6,85 @@
 #include "CD2DImage.h"
 #include "CState.h"
 
+void CPlayer::PlayerIdle(DWORD_PTR, DWORD_PTR)
+{
+	GetAnimator()->Play(L"Idle");
+}
+
+void CPlayer::PlayerMove(DWORD_PTR, DWORD_PTR)
+{
+
+	fPoint pos = GetPos();
+	GetAnimator()->SetReverce(m_dir < 0 ? true : false);
+	if (!m_bIsAnimStay)
+	{
+		GetAnimator()->Play(L"Move");
+		pos.x += m_dir * m_fVelocity * fDT;
+	}
+	else
+	{
+		GetAnimator()->Play(L"QuickStop");
+		pos.x += m_dir * m_fVelocity * m_animStayTime * fDT;
+		m_animStayTime -= fDT;
+		if (m_animStayTime <= 0)
+		{
+			m_animStayTime = 0;
+			m_bIsAnimStay = false;
+		}
+	}
+
+	SetPos(pos);
+
+}
+
+void CPlayer::PlayerLeft(DWORD_PTR, DWORD_PTR)
+{
+	if (!m_bIsAnimStay)
+		m_dir = -1;
+}
+
+void CPlayer::PlayerRight(DWORD_PTR, DWORD_PTR)
+{
+	if (!m_bIsAnimStay)
+		m_dir = 1;
+}
+
+void CPlayer::PlayerJump(DWORD_PTR, DWORD_PTR)
+{
+}
+
+void CPlayer::PlayerInHale(DWORD_PTR, DWORD_PTR)
+{
+	GetAnimator()->Play(L"InHale");
+}
+
+void CPlayer::PlayerEat(DWORD_PTR, DWORD_PTR)
+{
+}
+
+void CPlayer::PlayerFly(DWORD_PTR, DWORD_PTR)
+{
+}
+
+void CPlayer::PlayerTransForm(DWORD_PTR, DWORD_PTR)
+{
+}
+
+void CPlayer::PlayerChangeDir(DWORD_PTR, DWORD_PTR)
+{
+	if (m_pCurAtiveState == PLAYERSTATE::MOVE)
+	{
+		m_bIsAnimStay = true;
+		m_animStayTime = 0.3f;
+	}
+}
+
 
 CPlayer::CPlayer()
 {
+	m_commandStayTime = g_fCommandTime;
+	m_bIsAnimStay = false;
+	m_animStayTime = 0;
 	m_wImgKey.push_back(L"PlayerImg0");
 	m_wImgKey.push_back(L"PlayerImg1");
 	m_wImgKey.push_back(L"PlayerImg2");
@@ -55,7 +131,7 @@ CPlayer::CPlayer()
 	m_wAnimKey[6]->push_back(L"Up");
 	m_wAnimKey[7]->push_back(L"UpIdle");
 	m_wAnimKey[7]->push_back(L"UpMove");
-	m_wAnimKey[8]->push_back(L"BreatheIn");
+	m_wAnimKey[8]->push_back(L"InHale");
 
 
 	SetName(L"Player");
@@ -84,28 +160,28 @@ CPlayer::CPlayer()
 
 	GetAnimator()->CreateAnimation(
 		m_wAnimKey[2]->at(0),
-		m_pImg[0],
+		m_pImg[2],
 		fPoint(0.f, 0.f),
 		fPoint(pixelSize, pixelSize),
 		fPoint(pixelSize, 0.f), 0.1f, 8);
 
 	GetAnimator()->CreateAnimation(
 		m_wAnimKey[2]->at(1),
-		m_pImg[0],
+		m_pImg[2],
 		fPoint((float)(pixelSize * 8), 0.f),
 		fPoint(pixelSize, pixelSize),
 		fPoint(pixelSize, 0.f), 0.5f, 1);
 
 	GetAnimator()->CreateAnimation(
 		m_wAnimKey[7]->at(0),
-		m_pImg[0],
+		m_pImg[7],
 		fPoint(0.f, 0.f),
 		fPoint(pixelSize, pixelSize),
 		fPoint(pixelSize, 0.f), 0.1f, 2);
 
 	GetAnimator()->CreateAnimation(
 		m_wAnimKey[7]->at(1),
-		m_pImg[0],
+		m_pImg[7],
 		fPoint((float)(pixelSize * 2), 0.f),
 		fPoint(pixelSize, pixelSize),
 		fPoint(pixelSize, 0.f), 0.1f, 2);
@@ -142,13 +218,19 @@ CPlayer::CPlayer()
 
 	CState* pLEFT = new CState(this);
 	pLEFT->SetUpdageCallBack(&CPlayer::PlayerLeft, 0, 0);
+	pLEFT->SetEnterCallBack(&CPlayer::PlayerChangeDir, 0, 0);
 	CStateManager::getInst()->AddState(PLAYERSTATE::LEFT, pLEFT);
 	CState* pRIGHT = new CState(this);
 	pRIGHT->SetUpdageCallBack(&CPlayer::PlayerRight, 0, 0);
+	pRIGHT->SetEnterCallBack(&CPlayer::PlayerChangeDir, 0, 0);
 	CStateManager::getInst()->AddState(PLAYERSTATE::RIGHT, pRIGHT);
+	CState* pInHale = new CState(this);
+	pInHale->SetUpdageCallBack(&CPlayer::PlayerInHale, 0, 0);
+	CStateManager::getInst()->AddState(PLAYERSTATE::INHALE, pInHale);
 
-	m_pCurAtiveState = pIdle;
-	m_pDirState = pRIGHT;
+	m_pCurAtiveState = PLAYERSTATE::IDLE;
+	m_pDirState = PLAYERSTATE::RIGHT;
+	m_pPevState = PLAYERSTATE::END;
 }
 
 CPlayer::~CPlayer()
@@ -166,20 +248,34 @@ CPlayer* CPlayer::Clone()
 
 void CPlayer::update()
 {
+	m_commandStayTime -= fDT;
+	if (m_commandStayTime <= 0)
+	{
+		if (m_pPevState != PLAYERSTATE::END)
+			m_pPevState = PLAYERSTATE::END;
+		m_commandStayTime = g_fCommandTime;
+	}
 
-	if (Key(VK_LEFT) || Key(VK_RIGHT))
+	if (LEFTDEFINE || RIGHTDEFINE)
 	{
 		Key(VK_LEFT) ? CStateManager::getInst()->ChangeState(PLAYERSTATE::LEFT, m_pDirState) : CStateManager::getInst()->ChangeState(PLAYERSTATE::RIGHT, m_pDirState);
 		CStateManager::getInst()->ChangeState(PLAYERSTATE::MOVE, m_pCurAtiveState);
 	}
-	else
+	if (ACTTACKDEFINE)
+	{
+		CStateManager::getInst()->ChangeState(PLAYERSTATE::INHALE, m_pCurAtiveState);
+	}
+	if (KEYEMPTYDEFINE)
 	{
 		CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE, m_pCurAtiveState);
 	}
 
-
+	CStateManager::getInst()->FindState(m_pDirState)->update();
+	CStateManager::getInst()->FindState(m_pCurAtiveState)->update();
+	/*
 	m_pDirState->update();
 	m_pCurAtiveState->update();
+	*/
 	GetAnimator()->update();
 }
 

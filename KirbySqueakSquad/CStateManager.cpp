@@ -23,15 +23,16 @@ void CStateManager::AddState(PLAYERSTATE state, CState* stateclass)
 	m_mPlayerState.insert(make_pair(state, stateclass));
 }
 
-void CStateManager::ChangeState(PLAYERSTATE state, CState*& curstate)
+void CStateManager::ChangeState(PLAYERSTATE state, PLAYERSTATE& curstate)
 {
 	CState* pState = FindState(state);
-	if (nullptr != pState)
+	CState* pCurstate = FindState(curstate);
+	if (nullptr != pState && pCurstate != pState)
 	{
-		if (nullptr != curstate)//현재 상태
-			curstate->Exit();
+		if (nullptr != pCurstate)//현재 상태
+			pCurstate->Exit();
 		pState->Enter();
-		curstate = pState;
+		curstate = state;
 	}
 
 }
