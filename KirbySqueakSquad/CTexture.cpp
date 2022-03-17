@@ -41,6 +41,7 @@ int CTexture::GetBmpHeight()
 
 void CTexture::Load(const wstring& strFilePath)
 {
+	/*
 	m_hBMP = (HBITMAP)LoadImage(
 		nullptr,								// hInstance. nullptr로 해도 됨.
 		strFilePath.c_str(),					// 파일 경로를 C style 문자열로 변환
@@ -59,10 +60,12 @@ void CTexture::Load(const wstring& strFilePath)
 
 	// 비트맵 정보
 	GetObject(m_hBMP, sizeof(BITMAP), &m_bmpInfo);
+	*/
 }
 
 void CTexture::Create(UINT width, UINT height)
 {
+	/*
 	HDC mainDC = CCore::getInst()->GetMainDC();
 	m_hBMP = CreateCompatibleBitmap(mainDC, width, height);
 	m_hDC = CreateCompatibleDC(mainDC);
@@ -71,4 +74,5 @@ void CTexture::Create(UINT width, UINT height)
 	DeleteObject(hOldBmp);
 
 	GetObject(m_hBMP, sizeof(BITMAP), &m_bmpInfo);
+	*/
 }

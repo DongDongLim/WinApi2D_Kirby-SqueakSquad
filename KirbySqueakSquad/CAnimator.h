@@ -10,8 +10,8 @@ class CAnimator
 
 private:
 	map<wstring, CAnimation*>	m_mapAni;
-	CAnimation*					m_pCurAni;
-	CGameObject*				m_pOwner;
+	CAnimation* m_pCurAni;
+	CGameObject* m_pOwner;
 
 public:
 	CAnimator();
@@ -23,11 +23,8 @@ public:
 	void render();
 
 	void CreateAnimation(const wstring& strName, CD2DImage* tex, fPoint lt, fPoint slice,
-						fPoint step, float duration, UINT frmCount);
+		fPoint step, float duration, UINT frmCount, bool reverse = false);
 	CAnimation* FindAnimation(const wstring& strName);
-
-	void SetReverse(bool reverse);
-
 	void Play(const wstring& strName);
 };
 

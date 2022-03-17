@@ -39,7 +39,8 @@ using namespace std;
 enum class GROUP_GAMEOBJ
 {
 	DEFAULT,
-	BG,
+	BACKGROUND,
+	MAP,
 	TILE,
 	TILEBG,
 	PLAYER,
@@ -57,6 +58,17 @@ enum class GROUP_SCENE
 	START,
 	STAGE_01,
 	STAGE_02,
+
+	SIZE,
+};
+
+enum class GROUP_TILE
+{
+	NONE,
+	GROUND,
+	PLATFORM,
+	WALL,
+	SLOPE,
 
 	SIZE,
 };

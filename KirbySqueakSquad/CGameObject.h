@@ -13,6 +13,8 @@ private:
 	wstring m_strName;
 	fPoint m_fptPos;
 	fPoint m_fptScale;
+	// 현재 속한 그룹
+	GROUP_GAMEOBJ m_eCurGroup;
 
 	// Component
 	CCollider* m_pCollider;
@@ -30,10 +32,12 @@ public:
 	void SetPos(fPoint pos);
 	void SetScale(fPoint scale);
 	void SetName(wstring name);
+	void SetGroup(GROUP_GAMEOBJ group);
 
 	fPoint GetPos();
 	fPoint GetScale();
 	wstring GetName();
+	GROUP_GAMEOBJ GetGroup();
 
 	bool isDead();
 

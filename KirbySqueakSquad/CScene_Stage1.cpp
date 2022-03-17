@@ -2,6 +2,8 @@
 #include "CScene_Stage1.h"
 #include "Map_Start.h"
 #include "CPlayer.h"
+#include "CMap.h"
+#include "CBackGround.h"
 
 
 CScene_Stage1::CScene_Stage1()
@@ -19,15 +21,16 @@ void CScene_Stage1::update()
 
 void CScene_Stage1::Enter()
 {
-	CCameraManager::getInst()->SetLookAt(fPoint(WINSIZEX / 2.f, WINSIZEY / 2.f));
-
-	Map_Start* pDefaltMap = new Map_Start();
-	pDefaltMap->SetScale(fPoint(528, 256));
-	pDefaltMap->SetPos(fPoint(0, 0));
-	AddObject(pDefaltMap, GROUP_GAMEOBJ::TILEBG);
+	CMap* map = new CMap;
+	map->Load(L"Map_Start", L"texture\\map\\stage1.png");
+	AddObject(map, GROUP_GAMEOBJ::MAP);
+	
+	CBackGround* backGround = new CBackGround;
+	backGround->Load(L"BackGround_Start", L"texture\\bg\\background.png");
+	AddObject(backGround, GROUP_GAMEOBJ::BACKGROUND);
 
 	CPlayer* pPlayer = new CPlayer();
-	pPlayer->SetPos(fPoint(150, 300));
+	pPlayer->SetPos(fPoint(0, 0));
 	AddObject(pPlayer, GROUP_GAMEOBJ::PLAYER);
 	
 	// Camera Look ÁöÁ¤

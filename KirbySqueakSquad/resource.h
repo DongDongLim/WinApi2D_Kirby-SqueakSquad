@@ -4,7 +4,6 @@
 //
 #define IDC_MYICON                      2
 #define IDD_KIRBYSQUEAKSQUAD_DIALOG     102
-#define IDD_TILEBOX                     102
 #define IDS_APP_TITLE                   103
 #define IDD_ABOUTBOX                    103
 #define IDM_ABOUT                       104
@@ -13,11 +12,13 @@
 #define IDI_SMALL                       108
 #define IDC_KIRBYSQUEAKSQUAD            109
 #define IDR_MAINFRAME                   128
-#define IDC_EDIT_SIZEX                  1000
-#define IDC_EDIT_TILE                   1001
-#define IDC_EDIT_SIZEY                  1002
-#define IDC_BUTTON_TILE                 1003
-#define IDC_BUTTON_SIZE                 1004
+#define IDD_TILEBOX                     129
+#define IDC_BUTTON_SIZE                 1000
+#define IDC_EDIT_SIZEY                  1001
+#define IDC_EDIT_SIZEX                  1002
+#define IDC_SAVE                        1006
+#define IDC_LOAD                        1007
+#define IDC_MAP                         1008
 #define IDC_STATIC                      -1
 
 // Next default values for new objects

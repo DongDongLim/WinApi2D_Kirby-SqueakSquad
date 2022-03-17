@@ -4,6 +4,7 @@
 class CState;
 class CD2DImage;
 
+
 class CPlayer : public CGameObject
 {
 private:

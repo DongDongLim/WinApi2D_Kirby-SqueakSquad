@@ -5,6 +5,7 @@
 
 CGameObject::CGameObject()
 {
+	m_eCurGroup = GROUP_GAMEOBJ::SIZE;
 	m_fptPos = {};
 	m_fptScale = {};
 	m_pCollider = nullptr;
@@ -60,6 +61,11 @@ void CGameObject::SetName(wstring name)
 	m_strName = name;
 }
 
+void CGameObject::SetGroup(GROUP_GAMEOBJ group)
+{
+	m_eCurGroup = group;
+}
+
 fPoint CGameObject::GetPos()
 {
 	return m_fptPos;
@@ -73,6 +79,11 @@ fPoint CGameObject::GetScale()
 wstring CGameObject::GetName()
 {
 	return m_strName;
+}
+
+GROUP_GAMEOBJ CGameObject::GetGroup()
+{
+	return m_eCurGroup;
 }
 
 bool CGameObject::isDead()
