@@ -11,6 +11,7 @@ CCameraManager::CCameraManager()
 	m_pTargetObj = nullptr;
 	m_fAccTime = m_fTime;
 	m_fSpeed = 0;
+	m_fDisLimmit = fPoint(0, 0);
 }
 
 CCameraManager::~CCameraManager()
@@ -83,15 +84,22 @@ void CCameraManager::render()
 void CCameraManager::SetLookAt(fPoint lookAt)
 {
 	m_fptLookAt = lookAt;
+	/*
 	float fMoveDist = (m_fptLookAt - m_fptPrevLookAt).Length();
 
 	m_fSpeed = fMoveDist / m_fTime;
 	m_fAccTime = 0.f;
+	*/
 }
 
 void CCameraManager::SetTargetObj(CGameObject* target)
 {
 	m_pTargetObj = target;
+}
+
+void CCameraManager::SetDisLimmit(fPoint limmit)
+{
+	m_fDisLimmit = limmit;
 }
 
 fPoint CCameraManager::GetLookAt()
@@ -154,8 +162,20 @@ void CCameraManager::CalDiff()
 	// 커비는 카메라가 바로 따라옴
 	m_fptCurLookAt = m_fptLookAt;
 	fPoint fptCenter = fPoint(WINSIZEX / 2.f, WINSIZEY / 2.f);
+	fPoint fptLimitDis = m_fptCurLookAt - (fptCenter / g_winScale);
 	// 렌더링이 g_winScale배 늘어났기 때문에 카메라는 그만큼 줄여줌
-	m_fptDiff = m_fptCurLookAt - (fptCenter / g_winScale);
+	// 카메라 맵 밖으로 안나가도록하기
+	float fpointX = (m_fDisLimmit - (fptCenter / g_winScale) * 2).x;
+	float fpointY = (m_fDisLimmit - (fptCenter / g_winScale) * 2).y;
+	// limmit의 size가 windowsize보다 작을 경우 예외처리
+	if (fpointX < 0)
+		fpointX = 0; 
+	if (fpointY < 0)
+		fpointY = 0;
+	if (0 <= fptLimitDis.x && fptLimitDis.x <= fpointX)
+		m_fptDiff.x = fptLimitDis.x;
+	if (0 <= fptLimitDis.y && fptLimitDis.y <= fpointY)
+		m_fptDiff.y = fptLimitDis.y;
 
 	/*
 	m_fAccTime += fDT;

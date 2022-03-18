@@ -15,6 +15,7 @@ void CMap::Load(wstring strKey, wstring strPath)
 {
     m_pImg = CResourceManager::getInst()->LoadD2DImage(strKey, strPath);
     SetScale(fPoint(m_pImg->GetWidth(), m_pImg->GetHeight()));
+    
 }
 
 CMap* CMap::Clone()

@@ -16,6 +16,8 @@ void CBackGround::Load(wstring strKey, wstring strPath)
 {
     m_pImg = CResourceManager::getInst()->LoadD2DImage(strKey, strPath);
     SetScale(fPoint(m_pImg->GetWidth(), m_pImg->GetHeight()));
+    // 전체 크기가 map이 아니라 bg에 맞춰있어 bg를 로드할때 카메라 제한거리 입력해줌
+    CCameraManager::getInst()->SetDisLimmit(GetScale());
 }
 
 CBackGround* CBackGround::Clone()
