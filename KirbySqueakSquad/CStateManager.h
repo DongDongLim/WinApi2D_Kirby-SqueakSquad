@@ -17,6 +17,13 @@ enum class PLAYERSTATE
 	END,
 };
 
+enum class COMMANDKEY
+{
+	DASH,
+
+	END
+};
+
 
 class CStateManager
 {
