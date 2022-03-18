@@ -86,8 +86,34 @@ enum class TYPE_EVENT
 	CREATE_OBJECT,
 	DELETE_OBJECT,
 	CHANGE_SCENE,
+	CHANGE_STATE_PLAYER,
 
 	SIZE,
+};
+
+//========================================
+//## 상태 타입					##
+//========================================
+
+
+enum class PLAYERSTATE
+{
+	IDLE,
+	MOVE,
+	DOWN,
+	FLY,
+	EAT,
+	ATTACK,
+	TRANSFORM,
+
+	END,
+};
+
+enum class COMMANDKEY
+{
+	DASH,
+
+	END
 };
 
 // Core & Manager

@@ -5,63 +5,8 @@
 #include "CAnimation.h"
 #include "CD2DImage.h"
 #include "CState.h"
+#include "CPlayerState.h"
 
-
-
-void CPlayer::PlayerIdle(DWORD_PTR, DWORD_PTR)
-{
-	GetAnimator()->Play(L"Idle");
-}
-
-void CPlayer::PlayerMove(DWORD_PTR, DWORD_PTR)
-{
-
-	fPoint pos = GetPos();
-	GetAnimator()->SetReverce(m_dir < 0 ? true : false);
-	if (!m_bIsAnimStay)
-	{
-		if (m_eCurCommand != COMMANDKEY::DASH)
-		{
-			GetAnimator()->Play(L"Move");
-			pos.x += m_dir * m_fVelocity * fDT;
-		}
-		else
-		{
-			GetAnimator()->Play(L"Dash");
-			pos.x += m_dir * m_fVelocity * g_fAccel * fDT;
-		}
-	}
-	else
-	{
-		GetAnimator()->Play(L"QuickStop");
-		pos.x += m_dir * m_fVelocity * m_animStayTime * fDT;
-		m_animStayTime -= fDT;
-		if (m_animStayTime <= 0)
-		{
-			m_animStayTime = 0;
-			m_bIsAnimStay = false;
-		}
-	}
-
-	SetPos(pos);
-
-}
-
-void CPlayer::PlayerLeft(DWORD_PTR, DWORD_PTR)
-{
-	if (!m_bIsAnimStay)
-		m_dir = -1;
-}
-
-void CPlayer::PlayerRight(DWORD_PTR, DWORD_PTR)
-{
-	if (!m_bIsAnimStay)
-		m_dir = 1;
-}
-
-void CPlayer::PlayerJump(DWORD_PTR, DWORD_PTR)
-{
-}
 
 float nomalanimtime = 1.f;
 bool start = false;
@@ -97,7 +42,7 @@ void CPlayer::PlayerAttack(DWORD_PTR, DWORD_PTR)
 			else if (GetAnimator()->GetCurAnim()->GetName() == L"InHale3")
 			{
 				start = false;
-				CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE, m_eCurAtiveState);
+				CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE);
 					
 			}
 		}
@@ -105,51 +50,9 @@ void CPlayer::PlayerAttack(DWORD_PTR, DWORD_PTR)
 	
 }
 
-void CPlayer::PlayerEat(DWORD_PTR, DWORD_PTR)
-{
-}
-
-void CPlayer::PlayerFly(DWORD_PTR, DWORD_PTR)
-{
-}
-
-void CPlayer::PlayerTransForm(DWORD_PTR, DWORD_PTR)
-{
-}
-
-void CPlayer::PlayerChangeDir(DWORD_PTR, DWORD_PTR)
-{
-	if (m_eCurAtiveState == PLAYERSTATE::MOVE)
-	{
-		m_bIsAnimStay = true;
-		m_animStayTime = 0.3f;
-	}
-}
-
-void CPlayer::CommandCheck(DWORD_PTR, DWORD_PTR)
-{
-	switch (m_ePevState)
-	{
-	case PLAYERSTATE::MOVE:
-		m_eCurCommand = COMMANDKEY::DASH;
-		break;
-	default:
-		break;
-	}
-}
-
-void CPlayer::CommandSave(PLAYERSTATE key)
-{
-	m_ePevState = key;
-	m_commandStayTime = g_fCommandTime;
-}
-
-
 CPlayer::CPlayer()
 {
-	m_commandStayTime = g_fCommandTime;
-	m_bIsAnimStay = false;
-	m_animStayTime = 0;
+	m_bIsRight = true;
 	m_wImgKey.push_back(L"PlayerImg0");
 	m_wImgKey.push_back(L"PlayerImg1");
 	m_wImgKey.push_back(L"PlayerImg2");
@@ -305,31 +208,14 @@ CPlayer::CPlayer()
 	pAni->GetFrame(0).fptOffset = fPoint(0.f, 5.f);
 
 
-	CState* pIdle = new CState(this);
-	pIdle->SetUpdageCallBack(&CPlayer::PlayerIdle, 0, 0);
+	CPlayerState* pIdle = new CPlayerIdle();
 	CStateManager::getInst()->AddState(PLAYERSTATE::IDLE, pIdle);
-	CState* pMove = new CState(this);
-	pMove->SetEnterCallBack(&CPlayer::CommandCheck, 0, 0);
-	pMove->SetUpdageCallBack(&CPlayer::PlayerMove, 0, 0);
+	CPlayerState* pMove = new CPlayerMove();
 	CStateManager::getInst()->AddState(PLAYERSTATE::MOVE, pMove);
 
-	CState* pLEFT = new CState(this);
-	pLEFT->SetUpdageCallBack(&CPlayer::PlayerLeft, 0, 0);
-	pLEFT->SetEnterCallBack(&CPlayer::PlayerChangeDir, 0, 0);
-	CStateManager::getInst()->AddState(PLAYERSTATE::LEFT, pLEFT);
-	CState* pRIGHT = new CState(this);
-	pRIGHT->SetUpdageCallBack(&CPlayer::PlayerRight, 0, 0);
-	pRIGHT->SetEnterCallBack(&CPlayer::PlayerChangeDir, 0, 0);
-	CStateManager::getInst()->AddState(PLAYERSTATE::RIGHT, pRIGHT);
-	CState* pAttack = new CState(this);
-	pAttack->SetEnterCallBack(&CPlayer::CommandCheck, 0, 0);
-	pAttack->SetUpdageCallBack(&CPlayer::PlayerAttack, 0, 0);
+	CPlayerState* pAttack = new CPlayerAttack();
 	CStateManager::getInst()->AddState(PLAYERSTATE::ATTACK, pAttack);
 
-	m_eCurAtiveState = PLAYERSTATE::IDLE;
-	m_eDirState = PLAYERSTATE::RIGHT;
-	m_ePevState = PLAYERSTATE::END;
-	m_eCurCommand = COMMANDKEY::END;
 }
 
 CPlayer::~CPlayer()
@@ -347,46 +233,33 @@ CPlayer* CPlayer::Clone()
 
 void CPlayer::update()
 {
-	if (m_ePevState != PLAYERSTATE::END)
-	{
-		m_commandStayTime -= fDT;
-		if (m_commandStayTime <= 0)
-		{
-			m_ePevState = PLAYERSTATE::END;
-			m_commandStayTime = g_fCommandTime;
-		}
-	}
-
 	if (KeyDown(VK_LEFT) || KeyDown(VK_RIGHT))
 	{
-		KeyDown(VK_LEFT) ? CStateManager::getInst()->ChangeState(PLAYERSTATE::LEFT, m_eDirState) : CStateManager::getInst()->ChangeState(PLAYERSTATE::RIGHT, m_eDirState);
-		CStateManager::getInst()->ChangeState(PLAYERSTATE::MOVE, m_eCurAtiveState);
+		KeyDown(VK_LEFT) ? m_bIsRight = true : m_bIsRight = false;
+		CEventManager::getInst()->EventChangePlayerState(PLAYERSTATE::MOVE);
 	}
 	if (KeyDown('C'))
 	{
-		CStateManager::getInst()->ChangeState(PLAYERSTATE::ATTACK, m_eCurAtiveState);
+		CEventManager::getInst()->EventChangePlayerState(PLAYERSTATE::ATTACK);
 	}
 	if (ANYKEYDOWN)
 	{
-		CommandSave(m_eCurAtiveState);
+		CStateManager::getInst()->CommandSave();
 	}
 	if (KEYEMPTYDEFINE)
 	{
-		// 커맨드 입력기간에는 idle상태로 전환이 안됨(실제 커비도 전환의 텀이 있음)
-		if (m_ePevState == PLAYERSTATE::END)
-			CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE, m_eCurAtiveState);
+		CEventManager::getInst()->EventChangePlayerState(PLAYERSTATE::IDLE);
 	}
-
-	CStateManager::getInst()->FindState(m_eDirState)->update();
-	CStateManager::getInst()->FindState(m_eCurAtiveState)->update();
-	/*
-	m_eDirState->update();
-	m_eCurAtiveState->update();
-	*/
+	CStateManager::getInst()->update();
 	GetAnimator()->update();
 }
 
 void CPlayer::render()
 {
 	component_render();
+}
+
+bool CPlayer::GetDir()
+{
+	return m_bIsRight;
 }

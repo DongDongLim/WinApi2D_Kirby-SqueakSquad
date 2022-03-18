@@ -1,6 +1,6 @@
 #include "framework.h"
-#include "CStateManager.h"
 #include "CState.h"
+#include "CPlayerState.h"
 
 
 CStateManager::CStateManager()
@@ -12,7 +12,7 @@ CStateManager::CStateManager()
 
 CStateManager::~CStateManager()
 {
-	map<PLAYERSTATE, CState*>::iterator iter = m_mPlayerState.begin();
+	map<PLAYERSTATE, CPlayerState*>::iterator iter = m_mPlayerState.begin();
 	for (; iter != m_mPlayerState.end(); ++iter)
 	{
 		delete iter->second;
@@ -32,28 +32,50 @@ CPlayer* CStateManager::GetPlayer()
 	return m_pPlayer;
 }
 
-void CStateManager::AddState(PLAYERSTATE state, CState* stateclass)
+void CStateManager::AddState(PLAYERSTATE state, CPlayerState* stateclass)
 {
 	m_mPlayerState.insert(make_pair(state, stateclass));
 }
 
-void CStateManager::ChangeState(PLAYERSTATE state, PLAYERSTATE& curstate)
+void CStateManager::ChangeState(PLAYERSTATE state)
 {
-	CState* pState = FindState(state);
-	CState* pCurstate = FindState(curstate);
-	if (nullptr != pState && pCurstate != pState)
+	if (m_eCurState != state)
 	{
-		if (nullptr != pCurstate)//현재 상태
-			pCurstate->Exit();
-		pState->Enter();
-		curstate = state;
+		CPlayerState* pState = FindState(state);
+		if (nullptr != pState)
+		{
+			pState->Enter();
+			m_pCurState = pState;
+			m_eCurState = state;
+		}
 	}
-
 }
 
-CState* CStateManager::FindState(PLAYERSTATE state)
+void CStateManager::update()
 {
-	map<PLAYERSTATE, CState*>::iterator iter = m_mPlayerState.find(state);
+	if (m_fcommandTimer > 0)
+	{
+		m_fcommandTimer -= fDT;
+		m_ePrevState = PLAYERSTATE::END;
+		m_eCurCommand = COMMANDKEY::END;
+	}
+	m_pCurState->update();
+}
+
+COMMANDKEY CStateManager::GetCommend()
+{
+	return m_eCurCommand;
+}
+
+void CStateManager::CommandSave()
+{
+	m_ePrevState = m_eCurState;
+	m_fcommandTimer = m_pPlayer->m_fCommandTime;
+}
+
+CPlayerState* CStateManager::FindState(PLAYERSTATE state)
+{
+	map<PLAYERSTATE, CPlayerState*>::iterator iter = m_mPlayerState.find(state);
 	if (m_mPlayerState.end() != iter)
 		return iter->second;
 	return nullptr;

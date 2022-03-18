@@ -161,7 +161,7 @@
     <ClInclude Include="CPanelUI.h" />
     <ClInclude Include="CPathManager.h" />
     <ClInclude Include="CPlayer.h" />
-    <ClInclude Include="CPlayerMove.h" />
+    <ClInclude Include="CPlayerIdle.cpp" />
     <ClInclude Include="CRenderManager.h" />
     <ClInclude Include="CResource.h" />
     <ClInclude Include="CResourceManager.h" />
@@ -206,6 +206,11 @@
     <ClCompile Include="CPanelUI.cpp" />
     <ClCompile Include="CPathManager.cpp" />
     <ClCompile Include="CPlayer.cpp" />
+    <ClCompile Include="CPlayerAttack.cpp" />
+    <ClCompile Include="CPlayerEat.cpp" />
+    <ClCompile Include="CPlayerFly.cpp" />
+    <ClCompile Include="CPlayerJump.cpp" />
+    <ClCompile Include="CPlayerMove.cpp" />
     <ClCompile Include="CPlayerState.cpp" />
     <ClCompile Include="CRenderManager.cpp" />
     <ClCompile Include="CResource.cpp" />

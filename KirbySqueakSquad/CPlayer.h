@@ -1,5 +1,6 @@
 #pragma once
 #include "CGameObject.h"
+#include "CStateManager.h"
 
 /*
 #define LEFTDEFINE Key(VK_LEFT)
@@ -31,10 +32,8 @@ class CD2DImage;
 
 struct PLAYERINFO
 {
-	const float g_fCommandTime = 0.2f;
 	const float g_fAccel = 1.5f;
 	const float m_fVelocity = 150;
-	int m_dir = 1;
 
 };
 
@@ -42,12 +41,7 @@ class CPlayer : public CGameObject
 {
 	friend CStateManager;
 private:
-	// 에니메이션 대기
-	bool m_bIsAnimStay;
-
-	// 대기 시간
-	float m_animStayTime;
-	float m_commandStayTime;
+	
 
 	// 플레이어 애니메이션 재생을 위한 이미지들
 	vector<CD2DImage*> m_pImg;
@@ -56,35 +50,14 @@ private:
 	// 플레이어 애니메이션 동작의 키값
 	vector<vector<wstring>*> m_wAnimKey;
 
-	COMMANDKEY m_eCurCommand;
-	PLAYERSTATE m_ePevState;
-	PLAYERSTATE m_eCurAtiveState;
-	PLAYERSTATE m_eDirState;
+	
 
+	const float m_fCommandTime = 0.2f;
+	bool m_bIsRight;
 
-	void PlayerIdle(DWORD_PTR, DWORD_PTR);
-
-	void PlayerMove(DWORD_PTR, DWORD_PTR);
-
-	void PlayerRight(DWORD_PTR, DWORD_PTR);
-
-	void PlayerLeft(DWORD_PTR, DWORD_PTR);
-
-	void PlayerJump(DWORD_PTR, DWORD_PTR);
 
 	void PlayerAttack(DWORD_PTR, DWORD_PTR);
 
-	void PlayerEat(DWORD_PTR, DWORD_PTR);
-
-	void PlayerFly(DWORD_PTR, DWORD_PTR);
-
-	void PlayerTransForm(DWORD_PTR, DWORD_PTR);
-
-	void PlayerChangeDir(DWORD_PTR, DWORD_PTR);
-
-	void CommandCheck(DWORD_PTR, DWORD_PTR);
-
-	void CommandSave(PLAYERSTATE key);
 
 public:
 
@@ -94,6 +67,8 @@ public:
 	
 	virtual void update();
 	virtual void render();
+
+	bool GetDir();
 
 
 };

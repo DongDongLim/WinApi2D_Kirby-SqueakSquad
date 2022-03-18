@@ -204,7 +204,7 @@
     <ClInclude Include="CPlayerState.h">
       <Filter>Object\Character\Player\State</Filter>
     </ClInclude>
-    <ClInclude Include="CPlayerMove.h">
+    <ClInclude Include="CPlayerIdle.cpp">
       <Filter>Object\Character\Player\State</Filter>
     </ClInclude>
   </ItemGroup>
@@ -315,6 +315,21 @@
       <Filter>Object\Map</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerState.cpp">
+      <Filter>Object\Character\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerMove.cpp">
+      <Filter>Object\Character\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerAttack.cpp">
+      <Filter>Object\Character\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerJump.cpp">
+      <Filter>Object\Character\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerEat.cpp">
+      <Filter>Object\Character\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerFly.cpp">
       <Filter>Object\Character\Player\State</Filter>
     </ClCompile>
   </ItemGroup>

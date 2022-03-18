@@ -4,16 +4,18 @@ class CPlayer;
 
 class CPlayerState
 {
+protected:
 	CPlayer* m_pPlayer;
-private:
 
 public:
 	CPlayerState();
 	virtual ~CPlayerState();
 
+	CPlayer* GetPlayer();
+
 	virtual void update() = 0;
 	virtual void Enter() = 0;
-	virtual void Exit() = 0;
+	virtual void Exit(PLAYERSTATE) = 0;
 };
 
 class CPlayerIdle : public CPlayerState
@@ -25,11 +27,12 @@ public:
 
 	virtual void update();
 	virtual void Enter();
-	virtual void Exit();
+	virtual void Exit(PLAYERSTATE state);
 };
 
 class CPlayerMove : public CPlayerState
 {
+private:
 
 public:
 	CPlayerMove();
@@ -37,7 +40,7 @@ public:
 
 	virtual void update();
 	virtual void Enter();
-	virtual void Exit();
+	virtual void Exit(PLAYERSTATE state);
 };
 
 class CPlayerJump : public CPlayerState
@@ -49,7 +52,7 @@ public:
 
 	virtual void update();
 	virtual void Enter();
-	virtual void Exit();
+	virtual void Exit(PLAYERSTATE state);
 };
 
 class CPlayerAttack : public CPlayerState
@@ -61,7 +64,7 @@ public:
 
 	virtual void update();
 	virtual void Enter();
-	virtual void Exit();
+	virtual void Exit(PLAYERSTATE state);
 };
 
 class CPlayerEat : public CPlayerState
@@ -73,7 +76,7 @@ public:
 
 	virtual void update();
 	virtual void Enter();
-	virtual void Exit();
+	virtual void Exit(PLAYERSTATE state);
 };
 
 class CPlayerFly : public CPlayerState
@@ -85,5 +88,5 @@ public:
 
 	virtual void update();
 	virtual void Enter();
-	virtual void Exit();
+	virtual void Exit(PLAYERSTATE state);
 };

@@ -1,4 +1,5 @@
 #pragma once
+#include "CStateManager.h"
 
 class CGameObject;
 
@@ -26,5 +27,6 @@ public:
 	void EventCreateObject(CGameObject* pObj, GROUP_GAMEOBJ group);
 	void EventDeleteObject(CGameObject* pObj);
 	void EventChangeScene(GROUP_SCENE scene);
+	void EventChangePlayerState(PLAYERSTATE state);
 };
 

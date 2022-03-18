@@ -47,6 +47,14 @@ void CEventManager::Execute(const tEvent& event)
 		CSceneManager::getInst()->ChangeScene(scene);
 	}
 		break;
+	case TYPE_EVENT::CHANGE_STATE_PLAYER:
+	{
+		// lParam : cstatemanager
+		// wParam : next state		
+		PLAYERSTATE nextState = (PLAYERSTATE)event.wParam;
+		CStateManager::getInst()->ChangeState(nextState);
+	}
+	break;
 	}
 }
 
@@ -98,4 +106,14 @@ void CEventManager::EventChangeScene(GROUP_SCENE scene)
 	event.lParam = (DWORD_PTR)scene;
 
 	AddEvent(event);
+}
+
+void CEventManager::EventChangePlayerState(PLAYERSTATE state)
+{
+	tEvent event = {};
+	event.eEven = TYPE_EVENT::CHANGE_STATE_PLAYER;
+	event.wParam = (DWORD_PTR)state;
+	
+	AddEvent(event);
+	//CEventManager::getInst()->AddEvent(event);
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "CStateManager.h"
-
 class CCollider;
 class CAnimator;
 
