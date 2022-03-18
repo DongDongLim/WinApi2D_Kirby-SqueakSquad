@@ -1,14 +1,17 @@
 #pragma once
 #include "CGameObject.h"
 
+/*
 #define LEFTDEFINE Key(VK_LEFT)
 #define RIGHTDEFINE Key(VK_RIGHT)
 #define UPDEFINE Key(VK_UP)
 #define DOWNDEFINE Key(VK_DOWN)
 #define ACTTACKDEFINE Key('C')
-#define JUMPDEFINE Key('V')||Key('X')
 #define TRANSFORMDEFINE Key('Z')
-#define KEYEMPTYDEFINE !LEFTDEFINE&&!RIGHTDEFINE&&!UPDEFINE&&!DOWNDEFINE&&!ACTTACKDEFINE&&!JUMPDEFINE&&!TRANSFORMDEFINE
+*/
+#define JUMPDEFINE Key('V')||Key('X')
+#define KEYEMPTYDEFINE !Key(VK_LEFT)&&!Key(VK_RIGHT)&&! Key(VK_UP)&&!Key(VK_DOWN)&&! Key('C')&&!JUMPDEFINE&&!Key('Z')
+#define ANYKEYDOWN KeyDown(VK_LEFT)||KeyDown(VK_RIGHT)||KeyDown(VK_UP)||KeyDown(VK_DOWN)||KeyDown('C')||KeyDown('V')||KeyDown('X')||KeyDown('Z')
 
 /* TODO :	어떤 키를 입력 받았었는지를 체크해야함
 			이걸 상태로 체크를 한다?
@@ -26,11 +29,12 @@
 class CState;
 class CD2DImage;
 
-const static float g_fCommandTime = 0.5f;
-const static float g_fAccel = 1.2f;
+const static float g_fCommandTime = 0.2f;
+const static float g_fAccel = 1.5f;
 
 class CPlayer : public CGameObject
 {
+	friend CStateManager;
 private:
 	// 에니메이션 대기
 	bool m_bIsAnimStay;
@@ -53,7 +57,7 @@ private:
 
 	int m_dir = 1;
 
-	float m_fVelocity = 200;
+	float m_fVelocity = 150;
 
 	void PlayerIdle(DWORD_PTR, DWORD_PTR);
 
@@ -65,7 +69,7 @@ private:
 
 	void PlayerJump(DWORD_PTR, DWORD_PTR);
 
-	void PlayerInHale(DWORD_PTR, DWORD_PTR);
+	void PlayerAttack(DWORD_PTR, DWORD_PTR);
 
 	void PlayerEat(DWORD_PTR, DWORD_PTR);
 
@@ -75,11 +79,17 @@ private:
 
 	void PlayerChangeDir(DWORD_PTR, DWORD_PTR);
 
-	void CommandCheck();
+	void CommandCheck(DWORD_PTR, DWORD_PTR);
 
 	void CommandSave(PLAYERSTATE key);
 
 public:
+
+	struct PLAYERINFO
+	{
+
+	};
+
 	CPlayer();
 	~CPlayer();
 	virtual CPlayer* Clone();

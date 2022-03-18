@@ -9,7 +9,7 @@ enum class PLAYERSTATE
 	DOWN,
 	FLY,
 	EAT,
-	INHALE,
+	ATTACK,
 	TRANSFORM,
 	RIGHT,
 	LEFT,
@@ -27,12 +27,12 @@ enum class COMMANDKEY
 
 class CStateManager
 {
-
 	SINGLETON(CStateManager);
 
 private:
+
 	map<PLAYERSTATE, CState*> m_mPlayerState;
-	PLAYERSTATE m_ePlayerState;
+	PLAYERSTATE m_eCurState;
 
 public:
 	void AddState(PLAYERSTATE state, CState* stateclass);

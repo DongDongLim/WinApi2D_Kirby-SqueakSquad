@@ -15,6 +15,7 @@ private:
 
 public:
 	CAnimator();
+	CAnimator(const CAnimator& pOther);
 	~CAnimator();
 
 	CGameObject* GetObj();
@@ -29,5 +30,6 @@ public:
 	void Play(const wstring& strName);
 	int GetAnimSize();
 	float GetFrameSpeed();
+	CAnimation* GetCurAnim();
 };
 

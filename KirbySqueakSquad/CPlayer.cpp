@@ -20,7 +20,7 @@ void CPlayer::PlayerMove(DWORD_PTR, DWORD_PTR)
 	GetAnimator()->SetReverce(m_dir < 0 ? true : false);
 	if (!m_bIsAnimStay)
 	{
-		if (m_eCurCommand == COMMANDKEY::DASH)
+		if (m_eCurCommand != COMMANDKEY::DASH)
 		{
 			GetAnimator()->Play(L"Move");
 			pos.x += m_dir * m_fVelocity * fDT;
@@ -63,9 +63,46 @@ void CPlayer::PlayerJump(DWORD_PTR, DWORD_PTR)
 {
 }
 
-void CPlayer::PlayerInHale(DWORD_PTR, DWORD_PTR)
+float nomalanimtime = 1.f;
+bool start = false;
+// 애니메이션 나누는 기능 되나 확인용으로 짬
+void CPlayer::PlayerAttack(DWORD_PTR, DWORD_PTR)
 {
-	GetAnimator()->Play(L"InHale");
+	if (!start)
+	{
+		GetAnimator()->Play(L"InHale0");
+		nomalanimtime = GetAnimator()->GetAnimSize() * GetAnimator()->GetFrameSpeed();
+		start = true;
+	}
+	else
+	{
+		nomalanimtime -= fDT;
+		if (0 >= nomalanimtime)
+		{
+			if (GetAnimator()->GetCurAnim()->GetName() == L"InHale0")
+			{
+				GetAnimator()->Play(L"InHale1");
+				nomalanimtime = 1.f;
+			}
+			else if (GetAnimator()->GetCurAnim()->GetName() == L"InHale1")
+			{
+				GetAnimator()->Play(L"InHale2");
+				nomalanimtime = 1.f;
+			}
+			else if (GetAnimator()->GetCurAnim()->GetName() == L"InHale2")
+			{
+				GetAnimator()->Play(L"InHale3");
+				nomalanimtime = GetAnimator()->GetAnimSize() * GetAnimator()->GetFrameSpeed();
+			}
+			else if (GetAnimator()->GetCurAnim()->GetName() == L"InHale3")
+			{
+				start = false;
+				CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE, m_eCurAtiveState);
+					
+			}
+		}
+	}
+	
 }
 
 void CPlayer::PlayerEat(DWORD_PTR, DWORD_PTR)
@@ -89,7 +126,7 @@ void CPlayer::PlayerChangeDir(DWORD_PTR, DWORD_PTR)
 	}
 }
 
-void CPlayer::CommandCheck()
+void CPlayer::CommandCheck(DWORD_PTR, DWORD_PTR)
 {
 	switch (m_ePevState)
 	{
@@ -159,7 +196,10 @@ CPlayer::CPlayer()
 	m_wAnimKey[6]->push_back(L"Up");
 	m_wAnimKey[7]->push_back(L"UpIdle");
 	m_wAnimKey[7]->push_back(L"UpMove");
-	m_wAnimKey[8]->push_back(L"InHale");
+	m_wAnimKey[8]->push_back(L"InHale0");
+	m_wAnimKey[8]->push_back(L"InHale1");
+	m_wAnimKey[8]->push_back(L"InHale2");
+	m_wAnimKey[8]->push_back(L"InHale3");
 
 
 	SetName(L"Player");
@@ -214,6 +254,34 @@ CPlayer::CPlayer()
 		fPoint(pixelSize, pixelSize),
 		fPoint(pixelSize, 0.f), 0.1f, 2);
 
+	GetAnimator()->CreateAnimation(
+		m_wAnimKey[8]->at(0),
+		m_pImg[8],
+		fPoint(0, 0.f),
+		fPoint(pixelSize, pixelSize),
+		fPoint(pixelSize, 0.f), 0.1f, 2);
+
+	GetAnimator()->CreateAnimation(
+		m_wAnimKey[8]->at(1),
+		m_pImg[8],
+		fPoint((float)(pixelSize * 2), 0.f),
+		fPoint(pixelSize, pixelSize),
+		fPoint(pixelSize, 0.f), 0.1f, 2);
+
+	GetAnimator()->CreateAnimation(
+		m_wAnimKey[8]->at(2),
+		m_pImg[8],
+		fPoint((float)(pixelSize * 4), 0.f),
+		fPoint(pixelSize, pixelSize),
+		fPoint(pixelSize, 0.f), 0.1f, 2);
+
+	GetAnimator()->CreateAnimation(
+		m_wAnimKey[8]->at(3),
+		m_pImg[8],
+		fPoint((float)(pixelSize * 6), 0.f),
+		fPoint(pixelSize, pixelSize),
+		fPoint(pixelSize, 0.f), 0.1f, 6);
+
 	for (int i = 0; i < m_wAnimKey.size(); ++i)
 	{
 		if (1 == m_wAnimKey[i]->size())
@@ -241,6 +309,7 @@ CPlayer::CPlayer()
 	pIdle->SetUpdageCallBack(&CPlayer::PlayerIdle, 0, 0);
 	CStateManager::getInst()->AddState(PLAYERSTATE::IDLE, pIdle);
 	CState* pMove = new CState(this);
+	pMove->SetEnterCallBack(&CPlayer::CommandCheck, 0, 0);
 	pMove->SetUpdageCallBack(&CPlayer::PlayerMove, 0, 0);
 	CStateManager::getInst()->AddState(PLAYERSTATE::MOVE, pMove);
 
@@ -252,9 +321,10 @@ CPlayer::CPlayer()
 	pRIGHT->SetUpdageCallBack(&CPlayer::PlayerRight, 0, 0);
 	pRIGHT->SetEnterCallBack(&CPlayer::PlayerChangeDir, 0, 0);
 	CStateManager::getInst()->AddState(PLAYERSTATE::RIGHT, pRIGHT);
-	CState* pInHale = new CState(this);
-	pInHale->SetUpdageCallBack(&CPlayer::PlayerInHale, 0, 0);
-	CStateManager::getInst()->AddState(PLAYERSTATE::INHALE, pInHale);
+	CState* pAttack = new CState(this);
+	pAttack->SetEnterCallBack(&CPlayer::CommandCheck, 0, 0);
+	pAttack->SetUpdageCallBack(&CPlayer::PlayerAttack, 0, 0);
+	CStateManager::getInst()->AddState(PLAYERSTATE::ATTACK, pAttack);
 
 	m_eCurAtiveState = PLAYERSTATE::IDLE;
 	m_eDirState = PLAYERSTATE::RIGHT;
@@ -287,18 +357,24 @@ void CPlayer::update()
 		}
 	}
 
-	if (LEFTDEFINE || RIGHTDEFINE)
+	if (KeyDown(VK_LEFT) || KeyDown(VK_RIGHT))
 	{
-		Key(VK_LEFT) ? CStateManager::getInst()->ChangeState(PLAYERSTATE::LEFT, m_eDirState) : CStateManager::getInst()->ChangeState(PLAYERSTATE::RIGHT, m_eDirState);
+		KeyDown(VK_LEFT) ? CStateManager::getInst()->ChangeState(PLAYERSTATE::LEFT, m_eDirState) : CStateManager::getInst()->ChangeState(PLAYERSTATE::RIGHT, m_eDirState);
 		CStateManager::getInst()->ChangeState(PLAYERSTATE::MOVE, m_eCurAtiveState);
 	}
-	if (ACTTACKDEFINE)
+	if (KeyDown('C'))
 	{
-		CStateManager::getInst()->ChangeState(PLAYERSTATE::INHALE, m_eCurAtiveState);
+		CStateManager::getInst()->ChangeState(PLAYERSTATE::ATTACK, m_eCurAtiveState);
+	}
+	if (ANYKEYDOWN)
+	{
+		CommandSave(m_eCurAtiveState);
 	}
 	if (KEYEMPTYDEFINE)
 	{
-		CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE, m_eCurAtiveState);
+		// 커맨드 입력기간에는 idle상태로 전환이 안됨(실제 커비도 전환의 텀이 있음)
+		if (m_ePevState == PLAYERSTATE::END)
+			CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE, m_eCurAtiveState);
 	}
 
 	CStateManager::getInst()->FindState(m_eDirState)->update();

@@ -6,7 +6,7 @@
 CStateManager::CStateManager()
 {
 	m_mPlayerState = {};
-	m_ePlayerState = PLAYERSTATE::IDLE;
+	m_eCurState = PLAYERSTATE::IDLE;
 }
 
 CStateManager::~CStateManager()

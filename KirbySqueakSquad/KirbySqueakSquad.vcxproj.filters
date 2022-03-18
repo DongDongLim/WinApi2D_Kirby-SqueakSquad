@@ -73,6 +73,9 @@
     <Filter Include="Object\Map">
       <UniqueIdentifier>{ff8fd115-d658-4bc2-9375-253a138c0fc7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Character\Player\State">
+      <UniqueIdentifier>{29f8ad42-2882-4f88-afa7-8e72d5dec305}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -198,6 +201,9 @@
     <ClInclude Include="CBackGround.h">
       <Filter>Object\Map</Filter>
     </ClInclude>
+    <ClInclude Include="CPlayerState.h">
+      <Filter>Object\Character\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KirbySqueakSquad.cpp">
@@ -304,6 +310,9 @@
     </ClCompile>
     <ClCompile Include="CBackGround.cpp">
       <Filter>Object\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerState.cpp">
+      <Filter>Object\Character\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
