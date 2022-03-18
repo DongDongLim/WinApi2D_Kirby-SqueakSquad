@@ -202,7 +202,10 @@
       <Filter>Object\Map</Filter>
     </ClInclude>
     <ClInclude Include="CPlayerState.h">
-      <Filter>Object\Character\Player</Filter>
+      <Filter>Object\Character\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayerMove.h">
+      <Filter>Object\Character\Player\State</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -312,7 +315,7 @@
       <Filter>Object\Map</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerState.cpp">
-      <Filter>Object\Character\Player</Filter>
+      <Filter>Object\Character\Player\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

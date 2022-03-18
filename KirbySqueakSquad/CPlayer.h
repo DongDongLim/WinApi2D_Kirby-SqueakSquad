@@ -29,8 +29,14 @@
 class CState;
 class CD2DImage;
 
-const static float g_fCommandTime = 0.2f;
-const static float g_fAccel = 1.5f;
+struct PLAYERINFO
+{
+	const float g_fCommandTime = 0.2f;
+	const float g_fAccel = 1.5f;
+	const float m_fVelocity = 150;
+	int m_dir = 1;
+
+};
 
 class CPlayer : public CGameObject
 {
@@ -55,9 +61,6 @@ private:
 	PLAYERSTATE m_eCurAtiveState;
 	PLAYERSTATE m_eDirState;
 
-	int m_dir = 1;
-
-	float m_fVelocity = 150;
 
 	void PlayerIdle(DWORD_PTR, DWORD_PTR);
 
@@ -84,11 +87,6 @@ private:
 	void CommandSave(PLAYERSTATE key);
 
 public:
-
-	struct PLAYERINFO
-	{
-
-	};
 
 	CPlayer();
 	~CPlayer();

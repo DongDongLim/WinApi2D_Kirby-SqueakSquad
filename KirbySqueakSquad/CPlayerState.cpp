@@ -1,19 +1,13 @@
 #include "framework.h"
 #include "CPlayerState.h"
-#include "framework.h"
-#include "CPlayerState.h"
 
 
-CPlayerState::CPlayerState(PLAYERSTATE state)
+CPlayerState::CPlayerState()
 {
-	m_eState = state;
+	m_pPlayer = CPlayerState()
 }
 
 CPlayerState::~CPlayerState()
 {
 }
 
-PLAYERSTATE CPlayerState::GetState()
-{
-	return m_eState;
-}

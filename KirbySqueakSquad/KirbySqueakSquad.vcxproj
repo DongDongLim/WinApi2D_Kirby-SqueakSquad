@@ -161,6 +161,7 @@
     <ClInclude Include="CPanelUI.h" />
     <ClInclude Include="CPathManager.h" />
     <ClInclude Include="CPlayer.h" />
+    <ClInclude Include="CPlayerMove.h" />
     <ClInclude Include="CRenderManager.h" />
     <ClInclude Include="CResource.h" />
     <ClInclude Include="CResourceManager.h" />

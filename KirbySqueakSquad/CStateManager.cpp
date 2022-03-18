@@ -5,6 +5,7 @@
 
 CStateManager::CStateManager()
 {
+	m_pPlayer = nullptr;
 	m_mPlayerState = {};
 	m_eCurState = PLAYERSTATE::IDLE;
 }
@@ -16,6 +17,19 @@ CStateManager::~CStateManager()
 	{
 		delete iter->second;
 	}
+}
+
+void CStateManager::SetPlayer(CPlayer* player)
+{
+	// 플레이어는 오직 하나!
+	if (nullptr != m_pPlayer)
+		assert(nullptr);
+	m_pPlayer = player;
+}
+
+CPlayer* CStateManager::GetPlayer()
+{
+	return m_pPlayer;
 }
 
 void CStateManager::AddState(PLAYERSTATE state, CState* stateclass)

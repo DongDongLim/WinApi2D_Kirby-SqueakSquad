@@ -4,6 +4,7 @@
 #include "CPlayer.h"
 #include "CMap.h"
 #include "CBackGround.h"
+#include "CStateManager.h"
 
 
 CScene_Stage1::CScene_Stage1()
@@ -36,6 +37,7 @@ void CScene_Stage1::Enter()
 
 	CPlayer* pPlayer = new CPlayer();
 	pPlayer->SetPos(fPoint(50, 130));
+	CStateManager::getInst()->SetPlayer(pPlayer);
 	AddObject(pPlayer, GROUP_GAMEOBJ::PLAYER);
 	
 	// Camera Look ÁöÁ¤
