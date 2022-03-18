@@ -7,7 +7,7 @@ CStateManager::CStateManager()
 {
 	m_pPlayer = nullptr;
 	m_mPlayerState = {};
-	m_eCurState = PLAYERSTATE::IDLE;
+	m_eCurState = PLAYERSTATE::END;
 }
 
 CStateManager::~CStateManager()
@@ -41,15 +41,23 @@ void CStateManager::ChangeState(PLAYERSTATE state)
 {
 	if (m_eCurState != state)
 	{
-		CPlayerState* pState = FindState(state);
-		if (nullptr != pState)
-		{
-			pState->Enter();
-			m_pCurState = pState;
-			m_eCurState = state;
-		}
+		m_pCurState->Exit(state);
 	}
 }
+
+void CStateManager::StartState(PLAYERSTATE state)
+{
+	if (m_eCurState != state)
+	{
+		CPlayerState* pState = FindState(state);
+
+		assert(pState);
+		pState->Enter();
+		m_pCurState = pState;
+		m_eCurState = state;
+	}
+}
+
 
 void CStateManager::update()
 {

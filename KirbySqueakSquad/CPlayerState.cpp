@@ -18,23 +18,3 @@ CPlayer* CPlayerState::GetPlayer()
 
 
 
-
-CPlayerIdle::CPlayerIdle()
-{
-}
-
-CPlayerIdle::~CPlayerIdle()
-{
-}
-
-void CPlayerIdle::update()
-{
-}
-
-void CPlayerIdle::Enter()
-{
-}
-
-void CPlayerIdle::Exit(PLAYERSTATE state)
-{
-}

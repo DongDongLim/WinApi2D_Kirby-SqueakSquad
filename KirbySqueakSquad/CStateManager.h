@@ -27,6 +27,7 @@ public:
 
 	void AddState(PLAYERSTATE state, CPlayerState* stateclass);
 	void ChangeState(PLAYERSTATE state);
+	void StartState(PLAYERSTATE state);
 
 	void CommandSave();
 

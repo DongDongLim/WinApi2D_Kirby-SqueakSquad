@@ -37,7 +37,6 @@ void CScene_Stage1::Enter()
 
 	CPlayer* pPlayer = new CPlayer();
 	pPlayer->SetPos(fPoint(50, 130));
-	CStateManager::getInst()->SetPlayer(pPlayer);
 	AddObject(pPlayer, GROUP_GAMEOBJ::PLAYER);
 	
 	// Camera Look ÁöÁ¤

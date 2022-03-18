@@ -52,6 +52,7 @@ void CPlayer::PlayerAttack(DWORD_PTR, DWORD_PTR)
 
 CPlayer::CPlayer()
 {
+	CStateManager::getInst()->SetPlayer(this);
 	m_bIsRight = true;
 	m_wImgKey.push_back(L"PlayerImg0");
 	m_wImgKey.push_back(L"PlayerImg1");
@@ -215,7 +216,7 @@ CPlayer::CPlayer()
 
 	CPlayerState* pAttack = new CPlayerAttack();
 	CStateManager::getInst()->AddState(PLAYERSTATE::ATTACK, pAttack);
-
+	CEventManager::getInst()->EventChangePlayerState(PLAYERSTATE::IDLE);
 }
 
 CPlayer::~CPlayer()

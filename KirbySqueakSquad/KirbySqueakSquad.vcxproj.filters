@@ -204,9 +204,6 @@
     <ClInclude Include="CPlayerState.h">
       <Filter>Object\Character\Player\State</Filter>
     </ClInclude>
-    <ClInclude Include="CPlayerIdle.cpp">
-      <Filter>Object\Character\Player\State</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KirbySqueakSquad.cpp">
@@ -330,6 +327,9 @@
       <Filter>Object\Character\Player\State</Filter>
     </ClCompile>
     <ClCompile Include="CPlayerFly.cpp">
+      <Filter>Object\Character\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerIdle.cpp">
       <Filter>Object\Character\Player\State</Filter>
     </ClCompile>
   </ItemGroup>
