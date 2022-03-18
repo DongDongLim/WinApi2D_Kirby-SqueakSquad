@@ -2,11 +2,19 @@
 #include "framework.h"
 #include "CPlayerState.h"
 #include "CAnimator.h"
+#include "CAnimation.h"
 #include "CPlayer.h"
 
 CPlayerMove::CPlayerMove()
 {
-	
+	m_eCurCommand = COMMANDMOVE::NONE;
+	m_ePrevCommand = m_eCurCommand;
+	m_animStayTime = m_eInfo.m_fMoveInertia;
+	m_gfAccel = 0;
+	m_bIsDash = false;
+	m_bIsStop = false;
+	m_bStartDir = true;
+	m_bIsDirChange = false;
 }
 
 CPlayerMove::~CPlayerMove()
@@ -16,52 +24,100 @@ CPlayerMove::~CPlayerMove()
 
 void CPlayerMove::update()
 {
-	PLAYERINFO m_eInfo;
-	fPoint pos = m_pPlayer->GetPos();
-	int dir = m_pPlayer->GetDir() ? 1 : -1;
-	m_pPlayer->GetAnimator()->SetReverce(m_pPlayer->GetDir());
-	if (CStateManager::getInst()->GetCommend() != COMMANDKEY::DASH)
+	if (KeyUp(VK_LEFT) || KeyUp(VK_RIGHT))
 	{
-		m_pPlayer->GetAnimator()->Play(L"Move");
-		pos.x += dir * m_eInfo.m_fVelocity * fDT;
-	}
-	else
-	{
-		m_pPlayer->GetAnimator()->Play(L"Dash");
-		pos.x += dir * m_eInfo.m_fVelocity * m_eInfo.g_fAccel * fDT;
-	}
-	/*
-	if (!m_bIsAnimStay)
-	{
-		if (CStateManager::getInst()->GetCommend() != COMMANDKEY::DASH)
+		if (!Key(VK_LEFT) && !Key(VK_RIGHT))
 		{
-			m_pPlayer->GetAnimator()->Play(L"Move");
-			pos.x += dir * m_eInfo.m_fVelocity * fDT;
+			if (COMMANDMOVE::TURNOFF != m_eCurCommand)
+			{
+				m_animStayTime = m_eInfo.m_fMoveInertia;
+				m_eCurCommand = COMMANDMOVE::TURNOFF;
+			}
+		}
+	}
+	// 커맨드 입력
+	if (KeyDown(VK_LEFT) || KeyDown(VK_RIGHT))
+	{
+		if (m_pPlayer->GetDir() == m_bStartDir)
+		{
+			if (COMMANDMOVE::DASH != m_eCurCommand)
+			{
+				m_bIsDash = true;
+				m_eCurCommand = COMMANDMOVE::DASH;
+			}
 		}
 		else
 		{
-			m_pPlayer->GetAnimator()->Play(L"Dash");
-			pos.x += dir * m_eInfo.m_fVelocity * m_eInfo.g_fAccel * fDT;
+			if (COMMANDMOVE::CHANGEDIR != m_eCurCommand)
+			{
+				m_animStayTime = m_eInfo.m_fMoveInertia;
+				m_eCurCommand = COMMANDMOVE::CHANGEDIR;
+			}
 		}
 	}
-	else
-	{
-		GetAnimator()->Play(L"QuickStop");
-		pos.x += dir * m_fVelocity * m_animStayTime * fDT;
-		m_animStayTime -= fDT;
-		if (m_animStayTime <= 0)
-		{
-			m_animStayTime = 0;
-			m_bIsAnimStay = false;
-		}
-	}
-	*/
-	m_pPlayer->SetPos(pos);
+
+	Move();
+	Anim();
 }
+
+void CPlayerMove::Move()
+{
+	fPoint pos = m_pPlayer->GetPos();
+	int dir = m_pPlayer->GetDir() ? -1 : 1;
+
+	pos.x += dir * m_eInfo.m_fVelocity * m_gfAccel * fDT;
+
+	if (0 <= pos.x && pos.x <= CCameraManager::getInst()->GetDisLimmit().x)
+		m_pPlayer->SetPos(pos);
+}
+
+void CPlayerMove::Anim()
+{
+	m_pPlayer->GetAnimator()->SetReverce(m_bStartDir);
+	switch (m_eCurCommand)
+	{
+	case CPlayerMove::COMMANDMOVE::NONE:
+		m_pPlayer->GetAnimator()->Play(L"Move");
+		m_gfAccel = 1;
+		break;
+	case CPlayerMove::COMMANDMOVE::DASH:
+		m_pPlayer->GetAnimator()->Play(L"Dash");
+		m_gfAccel = m_eInfo.g_fAccel;
+		break;
+	case CPlayerMove::COMMANDMOVE::CHANGEDIR:
+		m_pPlayer->GetAnimator()->Play(L"QuickStop");
+		m_animStayTime -= fDT;
+		m_gfAccel = m_animStayTime;
+		if (0 >= m_animStayTime)
+		{
+			m_bStartDir = m_pPlayer->GetDir();
+			m_bIsDash ? m_eCurCommand = COMMANDMOVE::DASH : m_eCurCommand = COMMANDMOVE::NONE;
+		}
+		break;
+	case CPlayerMove::COMMANDMOVE::TURNOFF:
+		m_animStayTime -= fDT;
+		m_gfAccel = m_animStayTime;
+		if (0 >= m_animStayTime)
+			Exit(PLAYERSTATE::IDLE);
+		break;
+	case CPlayerMove::COMMANDMOVE::END:
+		break;
+	default:
+		break;
+	}
+}
+
 
 void CPlayerMove::Enter()
 {
-
+	m_eCurCommand = COMMANDMOVE::NONE;
+	m_ePrevCommand = m_eCurCommand;
+	m_animStayTime = m_eInfo.m_fMoveInertia;
+	m_bStartDir = m_pPlayer->GetDir();
+	m_bIsDash = false;
+	m_bIsStop = false;
+	m_bIsDirChange = false;
+	m_gfAccel = 1;
 }
 
 void CPlayerMove::Exit(PLAYERSTATE state)

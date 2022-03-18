@@ -50,6 +50,7 @@ public:
 	fPoint GetLookAt();			// 현재 카메라 위치 반환
 	fPoint GetRenderPos(fPoint objPos);
 	fPoint GetRealPos(fPoint renderPos);
+	fPoint GetDisLimmit();
 
 	void FadeIn(float duration);
 	void FadeOut(float duration);

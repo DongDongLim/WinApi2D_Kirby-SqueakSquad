@@ -34,6 +34,7 @@ struct PLAYERINFO
 {
 	const float g_fAccel = 1.5f;
 	const float m_fVelocity = 150;
+	const float m_fMoveInertia = 0.2f;
 
 };
 
@@ -52,7 +53,7 @@ private:
 
 	
 
-	const float m_fCommandTime = 0.2f;
+	//const float m_fCommandTime = 0.2f;
 	bool m_bIsRight;
 
 

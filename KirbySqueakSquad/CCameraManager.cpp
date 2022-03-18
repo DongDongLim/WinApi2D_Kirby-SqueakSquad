@@ -118,6 +118,11 @@ fPoint CCameraManager::GetRealPos(fPoint renderPos)
 	return renderPos + m_fptDiff;
 }
 
+fPoint CCameraManager::GetDisLimmit()
+{
+	return m_fDisLimmit;
+}
+
 void CCameraManager::FadeIn(float duration)
 {
 	tCamEffect ef = {};

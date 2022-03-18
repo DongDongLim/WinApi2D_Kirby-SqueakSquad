@@ -52,7 +52,7 @@ void CEventManager::Execute(const tEvent& event)
 		// lParam : cstatemanager
 		// wParam : next state		
 		PLAYERSTATE nextState = (PLAYERSTATE)event.wParam;
-		CStateManager::getInst()->ChangeState(nextState);
+		CStateManager::getInst()->StartState(nextState);
 	}
 	break;
 	}
@@ -115,5 +115,6 @@ void CEventManager::EventChangePlayerState(PLAYERSTATE state)
 	event.wParam = (DWORD_PTR)state;
 	
 	AddEvent(event);
+	// TODO : 예시에서 왜 여기만 CEventManager::getInst()를 사용해서 부르나요?
 	//CEventManager::getInst()->AddEvent(event);
 }

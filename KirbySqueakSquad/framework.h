@@ -112,6 +112,8 @@ enum class PLAYERSTATE
 enum class COMMANDKEY
 {
 	DASH,
+	CHANGEDIR,
+	TURNOFF,
 
 	END
 };

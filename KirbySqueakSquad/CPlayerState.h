@@ -1,6 +1,6 @@
 #pragma once
 #include "CStateManager.h"
-class CPlayer;
+#include "CPlayer.h"
 
 class CPlayerState
 {
@@ -34,10 +34,32 @@ public:
 class CPlayerMove : public CPlayerState
 {
 private:
+	enum class COMMANDMOVE
+	{
+		NONE,
+		DASH,
+		CHANGEDIR,
+		TURNOFF,
 
+		END
+	};
+
+	PLAYERINFO m_eInfo;
+	COMMANDMOVE m_eCurCommand;
+	COMMANDMOVE m_ePrevCommand;
+	float m_animStayTime;
+	float m_gfAccel;
+	bool m_bIsDash;
+	bool m_bIsStop;
+	bool m_bStartDir;
+	bool m_bIsDirChange;
+	
 public:
 	CPlayerMove();
 	~CPlayerMove();
+
+	void Move();
+	void Anim();
 
 	virtual void update();
 	virtual void Enter();

@@ -61,13 +61,20 @@ void CStateManager::StartState(PLAYERSTATE state)
 
 void CStateManager::update()
 {
+	/* 커비의 커맨드는 일정 시간내에 입력이 아니라 특정 동작 중에 키 입력으로 받고 있음
 	if (m_fcommandTimer > 0)
 	{
 		m_fcommandTimer -= fDT;
 		m_ePrevState = PLAYERSTATE::END;
 		m_eCurCommand = COMMANDKEY::END;
 	}
+	*/
 	m_pCurState->update();
+}
+
+void CStateManager::SetCommend(COMMANDKEY commend)
+{
+	m_eCurCommand = commend;
 }
 
 COMMANDKEY CStateManager::GetCommend()
@@ -75,11 +82,13 @@ COMMANDKEY CStateManager::GetCommend()
 	return m_eCurCommand;
 }
 
+/*
 void CStateManager::CommandSave()
 {
 	m_ePrevState = m_eCurState;
 	m_fcommandTimer = m_pPlayer->m_fCommandTime;
 }
+*/
 
 CPlayerState* CStateManager::FindState(PLAYERSTATE state)
 {

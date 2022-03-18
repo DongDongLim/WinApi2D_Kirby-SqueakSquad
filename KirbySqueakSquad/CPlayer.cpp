@@ -237,19 +237,19 @@ void CPlayer::update()
 	if (KeyDown(VK_LEFT) || KeyDown(VK_RIGHT))
 	{
 		KeyDown(VK_LEFT) ? m_bIsRight = true : m_bIsRight = false;
-		CEventManager::getInst()->EventChangePlayerState(PLAYERSTATE::MOVE);
+		CStateManager::getInst()->ChangeState(PLAYERSTATE::MOVE);
 	}
 	if (KeyDown('C'))
 	{
-		CEventManager::getInst()->EventChangePlayerState(PLAYERSTATE::ATTACK);
+		CStateManager::getInst()->ChangeState(PLAYERSTATE::ATTACK);
 	}
 	if (ANYKEYDOWN)
 	{
-		CStateManager::getInst()->CommandSave();
+		//CStateManager::getInst()->CommandSave();
 	}
 	if (KEYEMPTYDEFINE)
 	{
-		CEventManager::getInst()->EventChangePlayerState(PLAYERSTATE::IDLE);
+		//CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE);
 	}
 	CStateManager::getInst()->update();
 	GetAnimator()->update();

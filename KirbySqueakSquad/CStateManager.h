@@ -19,7 +19,7 @@ private:
 	PLAYERSTATE m_ePrevState;
 	COMMANDKEY m_eCurCommand;
 
-	float m_fcommandTimer;
+	//float m_fcommandTimer;
 
 public:
 	void SetPlayer(CPlayer* player);
@@ -29,11 +29,13 @@ public:
 	void ChangeState(PLAYERSTATE state);
 	void StartState(PLAYERSTATE state);
 
-	void CommandSave();
+	//void CommandSave();
 
 	void update();
 
+	void SetCommend(COMMANDKEY commend);
 	COMMANDKEY GetCommend();
+	
 
 	CPlayerState* FindState(PLAYERSTATE state);
 };
