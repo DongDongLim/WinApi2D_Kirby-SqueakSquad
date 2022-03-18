@@ -21,6 +21,11 @@ void CScene_Stage1::update()
 
 void CScene_Stage1::Enter()
 {
+	// 타일 로딩
+	wstring path = CPathManager::getInst()->GetContentPath();
+	path += L"tile\\stage1Map.tile";
+	LoadTile(path);
+
 	CMap* map = new CMap;
 	map->Load(L"Map_Start", L"texture\\map\\stage1.png");
 	AddObject(map, GROUP_GAMEOBJ::MAP);
