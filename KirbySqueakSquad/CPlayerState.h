@@ -54,6 +54,7 @@ private:
 	bool m_bIsStop;
 	bool m_bStartDir;
 	bool m_bIsDirChange;
+	bool m_bIsDisLimmit; // 거리제한
 	
 public:
 	CPlayerMove();

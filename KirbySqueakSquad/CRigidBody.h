@@ -1,0 +1,31 @@
+#pragma once
+
+class CGameObject;
+
+class CRigidBody
+{
+	friend class CGameObject;
+private:
+	CGameObject* m_pOwner;	// 주인
+	fPoint m_fForce;		// 방향에 적용되는 힘
+	fPoint m_fAccel;		// 가속 커비는 필요 없지 않나?
+	fPoint m_fVelocity;		// 속도
+	float m_fMass;			// 질량
+	float m_fFricCoeff;		// 마찰력
+	float m_fMaxSpeed;		// 최대 속력
+
+public:
+	CRigidBody();
+	CRigidBody(const CRigidBody& other);
+	~CRigidBody();
+
+	void AddForce(fPoint force);
+	void SetMass(float mass);
+	float GetMass();
+	
+	void finalupdate();
+
+private:
+	void Move();
+
+};

@@ -38,6 +38,8 @@ void CScene_Stage1::Enter()
 	CPlayer* pPlayer = new CPlayer();
 	pPlayer->SetPos(fPoint(50, 130));
 	AddObject(pPlayer, GROUP_GAMEOBJ::PLAYER);
+
+	CCollisionManager::getInst()->CheckGroup(GROUP_GAMEOBJ::PLAYER, GROUP_GAMEOBJ::TILE);
 	
 	// Camera Look ÁöÁ¤
 	CCameraManager::getInst()->SetTargetObj(pPlayer);

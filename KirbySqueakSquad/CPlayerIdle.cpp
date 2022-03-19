@@ -17,6 +17,7 @@ CPlayerIdle::~CPlayerIdle()
 
 void CPlayerIdle::update()
 {
+	m_pPlayer->GetAnimator()->SetReverce(!m_pPlayer->GetDir());
 	if (KeyDown(VK_LEFT) || KeyDown(VK_RIGHT))
 	{
 		Exit(PLAYERSTATE::MOVE);

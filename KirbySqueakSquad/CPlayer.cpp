@@ -10,6 +10,9 @@
 
 float nomalanimtime = 1.f;
 bool start = false;
+
+
+
 // 애니메이션 나누는 기능 되나 확인용으로 짬
 void CPlayer::PlayerAttack(DWORD_PTR, DWORD_PTR)
 {
@@ -53,7 +56,19 @@ void CPlayer::PlayerAttack(DWORD_PTR, DWORD_PTR)
 CPlayer::CPlayer()
 {
 	CStateManager::getInst()->SetPlayer(this);
+	m_colliderState = 0;
 	m_bIsRight = true;
+	
+
+	SetName(L"Player");
+	SetScale(fPoint(32.f, 32.f));
+
+	// 콜라이더
+	CreateCollider();
+	GetCollider()->SetScale(fPoint(19.f, 17.f));
+	GetCollider()->SetOffsetPos(fPoint(0.f, 7.f));
+
+	// 애니메이션
 	m_wImgKey.push_back(L"PlayerImg0");
 	m_wImgKey.push_back(L"PlayerImg1");
 	m_wImgKey.push_back(L"PlayerImg2");
@@ -104,14 +119,6 @@ CPlayer::CPlayer()
 	m_wAnimKey[8]->push_back(L"InHale1");
 	m_wAnimKey[8]->push_back(L"InHale2");
 	m_wAnimKey[8]->push_back(L"InHale3");
-
-
-	SetName(L"Player");
-	SetScale(fPoint(32.f, 32.f));
-
-	CreateCollider();
-	GetCollider()->SetScale(fPoint(30.f, 30.f));
-	GetCollider()->SetOffsetPos(fPoint(0.f, 0.f));
 
 	CreateAnimator();
 	float pixelSize = 32.f;
@@ -208,7 +215,11 @@ CPlayer::CPlayer()
 	pAni = GetAnimator()->FindAnimation(L"Down");
 	pAni->GetFrame(0).fptOffset = fPoint(0.f, 5.f);
 
+	// 리지드바디
+	CreateRigidBody();
+	GetRigidBody()->SetMass(1);
 
+	// 상태
 	CPlayerState* pIdle = new CPlayerIdle();
 	CStateManager::getInst()->AddState(PLAYERSTATE::IDLE, pIdle);
 	CPlayerState* pMove = new CPlayerMove();
@@ -217,6 +228,8 @@ CPlayer::CPlayer()
 	CPlayerState* pAttack = new CPlayerAttack();
 	CStateManager::getInst()->AddState(PLAYERSTATE::ATTACK, pAttack);
 	CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::IDLE);
+
+
 }
 
 CPlayer::~CPlayer()
@@ -263,4 +276,32 @@ void CPlayer::render()
 bool CPlayer::GetDir()
 {
 	return m_bIsRight;
+}
+
+
+void CPlayer::SetCollisonCallBack(COLLIDER_FUNC pFunc, DWORD_PTR state)
+{
+	m_arrFunc.push_back(pFunc);
+	m_colliderState = state;
+}
+
+void CPlayer::DeleteColliderCallBack(COLLIDER_FUNC pFunc)
+{
+	list<COLLIDER_FUNC>::iterator iter = m_arrFunc.begin();
+	for (; iter != m_arrFunc.end(); ++iter)
+	{
+		if (*iter == pFunc)
+			break;
+	}
+	m_arrFunc.erase(iter);
+}
+
+void CPlayer::OnCollision(CCollider* _pOther)
+{
+	list<COLLIDER_FUNC>::iterator iter = m_arrFunc.begin();
+	for (; iter != m_arrFunc.end(); ++iter)
+	{
+		COLLIDER_FUNC collFunc = *iter;
+		collFunc(m_colliderState, _pOther);
+	}
 }

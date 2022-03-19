@@ -1,6 +1,8 @@
 #pragma once
 #include "CGameObject.h"
 #include "CStateManager.h"
+#include "CRigidBody.h"
+
 
 /*
 #define LEFTDEFINE Key(VK_LEFT)
@@ -27,13 +29,16 @@
 			잠깐 왜 굳이 상태를 저장하는 걸 CState를 사용하려 했지? 그냥 만들면 되잖아
 */
 
+// 함수포인터를 위한 타입정의
+typedef void(*COLLIDER_FUNC) (DWORD_PTR, CCollider*);
+
 class CState;
 class CD2DImage;
 
 struct PLAYERINFO
 {
 	const float g_fAccel = 1.5f;
-	const float m_fVelocity = 150;
+	const float m_fVelocity = 10;
 	const float m_fMoveInertia = 0.2f;
 
 };
@@ -50,15 +55,12 @@ private:
 	vector<wstring> m_wImgKey;
 	// 플레이어 애니메이션 동작의 키값
 	vector<vector<wstring>*> m_wAnimKey;
-
 	
-
 	//const float m_fCommandTime = 0.2f;
 	bool m_bIsRight;
-
-
 	void PlayerAttack(DWORD_PTR, DWORD_PTR);
-
+	list<COLLIDER_FUNC> m_arrFunc;
+	DWORD_PTR m_colliderState;
 
 public:
 
@@ -71,6 +73,12 @@ public:
 
 	bool GetDir();
 
+	void SetCollisonCallBack(COLLIDER_FUNC pFunc, DWORD_PTR state);
+	void DeleteColliderCallBack(COLLIDER_FUNC pFunc);
+
+	virtual void OnCollision(CCollider* _pOther);
+	//virtual void OnCollisionEnter(CCollider* _pOther);
+	//virtual void OnCollisionExit(CCollider* _pOther);
 
 };
 

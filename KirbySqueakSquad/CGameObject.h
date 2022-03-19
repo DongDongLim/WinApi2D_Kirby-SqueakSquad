@@ -2,6 +2,7 @@
 
 class CCollider;
 class CAnimator;
+class CRigidBody;
 
 class CGameObject
 {
@@ -17,6 +18,8 @@ private:
 	// Component
 	CCollider* m_pCollider;
 	CAnimator* m_pAnimator;
+	CRigidBody* m_pRigid;
+
 
 	bool m_bAlive;
 	void SetDead();
@@ -53,5 +56,8 @@ public:
 
 	CAnimator* GetAnimator();				// 애니메이터 반환
 	void CreateAnimator();					// 애니메이터 생성
+
+	CRigidBody* GetRigidBody();				//리지드바디 반환
+	void CreateRigidBody();					//리지드바디 생성
 };
 
