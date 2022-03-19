@@ -22,10 +22,11 @@ void CPlayerFly::update()
 
 void CPlayerFly::Enter()
 {
-
+	m_bIsActive = true;
 }
 
 void CPlayerFly::Exit(PLAYERSTATE state)
 {
+	m_bIsActive = false;
 	CEventManager::getInst()->EventLoadPlayerState(state);
 }

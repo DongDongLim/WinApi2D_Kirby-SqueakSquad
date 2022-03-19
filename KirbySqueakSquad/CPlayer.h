@@ -58,9 +58,14 @@ private:
 	
 	//const float m_fCommandTime = 0.2f;
 	bool m_bIsRight;
+	int m_bIsGroundCount;
 	void PlayerAttack(DWORD_PTR, DWORD_PTR);
 	list<COLLIDER_FUNC> m_arrFunc;
 	DWORD_PTR m_colliderState;
+	list<COLLIDER_FUNC> m_arrEnterFunc;
+	DWORD_PTR m_colliderEnterState;
+	list<COLLIDER_FUNC> m_arrExitFunc;
+	DWORD_PTR m_colliderExitState;
 
 public:
 
@@ -74,11 +79,15 @@ public:
 	bool GetDir();
 
 	void SetCollisonCallBack(COLLIDER_FUNC pFunc, DWORD_PTR state);
-	void DeleteColliderCallBack(COLLIDER_FUNC pFunc);
+	//void DeleteColliderCallBack(COLLIDER_FUNC pFunc);
+	void SetCollisonEnterCallBack(COLLIDER_FUNC pFunc, DWORD_PTR state);
+	//void DeleteColliderEnterCallBack(COLLIDER_FUNC pFunc);
+	void SetCollisonExitCallBack(COLLIDER_FUNC pFunc, DWORD_PTR state);
+	//void DeleteColliderExitCallBack(COLLIDER_FUNC pFunc);
 
-	virtual void OnCollision(CCollider* _pOther);
-	//virtual void OnCollisionEnter(CCollider* _pOther);
-	//virtual void OnCollisionExit(CCollider* _pOther);
+	virtual void OnCollision(CCollider* Other);
+	virtual void OnCollisionEnter(CCollider* Other);
+	virtual void OnCollisionExit(CCollider* Other);
 
 };
 

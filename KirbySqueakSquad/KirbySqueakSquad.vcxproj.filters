@@ -341,6 +341,9 @@
     <ClCompile Include="CRigidBody.cpp">
       <Filter>Engin\Component\RigidBody</Filter>
     </ClCompile>
+    <ClCompile Include="CPlayerFall.cpp">
+      <Filter>Object\Character\Player\State</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="KirbySqueakSquad.rc">

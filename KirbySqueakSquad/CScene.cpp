@@ -103,6 +103,7 @@ wstring CScene::GetName()
 
 void CScene::AddObject(CGameObject* pObj, GROUP_GAMEOBJ type)
 {
+    pObj->SetGroup(type);
     m_arrObj[(int)type].push_back(pObj);
 }
 

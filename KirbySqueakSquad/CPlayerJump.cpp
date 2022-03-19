@@ -22,10 +22,11 @@ void CPlayerJump::update()
 
 void CPlayerJump::Enter()
 {
-
+	m_bIsActive = true;
 }
 
 void CPlayerJump::Exit(PLAYERSTATE state)
 {
+	m_bIsActive = false;
 	CEventManager::getInst()->EventLoadPlayerState(state);
 }

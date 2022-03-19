@@ -208,6 +208,7 @@
     <ClCompile Include="CPlayer.cpp" />
     <ClCompile Include="CPlayerAttack.cpp" />
     <ClCompile Include="CPlayerEat.cpp" />
+    <ClCompile Include="CPlayerFall.cpp" />
     <ClCompile Include="CPlayerFly.cpp" />
     <ClCompile Include="CPlayerIdle.cpp" />
     <ClCompile Include="CPlayerJump.cpp" />

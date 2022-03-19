@@ -17,5 +17,10 @@ CPlayer* CPlayerState::GetPlayer()
 	return m_pPlayer;
 }
 
+bool CPlayerState::GetIsActive()
+{
+	return m_bIsActive;
+}
+
 
 

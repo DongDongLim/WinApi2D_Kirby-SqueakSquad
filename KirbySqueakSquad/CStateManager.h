@@ -34,6 +34,8 @@ public:
 	void update();
 
 	void SetCommend(COMMANDKEY commend);
+	int GetCurPlaySize();
+
 	COMMANDKEY GetCommend();
 	
 

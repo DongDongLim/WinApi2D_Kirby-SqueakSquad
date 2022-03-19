@@ -7,12 +7,14 @@ class CPlayerState
 protected:
 	CPlayer* m_pPlayer;
 	PLAYERSTATE m_eState;
+	bool m_bIsActive;
 
 public:
 	CPlayerState();
 	virtual ~CPlayerState();
 
 	CPlayer* GetPlayer();
+	bool GetIsActive();
 
 	virtual void update() = 0;
 	virtual void Enter() = 0;
@@ -75,6 +77,36 @@ public:
 	CPlayerJump();
 	~CPlayerJump();
 
+	virtual void update();
+	virtual void Enter();
+	virtual void Exit(PLAYERSTATE state);
+};
+
+class CPlayerFall : public CPlayerState
+{
+public:
+	enum class COLLIONTARGET
+	{
+		GROUND,
+		MON,
+
+
+		END,
+	};
+
+private:
+
+	COLLIONTARGET m_eTarget;
+	float m_fGravity;
+
+
+public:
+	CPlayerFall();
+	~CPlayerFall();
+
+	void SetTarget(COLLIONTARGET target);
+
+	
 	virtual void update();
 	virtual void Enter();
 	virtual void Exit(PLAYERSTATE state);

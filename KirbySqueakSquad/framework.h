@@ -101,6 +101,7 @@ enum class PLAYERSTATE
 	IDLE,
 	MOVE,
 	JUMP,
+	Fall,
 	DOWN,
 	FLY,
 	EAT,

@@ -21,10 +21,11 @@ void CPlayerAttack::update()
 
 void CPlayerAttack::Enter()
 {
-
+	m_bIsActive = true;
 }
 
 void CPlayerAttack::Exit(PLAYERSTATE state)
 {
+	m_bIsActive = false;
 	CEventManager::getInst()->EventLoadPlayerState(state);
 }

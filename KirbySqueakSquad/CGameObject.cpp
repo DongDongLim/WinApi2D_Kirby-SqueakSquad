@@ -6,7 +6,6 @@
 
 CGameObject::CGameObject()
 {
-	m_eCurGroup = GROUP_GAMEOBJ::SIZE;
 	m_fptPos = {};
 	m_fptScale = {};
 	m_pCollider = nullptr;

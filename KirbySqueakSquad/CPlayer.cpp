@@ -6,6 +6,7 @@
 #include "CD2DImage.h"
 #include "CState.h"
 #include "CPlayerState.h"
+#include "CTile.h"
 
 
 float nomalanimtime = 1.f;
@@ -55,8 +56,11 @@ void CPlayer::PlayerAttack(DWORD_PTR, DWORD_PTR)
 
 CPlayer::CPlayer()
 {
+	m_bIsGroundCount = 0;
 	CStateManager::getInst()->SetPlayer(this);
 	m_colliderState = 0;
+	m_colliderEnterState = 0;
+	m_colliderExitState = 0;
 	m_bIsRight = true;
 	
 
@@ -111,6 +115,11 @@ CPlayer::CPlayer()
 	m_wAnimKey[2]->push_back(L"QuickStop");
 	m_wAnimKey[3]->push_back(L"DownSlide");
 	m_wAnimKey[4]->push_back(L"Jump");
+	m_wAnimKey[4]->push_back(L"Turn");
+	m_wAnimKey[4]->push_back(L"Fall0");
+	m_wAnimKey[4]->push_back(L"Fall0_Down");
+	m_wAnimKey[4]->push_back(L"Fall1");
+	m_wAnimKey[4]->push_back(L"Fall1_Down");
 	m_wAnimKey[5]->push_back(L"Eat");
 	m_wAnimKey[6]->push_back(L"Up");
 	m_wAnimKey[7]->push_back(L"UpIdle");
@@ -150,6 +159,41 @@ CPlayer::CPlayer()
 		fPoint((float)(pixelSize * 8), 0.f),
 		fPoint(pixelSize, pixelSize),
 		fPoint(pixelSize, 0.f), 0.5f, 1);
+
+	GetAnimator()->CreateAnimation(
+		m_wAnimKey[4]->at(0),
+		m_pImg[4],
+		fPoint(0.f, 0.f),
+		fPoint(pixelSize, pixelSize),
+		fPoint(0.f, 0.f), 0.5f, 1);
+
+	GetAnimator()->CreateAnimation(
+		m_wAnimKey[4]->at(1),
+		m_pImg[4],
+		fPoint((float)(pixelSize * 1), 0.f),
+		fPoint(pixelSize, pixelSize),
+		fPoint(pixelSize, 0.f), 0.1f, 4);
+
+	GetAnimator()->CreateAnimation(
+		m_wAnimKey[4]->at(2),
+		m_pImg[4],
+		fPoint((float)(pixelSize * 5), 0.f),
+		fPoint(pixelSize, pixelSize),
+		fPoint(pixelSize, 0.f), 0.1f, 2);
+
+	GetAnimator()->CreateAnimation(
+		m_wAnimKey[4]->at(3),
+		m_pImg[4],
+		fPoint((float)(pixelSize * 7), 0.f),
+		fPoint(pixelSize, pixelSize),
+		fPoint(pixelSize, 0.f), 0.1f, 3);
+
+	GetAnimator()->CreateAnimation(
+		m_wAnimKey[4]->at(4),
+		m_pImg[4],
+		fPoint(0.f, 0.f),
+		fPoint(pixelSize, pixelSize),
+		fPoint(pixelSize, 0.f), 0.1f, 6);
 
 	GetAnimator()->CreateAnimation(
 		m_wAnimKey[7]->at(0),
@@ -207,7 +251,7 @@ CPlayer::CPlayer()
 				fPoint(pixelSize, 0.f), 0.1f, frameCount);
 		}
 	}
-	GetAnimator()->Play(L"Idle");
+	GetAnimator()->Play(L"Fall0");
 
 	CAnimation* pAni;
 	pAni = GetAnimator()->FindAnimation(L"Idle");
@@ -228,10 +272,14 @@ CPlayer::CPlayer()
 	CStateManager::getInst()->AddState(PLAYERSTATE::IDLE, pIdle);
 	CPlayerState* pMove = new CPlayerMove();
 	CStateManager::getInst()->AddState(PLAYERSTATE::MOVE, pMove);
-
 	CPlayerState* pAttack = new CPlayerAttack();
 	CStateManager::getInst()->AddState(PLAYERSTATE::ATTACK, pAttack);
-	CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::IDLE);
+	CPlayerState* pJump = new CPlayerJump();
+	CStateManager::getInst()->AddState(PLAYERSTATE::JUMP, pJump);
+	CPlayerState* pFall = new CPlayerFall();
+	CStateManager::getInst()->AddState(PLAYERSTATE::Fall, pFall);
+
+	CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
 
 
 }
@@ -270,7 +318,6 @@ void CPlayer::update()
 	}
 	CStateManager::getInst()->update();
 	GetAnimator()->update();
-	Gravity(); 
 }
 
 void CPlayer::render()
@@ -284,29 +331,76 @@ bool CPlayer::GetDir()
 }
 
 
+
 void CPlayer::SetCollisonCallBack(COLLIDER_FUNC pFunc, DWORD_PTR state)
 {
 	m_arrFunc.push_back(pFunc);
 	m_colliderState = state;
 }
 
-void CPlayer::DeleteColliderCallBack(COLLIDER_FUNC pFunc)
+void CPlayer::SetCollisonEnterCallBack(COLLIDER_FUNC pFunc, DWORD_PTR state)
 {
-	list<COLLIDER_FUNC>::iterator iter = m_arrFunc.begin();
-	for (; iter != m_arrFunc.end(); ++iter)
-	{
-		if (*iter == pFunc)
-			break;
-	}
-	m_arrFunc.erase(iter);
+	m_arrEnterFunc.push_back(pFunc);
+	m_colliderEnterState = state;
+}
+void CPlayer::SetCollisonExitCallBack(COLLIDER_FUNC pFunc, DWORD_PTR state)
+{
+	m_arrExitFunc.push_back(pFunc);
+	m_colliderExitState = state;
 }
 
-void CPlayer::OnCollision(CCollider* _pOther)
+void CPlayer::OnCollision(CCollider* other)
 {
 	list<COLLIDER_FUNC>::iterator iter = m_arrFunc.begin();
 	for (; iter != m_arrFunc.end(); ++iter)
 	{
 		COLLIDER_FUNC collFunc = *iter;
-		collFunc(m_colliderState, _pOther);
+		collFunc(m_colliderState, other);
+	}
+}
+
+void CPlayer::OnCollisionEnter(CCollider* other)
+{
+	CGameObject* pOtherObj = other->GetObj();
+	if (pOtherObj->GetGroup() == GROUP_GAMEOBJ::TILE)
+	{
+		if (((CTile*)pOtherObj)->GetGroup() == GROUP_TILE::GROUND)
+		{
+			++m_bIsGroundCount;
+		}
+	}
+	list<COLLIDER_FUNC>::iterator iter = m_arrEnterFunc.begin();
+	for (; iter != m_arrEnterFunc.end(); ++iter)
+	{
+		COLLIDER_FUNC collFunc = *iter;
+		collFunc(m_colliderEnterState, other);
+	}
+}
+
+void CPlayer::OnCollisionExit(CCollider* other)
+{
+
+	CGameObject* pOtherObj = other->GetObj();
+	if (pOtherObj->GetGroup() == GROUP_GAMEOBJ::TILE)
+	{
+		if (((CTile*)pOtherObj)->GetGroup() == GROUP_TILE::GROUND)
+		{
+			--m_bIsGroundCount;
+			if (0 == m_bIsGroundCount)
+			{
+				if (!Key('X') && !Key('V'))
+				{
+					CStateManager::getInst()->ExitState(PLAYERSTATE::JUMP);
+					CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
+				}
+			}
+		}
+	}
+
+	list<COLLIDER_FUNC>::iterator iter = m_arrExitFunc.begin();
+	for (; iter != m_arrExitFunc.end(); ++iter)
+	{
+		COLLIDER_FUNC collFunc = *iter;
+		collFunc(m_colliderExitState, other);
 	}
 }

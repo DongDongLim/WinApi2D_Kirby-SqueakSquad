@@ -69,7 +69,10 @@ void CStateManager::update()
 	}
 	for (int i = 0; i < m_arrErase.size(); ++i)
 	{
-		m_mCurPlayeState.erase(m_arrErase[i]);
+		if (nullptr != FindPlayeState(m_arrErase[i]))
+		{
+			m_mCurPlayeState.erase(m_arrErase[i]);
+		}
 	}
 	m_arrErase.clear();
 }
@@ -77,6 +80,11 @@ void CStateManager::update()
 void CStateManager::SetCommend(COMMANDKEY commend)
 {
 	m_eCurCommand = commend;
+}
+
+int CStateManager::GetCurPlaySize()
+{
+	return m_mCurPlayeState.size();
 }
 
 COMMANDKEY CStateManager::GetCommend()

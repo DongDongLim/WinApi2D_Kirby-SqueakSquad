@@ -6,8 +6,25 @@
 #include "CPlayer.h"
 #include "CCollider.h"
 
+
+void OnCollison(DWORD_PTR state, CCollider* other)
+{
+	if (((CPlayerMove*)state)->GetIsActive())
+	{
+		CGameObject* pOtherObj = other->GetObj();
+		if (pOtherObj->GetGroup() == GROUP_GAMEOBJ::TILE)
+		{
+			fPoint pos = other->GetFinalPos();
+			fPoint scale = other->GetScale();
+
+		}
+	}
+}
+
+
 CPlayerMove::CPlayerMove()
 {
+	m_pPlayer->SetCollisonCallBack(OnCollison, (DWORD_PTR)this);
 	m_eState = PLAYERSTATE::MOVE;
 	m_eCurCommand = COMMANDMOVE::NONE;
 	m_ePrevCommand = m_eCurCommand;
@@ -115,18 +132,6 @@ void CPlayerMove::Anim()
 	}
 }
 
-void OnCollison(DWORD_PTR state, CCollider* other)
-{
-	CGameObject* pOtherObj = other->GetObj();
-	if (pOtherObj->GetName() == L"Tile")
-	{
-		fPoint pos = other->GetFinalPos();
-		fPoint scale = other->GetScale();
-
-	}
-}
-
-
 void CPlayerMove::Enter()
 {
 	m_eCurCommand = COMMANDMOVE::NONE;
@@ -137,11 +142,12 @@ void CPlayerMove::Enter()
 	m_bIsStop = false;
 	m_bIsDirChange = false;
 	m_gfAccel = 1;
-	m_pPlayer->SetCollisonCallBack(OnCollison, (DWORD_PTR)this);
+	m_bIsActive = true;
 }
 
 void CPlayerMove::Exit(PLAYERSTATE state)
 {
+	m_bIsActive = false;
 	CEventManager::getInst()->EventLoadPlayerState(state);
 	CStateManager::getInst()->ExitState(m_eState);
 }
