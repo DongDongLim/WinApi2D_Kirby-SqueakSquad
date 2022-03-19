@@ -7,6 +7,7 @@
 
 CPlayerMove::CPlayerMove()
 {
+	m_eState = PLAYERSTATE::MOVE;
 	m_eCurCommand = COMMANDMOVE::NONE;
 	m_ePrevCommand = m_eCurCommand;
 	m_animStayTime = m_eInfo.m_fMoveInertia;
@@ -63,7 +64,7 @@ void CPlayerMove::update()
 void CPlayerMove::Move()
 {
 	fPoint pos = m_pPlayer->GetPos();
-	int dir = m_pPlayer->GetDir() ? -1 : 1;
+	int dir = m_pPlayer->GetDir() ? 1 : -1;
 
 	pos.x += dir * m_eInfo.m_fVelocity * m_gfAccel * fDT;
 
@@ -73,7 +74,7 @@ void CPlayerMove::Move()
 
 void CPlayerMove::Anim()
 {
-	m_pPlayer->GetAnimator()->SetReverce(m_bStartDir);
+	m_pPlayer->GetAnimator()->SetReverce(!m_bStartDir);
 	switch (m_eCurCommand)
 	{
 	case CPlayerMove::COMMANDMOVE::NONE:
@@ -90,6 +91,7 @@ void CPlayerMove::Anim()
 		m_gfAccel = m_animStayTime;
 		if (0 >= m_animStayTime)
 		{
+			m_animStayTime = 0;
 			m_bStartDir = m_pPlayer->GetDir();
 			m_bIsDash ? m_eCurCommand = COMMANDMOVE::DASH : m_eCurCommand = COMMANDMOVE::NONE;
 		}
@@ -98,7 +100,10 @@ void CPlayerMove::Anim()
 		m_animStayTime -= fDT;
 		m_gfAccel = m_animStayTime;
 		if (0 >= m_animStayTime)
+		{
+			m_animStayTime = 0;
 			Exit(PLAYERSTATE::IDLE);
+		}
 		break;
 	case CPlayerMove::COMMANDMOVE::END:
 		break;
@@ -122,5 +127,6 @@ void CPlayerMove::Enter()
 
 void CPlayerMove::Exit(PLAYERSTATE state)
 {
-	CEventManager::getInst()->EventChangePlayerState(state);
+	CEventManager::getInst()->EventLoadPlayerState(state);
+	CStateManager::getInst()->ExitState(m_eState);
 }

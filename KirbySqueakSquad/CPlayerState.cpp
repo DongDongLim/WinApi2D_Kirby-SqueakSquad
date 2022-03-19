@@ -4,6 +4,7 @@
 
 CPlayerState::CPlayerState()
 {
+	m_eState = PLAYERSTATE::END;
 	m_pPlayer = CStateManager::getInst()->GetPlayer();
 }
 

@@ -7,7 +7,7 @@
 
 CPlayerFly::CPlayerFly()
 {
-
+	m_eState = PLAYERSTATE::FLY;
 }
 
 CPlayerFly::~CPlayerFly()
@@ -27,5 +27,5 @@ void CPlayerFly::Enter()
 
 void CPlayerFly::Exit(PLAYERSTATE state)
 {
-	CEventManager::getInst()->EventChangePlayerState(state);
+	CEventManager::getInst()->EventLoadPlayerState(state);
 }

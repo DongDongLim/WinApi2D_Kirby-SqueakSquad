@@ -42,7 +42,7 @@ void CPlayer::PlayerAttack(DWORD_PTR, DWORD_PTR)
 			else if (GetAnimator()->GetCurAnim()->GetName() == L"InHale3")
 			{
 				start = false;
-				CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE);
+				//CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE);
 					
 			}
 		}
@@ -216,7 +216,7 @@ CPlayer::CPlayer()
 
 	CPlayerState* pAttack = new CPlayerAttack();
 	CStateManager::getInst()->AddState(PLAYERSTATE::ATTACK, pAttack);
-	CEventManager::getInst()->EventChangePlayerState(PLAYERSTATE::IDLE);
+	CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::IDLE);
 }
 
 CPlayer::~CPlayer()
@@ -236,12 +236,12 @@ void CPlayer::update()
 {
 	if (KeyDown(VK_LEFT) || KeyDown(VK_RIGHT))
 	{
-		KeyDown(VK_LEFT) ? m_bIsRight = true : m_bIsRight = false;
-		CStateManager::getInst()->ChangeState(PLAYERSTATE::MOVE);
+		KeyDown(VK_RIGHT) ? m_bIsRight = true : m_bIsRight = false;
+		//CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::MOVE);
 	}
 	if (KeyDown('C'))
 	{
-		CStateManager::getInst()->ChangeState(PLAYERSTATE::ATTACK);
+		//CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::ATTACK);
 	}
 	if (ANYKEYDOWN)
 	{

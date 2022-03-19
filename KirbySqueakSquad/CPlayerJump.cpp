@@ -7,7 +7,7 @@
 
 CPlayerJump::CPlayerJump()
 {
-
+	m_eState = PLAYERSTATE::JUMP;
 }
 
 CPlayerJump::~CPlayerJump()
@@ -27,5 +27,5 @@ void CPlayerJump::Enter()
 
 void CPlayerJump::Exit(PLAYERSTATE state)
 {
-	CEventManager::getInst()->EventChangePlayerState(state);
+	CEventManager::getInst()->EventLoadPlayerState(state);
 }

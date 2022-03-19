@@ -6,6 +6,7 @@ class CPlayerState
 {
 protected:
 	CPlayer* m_pPlayer;
+	PLAYERSTATE m_eState;
 
 public:
 	CPlayerState();

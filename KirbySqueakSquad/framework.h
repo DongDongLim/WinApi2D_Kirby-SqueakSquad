@@ -100,6 +100,7 @@ enum class PLAYERSTATE
 {
 	IDLE,
 	MOVE,
+	JUMP,
 	DOWN,
 	FLY,
 	EAT,

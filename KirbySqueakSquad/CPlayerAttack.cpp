@@ -6,7 +6,7 @@
 
 CPlayerAttack::CPlayerAttack()
 {
-
+	m_eState = PLAYERSTATE::ATTACK;
 }
 
 CPlayerAttack::~CPlayerAttack()
@@ -26,5 +26,5 @@ void CPlayerAttack::Enter()
 
 void CPlayerAttack::Exit(PLAYERSTATE state)
 {
-	CEventManager::getInst()->EventChangePlayerState(state);
+	CEventManager::getInst()->EventLoadPlayerState(state);
 }

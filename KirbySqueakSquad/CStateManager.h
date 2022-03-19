@@ -13,9 +13,9 @@ private:
 
 	CPlayer* m_pPlayer;
 	map<PLAYERSTATE, CPlayerState*> m_mPlayerState;
+	map<PLAYERSTATE, CPlayerState*> m_mCurPlayeState;
 
-	CPlayerState* m_pCurState;
-	PLAYERSTATE m_eCurState;
+	vector<PLAYERSTATE> m_arrErase;
 	PLAYERSTATE m_ePrevState;
 	COMMANDKEY m_eCurCommand;
 
@@ -26,8 +26,8 @@ public:
 	CPlayer* GetPlayer();
 
 	void AddState(PLAYERSTATE state, CPlayerState* stateclass);
-	void ChangeState(PLAYERSTATE state);
-	void StartState(PLAYERSTATE state);
+	void ExitState(PLAYERSTATE state);
+	void LoadState(PLAYERSTATE state);
 
 	//void CommandSave();
 
@@ -38,5 +38,6 @@ public:
 	
 
 	CPlayerState* FindState(PLAYERSTATE state);
+	CPlayerState* FindPlayeState(PLAYERSTATE state);
 };
 

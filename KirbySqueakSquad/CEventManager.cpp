@@ -52,7 +52,7 @@ void CEventManager::Execute(const tEvent& event)
 		// lParam : cstatemanager
 		// wParam : next state		
 		PLAYERSTATE nextState = (PLAYERSTATE)event.wParam;
-		CStateManager::getInst()->StartState(nextState);
+		CStateManager::getInst()->LoadState(nextState);
 	}
 	break;
 	}
@@ -108,7 +108,7 @@ void CEventManager::EventChangeScene(GROUP_SCENE scene)
 	AddEvent(event);
 }
 
-void CEventManager::EventChangePlayerState(PLAYERSTATE state)
+void CEventManager::EventLoadPlayerState(PLAYERSTATE state)
 {
 	tEvent event = {};
 	event.eEven = TYPE_EVENT::CHANGE_STATE_PLAYER;

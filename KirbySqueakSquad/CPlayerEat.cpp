@@ -7,7 +7,7 @@
 
 CPlayerEat::CPlayerEat()
 {
-
+	m_eState = PLAYERSTATE::EAT;
 }
 
 CPlayerEat::~CPlayerEat()
@@ -27,5 +27,5 @@ void CPlayerEat::Enter()
 
 void CPlayerEat::Exit(PLAYERSTATE state)
 {
-	CEventManager::getInst()->EventChangePlayerState(state);
+	CEventManager::getInst()->EventLoadPlayerState(state);
 }

@@ -7,7 +7,7 @@ CStateManager::CStateManager()
 {
 	m_pPlayer = nullptr;
 	m_mPlayerState = {};
-	m_eCurState = PLAYERSTATE::END;
+	m_mCurPlayeState = {};
 }
 
 CStateManager::~CStateManager()
@@ -37,25 +37,18 @@ void CStateManager::AddState(PLAYERSTATE state, CPlayerState* stateclass)
 	m_mPlayerState.insert(make_pair(state, stateclass));
 }
 
-void CStateManager::ChangeState(PLAYERSTATE state)
+void CStateManager::ExitState(PLAYERSTATE state)
 {
-	if (m_eCurState != state)
-	{
-		m_pCurState->Exit(state);
-	}
+	m_arrErase.push_back(state);
 }
 
-void CStateManager::StartState(PLAYERSTATE state)
+void CStateManager::LoadState(PLAYERSTATE state)
 {
-	if (m_eCurState != state)
-	{
-		CPlayerState* pState = FindState(state);
-
-		assert(pState);
+	CPlayerState* pState = FindState(state);
+	assert(pState);
+	if (nullptr == FindPlayeState(state))
 		pState->Enter();
-		m_pCurState = pState;
-		m_eCurState = state;
-	}
+	m_mCurPlayeState.insert(make_pair(state, pState));
 }
 
 
@@ -69,7 +62,16 @@ void CStateManager::update()
 		m_eCurCommand = COMMANDKEY::END;
 	}
 	*/
-	m_pCurState->update();
+	map<PLAYERSTATE, CPlayerState*>::iterator iter = m_mCurPlayeState.begin();
+	for (; iter != m_mCurPlayeState.end(); ++iter)
+	{
+		iter->second->update();
+	}
+	for (int i = 0; i < m_arrErase.size(); ++i)
+	{
+		m_mCurPlayeState.erase(m_arrErase[i]);
+	}
+	m_arrErase.clear();
 }
 
 void CStateManager::SetCommend(COMMANDKEY commend)
@@ -94,6 +96,14 @@ CPlayerState* CStateManager::FindState(PLAYERSTATE state)
 {
 	map<PLAYERSTATE, CPlayerState*>::iterator iter = m_mPlayerState.find(state);
 	if (m_mPlayerState.end() != iter)
+		return iter->second;
+	return nullptr;
+}
+
+CPlayerState* CStateManager::FindPlayeState(PLAYERSTATE state)
+{
+	map<PLAYERSTATE, CPlayerState*>::iterator iter = m_mCurPlayeState.find(state);
+	if (m_mCurPlayeState.end() != iter)
 		return iter->second;
 	return nullptr;
 }

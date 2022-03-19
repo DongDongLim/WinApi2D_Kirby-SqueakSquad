@@ -8,6 +8,7 @@
 
 CPlayerIdle::CPlayerIdle()
 {
+	m_eState = PLAYERSTATE::IDLE;
 }
 
 CPlayerIdle::~CPlayerIdle()
@@ -16,7 +17,14 @@ CPlayerIdle::~CPlayerIdle()
 
 void CPlayerIdle::update()
 {
-
+	if (KeyDown(VK_LEFT) || KeyDown(VK_RIGHT))
+	{
+		Exit(PLAYERSTATE::MOVE);
+	}
+	if (KeyDown('C'))
+	{
+		Exit(PLAYERSTATE::ATTACK);
+	}
 }
 
 void CPlayerIdle::Enter()
@@ -26,5 +34,6 @@ void CPlayerIdle::Enter()
 
 void CPlayerIdle::Exit(PLAYERSTATE state)
 {
-	CEventManager::getInst()->EventChangePlayerState(state);
+	CEventManager::getInst()->EventLoadPlayerState(state);
+	CStateManager::getInst()->ExitState(m_eState);
 }
