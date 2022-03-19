@@ -5,11 +5,13 @@
 CRigidBody::CRigidBody()
 {
 	m_pOwner = nullptr;
+	m_fFricCoeff = 10.f;
 }
 
 CRigidBody::CRigidBody(const CRigidBody& other)
 {
 	m_pOwner = nullptr;
+	m_fFricCoeff = 10.f;
 }
 
 CRigidBody::~CRigidBody()
@@ -31,16 +33,64 @@ float CRigidBody::GetMass()
 	return m_fMass;
 }
 
+void CRigidBody::SetVelocity(fPoint velocity)
+{
+	m_fVelocity = velocity;
+}
+
+
+void CRigidBody::AddVelocity(fPoint velocity)
+{
+	m_fVelocity += velocity;
+}
+
+void CRigidBody::SetMaxSpeed(float maxSpeed)
+{
+	m_fMaxSpeed = maxSpeed;
+}
+
+void CRigidBody::SetFricCoeff(float fricCoeff)
+{
+	m_fFricCoeff = fricCoeff;
+}
+
 void CRigidBody::finalupdate()
 {
+	// 길이를 구함
 	float force = m_fForce.Length();
 	if (0.f != force)
 	{
+		// 길이에 질량만큼 나눔(가속도 구해줌)
 		float accel = force / m_fMass;
+		// 가속도에 방향을 정해줌
 		m_fAccel = m_fForce.normalize() * accel;
+		// 속력에 넣어줌
 		m_fVelocity += m_fAccel * fDT;
 	}
+	// 마찰력 적용
+	if (!m_fVelocity.IsZero())
+	{
+		fPoint fricDir = m_fVelocity;
+		fPoint friction = fricDir.normalize() * (-1) * m_fFricCoeff * fDT;
+
+		if (m_fVelocity.Length() <= friction.Length())
+		{
+			m_fVelocity = fPoint(0.f, 0.f);
+		}
+		else
+		{
+			m_fVelocity = m_fVelocity + friction;
+		}
+	}
+
+	if (m_fMaxSpeed < m_fVelocity.Length())
+	{
+		// 같은 방향의 크기 max로 바꿔줌
+		m_fVelocity = m_fVelocity.normalize() * m_fMaxSpeed;
+	}
 	Move();
+	// 힘을 준 순간에만 영향을 주도록 초기화
+	m_fForce = fPoint(0.f, 0.f);
 }
 
 

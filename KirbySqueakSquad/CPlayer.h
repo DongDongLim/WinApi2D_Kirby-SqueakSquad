@@ -38,7 +38,7 @@ class CD2DImage;
 struct PLAYERINFO
 {
 	const float g_fAccel = 1.5f;
-	const float m_fVelocity = 10;
+	const float m_fVelocity = 100;
 	const float m_fMoveInertia = 0.2f;
 
 };

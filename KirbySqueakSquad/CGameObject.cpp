@@ -13,6 +13,7 @@ CGameObject::CGameObject()
 	m_pAnimator = nullptr;
 	m_pRigid = nullptr;
 	m_bAlive = true;
+	m_fAccel = 0;
 }
 
 CGameObject::CGameObject(const CGameObject& other)
@@ -146,6 +147,7 @@ void CGameObject::component_render()
 		m_pCollider->render();
 	}
 }
+
 
 CCollider* CGameObject::GetCollider()
 {

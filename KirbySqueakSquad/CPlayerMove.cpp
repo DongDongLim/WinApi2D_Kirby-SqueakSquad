@@ -64,10 +64,7 @@ void CPlayerMove::update()
 
 void CPlayerMove::Move()
 {
-	int dir = m_pPlayer->GetDir() ? 1 : -1;
-	CRigidBody* pRigid = m_pPlayer->GetRigidBody();
-	pRigid->AddForce(fPoint(dir * m_eInfo.m_fVelocity * m_gfAccel, 0.f));
-	/*
+	
 	fPoint pos = m_pPlayer->GetPos();
 	int dir = m_pPlayer->GetDir() ? 1 : -1;
 
@@ -75,7 +72,7 @@ void CPlayerMove::Move()
 
 	if (0 <= pos.x && pos.x <= CCameraManager::getInst()->GetDisLimmit().x)
 		m_pPlayer->SetPos(pos);
-	*/
+	
 }
 
 void CPlayerMove::Anim()

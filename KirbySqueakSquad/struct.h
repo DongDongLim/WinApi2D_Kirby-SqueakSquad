@@ -84,6 +84,11 @@ struct fPoint
 	{
 		return (float)sqrt((double)x * x + (double)y * y);
 	}
+
+	bool IsZero()
+	{
+		return x == 0 && y == 0 ? true : false;
+	}
 };
 
 typedef iPoint iVec2;

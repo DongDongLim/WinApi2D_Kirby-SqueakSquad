@@ -9,6 +9,9 @@ class CGameObject
 	friend class CEventManager;
 
 private:
+	const float m_gravity = 10.f;
+	float m_fAccel;
+
 	wstring m_strName;
 	fPoint m_fptPos;
 	fPoint m_fptScale;
@@ -20,7 +23,7 @@ private:
 	CAnimator* m_pAnimator;
 	CRigidBody* m_pRigid;
 
-
+	
 	bool m_bAlive;
 	void SetDead();
 
@@ -47,6 +50,7 @@ public:
 	virtual void render();
 	virtual void component_render();	// 컴포넌트들의 영역을 표시하기 위해
 
+
 	CCollider* GetCollider();				// 충돌체 반환
 	void CreateCollider();					// 충돌체 생성
 
@@ -59,5 +63,6 @@ public:
 
 	CRigidBody* GetRigidBody();				//리지드바디 반환
 	void CreateRigidBody();					//리지드바디 생성
+
 };
 

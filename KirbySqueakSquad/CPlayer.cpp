@@ -215,9 +215,13 @@ CPlayer::CPlayer()
 	pAni = GetAnimator()->FindAnimation(L"Down");
 	pAni->GetFrame(0).fptOffset = fPoint(0.f, 5.f);
 
-	// 리지드바디
+	// 리지드바디 커비는 필요 없음...ㅠㅜ
+	/*
 	CreateRigidBody();
-	GetRigidBody()->SetMass(1);
+	CRigidBody* rigid = GetRigidBody();
+	rigid->SetMass(1);
+	rigid->SetMaxSpeed(200);
+	*/
 
 	// 상태
 	CPlayerState* pIdle = new CPlayerIdle();
@@ -266,6 +270,7 @@ void CPlayer::update()
 	}
 	CStateManager::getInst()->update();
 	GetAnimator()->update();
+	Gravity(); 
 }
 
 void CPlayer::render()
