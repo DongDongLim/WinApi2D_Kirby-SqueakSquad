@@ -33,7 +33,7 @@ CPlayerIdle::~CPlayerIdle()
 
 void CPlayerIdle::update()
 {
-	if (KeyDown(VK_LEFT) || KeyDown(VK_RIGHT))
+	if (Key(VK_LEFT) || Key(VK_RIGHT))
 	{
 		Exit(PLAYERSTATE::MOVE);
 	}
@@ -43,7 +43,7 @@ void CPlayerIdle::update()
 	}
 	if (KeyDown('X') || KeyDown('V'))
 	{
-		Exit(PLAYERSTATE::JUMP);
+		CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::JUMP);
 	}
 }
 
@@ -56,11 +56,12 @@ void CPlayerIdle::Anim()
 void CPlayerIdle::Enter()
 {
 	m_bIsActive = true;
+	m_limmitDir = 0;
 }
 
 void CPlayerIdle::Exit(PLAYERSTATE state)
 {
 	m_bIsActive = false;
 	CEventManager::getInst()->EventLoadPlayerState(state);
-	//CStateManager::getInst()->ExitState(m_eState); 
+	CStateManager::getInst()->ExitState(m_eState); 
 }

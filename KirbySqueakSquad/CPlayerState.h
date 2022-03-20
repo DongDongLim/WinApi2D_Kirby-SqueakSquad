@@ -29,7 +29,7 @@ public:
 class CPlayerIdle : public CPlayerState
 {
 private:
-
+	int m_limmitDir;
 public:
 	CPlayerIdle();
 	~CPlayerIdle();
@@ -55,14 +55,14 @@ private:
 		
 	COMMANDMOVE m_eCurCommand;
 	COMMANDMOVE m_ePrevCommand;
-	list<CCollider*> m_pWallCollider;
-	float m_animStayTime;
-	float m_gfAccel;
-	float m_fLimmitX[2] = {0};
+	float m_fAnimStayTime;
+	float m_fAccel;
+	float m_fStateStayTime;
 	bool m_bIsDash;
 	bool m_bIsStop;
 	bool m_bStartDir;
 	bool m_bIsDirChange;
+	bool m_bIsCrushWallTile;
 
 	
 public:
@@ -72,11 +72,10 @@ public:
 	void Move();
 	void Anim();
 
-	void SetLimmitDisX(float leftX, float rightX);
-	void AddWallCollider(CCollider* collider);
-	void DeleteWallCollider(CCollider* collider);
-	list<CCollider*> GetWallColliderList();
-
+	void SetCrushWallTile(bool isCrush);
+	
+	void Stay();
+	void KeyUpdate();
 	virtual void update();
 	virtual void Enter();
 	virtual void Exit(PLAYERSTATE state);
