@@ -173,7 +173,7 @@ CPlayer::CPlayer()
 		m_pImg[4],
 		fPoint((float)(pixelSize * 1), 0.f),
 		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.1f, 4);
+		fPoint(pixelSize, 0.f), 0.05f, 4);
 
 	GetAnimator()->CreateAnimation(
 		m_wAnimKey[4]->at(2),

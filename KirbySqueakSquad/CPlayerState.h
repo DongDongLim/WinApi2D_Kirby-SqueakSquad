@@ -2,9 +2,12 @@
 #include "CStateManager.h"
 #include "CPlayer.h"
 
+class CColider;
+
 class CPlayerState
 {
 protected:
+	PLAYERINFO m_eInfo;
 	CPlayer* m_pPlayer;
 	PLAYERSTATE m_eState;
 	bool m_bIsActive;
@@ -49,10 +52,10 @@ private:
 
 		END
 	};
-
-	PLAYERINFO m_eInfo;
+		
 	COMMANDMOVE m_eCurCommand;
 	COMMANDMOVE m_ePrevCommand;
+	list<CCollider*> m_pWallCollider;
 	float m_animStayTime;
 	float m_gfAccel;
 	float m_fLimmitX[2] = {0};
@@ -70,6 +73,9 @@ public:
 	void Anim();
 
 	void SetLimmitDisX(float leftX, float rightX);
+	void AddWallCollider(CCollider* collider);
+	void DeleteWallCollider(CCollider* collider);
+	list<CCollider*> GetWallColliderList();
 
 	virtual void update();
 	virtual void Enter();
@@ -78,12 +84,18 @@ public:
 
 class CPlayerJump : public CPlayerState
 {
+private:
+	bool isTurn;
+	float m_fJumpSpeed;
+	float m_fTurnSpeed;
+	float m_fTurnKeepSpeed;
 
 public:
 	CPlayerJump();
 	~CPlayerJump();
 
 	void Jump();
+	void Anim();
 
 	virtual void update();
 	virtual void Enter();

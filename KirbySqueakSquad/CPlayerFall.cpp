@@ -6,7 +6,7 @@
 #include "CTile.h"
 #include "CAnimator.h"
 
-void OnCollisonEnter(DWORD_PTR state, CCollider* other)
+void OnFallCollisonEnter(DWORD_PTR state, CCollider* other)
 {
 	if (((CPlayerMove*)state)->GetIsActive())
 	{
@@ -29,9 +29,9 @@ void OnCollisonEnter(DWORD_PTR state, CCollider* other)
 CPlayerFall::CPlayerFall()
 {
 	m_eState = PLAYERSTATE::Fall;
-	m_fGravity = 50.f;
+	m_fGravity = m_eInfo.m_fVerticalSpeed;
 	m_eTarget = COLLIONTARGET::END;
-	m_pPlayer->SetCollisonEnterCallBack(OnCollisonEnter, (DWORD_PTR)this);
+	m_pPlayer->SetCollisonEnterCallBack(OnFallCollisonEnter, (DWORD_PTR)this);
 }
 
 CPlayerFall::~CPlayerFall()
@@ -72,10 +72,8 @@ void CPlayerFall::Anim()
 
 void CPlayerFall::Enter()
 {
-	m_fGravity = 50.f;
 	m_eTarget = COLLIONTARGET::END;
 	m_bIsActive = true;
-
 }
 
 void CPlayerFall::Exit(PLAYERSTATE state)

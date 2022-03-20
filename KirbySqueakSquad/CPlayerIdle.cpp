@@ -7,7 +7,7 @@
 
 
 
-void OnCollisonExit(DWORD_PTR state, CCollider* other)
+void OnIdleCollisonExit(DWORD_PTR state, CCollider* other)
 {
 	if (((CPlayerMove*)state)->GetIsActive())
 	{
@@ -23,7 +23,7 @@ void OnCollisonExit(DWORD_PTR state, CCollider* other)
 CPlayerIdle::CPlayerIdle()
 {
 	m_eState = PLAYERSTATE::IDLE;
-	m_pPlayer->SetCollisonExitCallBack(OnCollisonExit, (DWORD_PTR)this);
+	m_pPlayer->SetCollisonExitCallBack(OnIdleCollisonExit, (DWORD_PTR)this);
 }
 
 CPlayerIdle::~CPlayerIdle()
@@ -40,6 +40,10 @@ void CPlayerIdle::update()
 	if (KeyDown('C'))
 	{
 		Exit(PLAYERSTATE::ATTACK);
+	}
+	if (KeyDown('X') || KeyDown('V'))
+	{
+		Exit(PLAYERSTATE::JUMP);
 	}
 }
 
@@ -58,5 +62,5 @@ void CPlayerIdle::Exit(PLAYERSTATE state)
 {
 	m_bIsActive = false;
 	CEventManager::getInst()->EventLoadPlayerState(state);
-	CStateManager::getInst()->ExitState(m_eState); 
+	//CStateManager::getInst()->ExitState(m_eState); 
 }

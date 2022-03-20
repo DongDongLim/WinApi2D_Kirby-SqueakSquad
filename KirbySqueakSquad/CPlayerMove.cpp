@@ -8,7 +8,7 @@
 #include "CTile.h"
 
 
-void OnCollison(DWORD_PTR state, CCollider* other)
+void OnMoveCollison(DWORD_PTR state, CCollider* other)
 {
 	CPlayerMove* stateMove = (CPlayerMove*)state;
 	if (stateMove->GetIsActive())
@@ -36,17 +36,38 @@ void OnCollison(DWORD_PTR state, CCollider* other)
 					groundX = other->GetRightPos().x;
 				}
 				if (1 >= abs(playerX - groundX) && 1 <= abs(playerY - groundY))
-					stateMove->SetLimmitDisX(other->GetLeftPos().x - (player->GetCollider()->GetScale().x/2)
+				{
+					stateMove->SetLimmitDisX(other->GetLeftPos().x - (player->GetCollider()->GetScale().x / 2)
 						, other->GetRightPos().x + (player->GetCollider()->GetScale().x / 2));
+					stateMove->AddWallCollider((CCollider*)other);
+				}
 			}
 		}
 	}
 }
 
+void OnMoveCollisonExit(DWORD_PTR state, CCollider* other)
+{
+	CPlayerMove* stateMove = (CPlayerMove*)state;
+	if (stateMove->GetIsActive())
+	{
+		CGameObject* pOtherObj = other->GetObj();
+		if (pOtherObj->GetGroup() == GROUP_GAMEOBJ::TILE)
+		{
+			if (((CTile*)pOtherObj)->GetGroup() == GROUP_TILE::GROUND)
+			{
+				stateMove->DeleteWallCollider((CCollider*)other);
+				if(0 == stateMove->GetWallColliderList().size())
+					stateMove->SetLimmitDisX(0, 0);
+			}
+		}
+	}
+}
 
 CPlayerMove::CPlayerMove()
 {
-	m_pPlayer->SetCollisonCallBack(OnCollison, (DWORD_PTR)this);
+	m_pPlayer->SetCollisonCallBack(OnMoveCollison, (DWORD_PTR)this);
+	m_pPlayer->SetCollisonExitCallBack(OnMoveCollisonExit, (DWORD_PTR)this);
 	m_eState = PLAYERSTATE::MOVE;
 	m_eCurCommand = COMMANDMOVE::NONE;
 	m_ePrevCommand = m_eCurCommand;
@@ -56,6 +77,7 @@ CPlayerMove::CPlayerMove()
 	m_bIsStop = false;
 	m_bStartDir = true;
 	m_bIsDirChange = false;
+	m_pWallCollider = { 0 };
 }
 
 CPlayerMove::~CPlayerMove()
@@ -95,6 +117,10 @@ void CPlayerMove::update()
 				m_eCurCommand = COMMANDMOVE::CHANGEDIR;
 			}
 		}
+	}
+	if (KeyDown('X') || KeyDown('V'))
+	{
+		CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::JUMP);
 	}
 
 	Move();
@@ -168,6 +194,31 @@ void CPlayerMove::SetLimmitDisX(float leftX, float rightX)
 	m_fLimmitX[0] = leftX;
 	m_fLimmitX[1] = rightX;
 }
+
+void CPlayerMove::AddWallCollider(CCollider* collider)
+{
+	m_pWallCollider.push_back(collider);
+}
+
+void CPlayerMove::DeleteWallCollider(CCollider* collider)
+{
+	list<CCollider*>::iterator iter = m_pWallCollider.begin();
+	for (; iter != m_pWallCollider.end(); ++iter)
+	{
+		if (*iter == collider)
+			break;
+	}
+	if (iter != m_pWallCollider.end())
+	{
+		m_pWallCollider.erase(iter);
+	}
+}
+
+list<CCollider*> CPlayerMove::GetWallColliderList()
+{
+	return m_pWallCollider;
+}
+
 
 void CPlayerMove::Enter()
 {
