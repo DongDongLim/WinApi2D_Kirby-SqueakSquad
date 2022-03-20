@@ -7,7 +7,10 @@ class CGravity
 private:
 	CGameObject* m_pOwner;
 	bool m_bisGround;
+	fPoint m_fGAccel;
 public:
+	CGravity();
+	~CGravity();
 
 	void SetIsGround(bool isGround);
 	bool GetIsGround();

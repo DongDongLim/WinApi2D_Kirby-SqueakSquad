@@ -40,7 +40,7 @@ CGameObject::CGameObject(const CGameObject& other)
 	}
 	if (nullptr != other.m_pRigid)
 	{
-		m_pGravity = new CRigidBody(*other.m_pGravity);
+		m_pGravity = new CGravity(*other.m_pGravity);
 		m_pGravity->m_pOwner = this;
 	}
 	if (nullptr != other.m_pRigid)

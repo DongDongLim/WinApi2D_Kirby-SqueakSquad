@@ -59,6 +59,11 @@ fPoint CRigidBody::GetVelocity()
 	return m_fVelocity;
 }
 
+void CRigidBody::SetGAccel(fPoint gAccel)
+{
+	m_fGAccel = gAccel;
+}
+
 void CRigidBody::finalupdate()
 {
 	// 길이를 구함
@@ -69,9 +74,11 @@ void CRigidBody::finalupdate()
 		float accel = force / m_fMass;
 		// 가속도에 방향을 정해줌
 		m_fAccel = m_fForce.normalize() * accel;
-		// 속력에 넣어줌
-		m_fVelocity += m_fAccel * fDT;
 	}
+	// 중력가속도 적용
+	m_fAccel += m_fGAccel;
+	// 속력에 넣어줌
+	m_fVelocity += m_fAccel * fDT;
 	// 마찰력 적용
 	if (!m_fVelocity.IsZero())
 	{
@@ -96,6 +103,8 @@ void CRigidBody::finalupdate()
 	Move();
 	// 힘을 준 순간에만 영향을 주도록 초기화
 	m_fForce = fPoint(0.f, 0.f);
+	m_fAccel = fPoint(0.f, 0.f);
+	m_fGAccel = fPoint(0.f, 0.f);
 }
 
 

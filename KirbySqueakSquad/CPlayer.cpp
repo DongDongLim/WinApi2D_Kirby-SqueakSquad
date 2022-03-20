@@ -261,6 +261,10 @@ CPlayer::CPlayer()
 	pAni = GetAnimator()->FindAnimation(L"Down");
 	pAni->GetFrame(0).fptOffset = fPoint(0.f, 5.f);
 
+	// 중력
+	CreateGravity();
+
+
 	// 리지드바디 쓰자 충돌부분 보니까 써야겠다
 	CreateRigidBody();
 	CRigidBody* rigid = GetRigidBody();
