@@ -1,6 +1,9 @@
 #include "framework.h"
 #include "CTile.h"
 #include "CD2DImage.h"
+#include "CPlayer.h"
+#include "CCollider.h"
+#include "CGravity.h"
 
 CTile::CTile()
 {
@@ -126,4 +129,25 @@ void CTile::Load(FILE* pFile)
 	int group;
 	fread(&group, sizeof(int), 1, pFile);
 	m_group = (GROUP_TILE)group;
+}
+
+void CTile::OnCollision(CCollider* _pOther)
+{
+	CGameObject* other = _pOther->GetObj();
+	if (nullptr != other->GetGravity())
+		other->GetGravity()->SetIsGround(true);
+}
+
+void CTile::OnCollisionEnter(CCollider* _pOther)
+{
+	CGameObject* other = _pOther->GetObj();
+	if (nullptr != other->GetGravity())
+		other->GetGravity()->SetIsGround(true);
+}
+
+void CTile::OnCollisionExit(CCollider* _pOther)
+{
+	CGameObject* other = _pOther->GetObj();
+	if (nullptr != other->GetGravity())
+		other->GetGravity()->SetIsGround(false);
 }

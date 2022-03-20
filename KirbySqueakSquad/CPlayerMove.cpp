@@ -29,15 +29,16 @@ void OnMoveCollison(DWORD_PTR state, CCollider* other)
 				{
 					playerX = player->GetCollider()->GetRightPos().x;
 					groundX = other->GetLeftPos().x;
-					if (1 >= abs(playerX - groundX) && 1 <= abs(playerY - groundY))
-					{
-						stateMove->SetCrushWallTile(true);
-					}
 				}
 				else
 				{
 					playerX = player->GetCollider()->GetLeftPos().x;
 					groundX = other->GetRightPos().x;
+				}
+				if (1 >= abs(playerX - groundX) && 1 <= abs(playerY - groundY))
+				{
+					player->GetRigidBody()->SetVelocity(fPoint(0, player->GetRigidBody()->GetVelocity().y));
+					stateMove->Exit(PLAYERSTATE::IDLE);
 				}
 			}
 		}
@@ -47,29 +48,20 @@ void OnMoveCollison(DWORD_PTR state, CCollider* other)
 
 CPlayerMove::CPlayerMove()
 {
-	m_pPlayer->SetCollisonCallBack(OnMoveCollison, (DWORD_PTR)this);
+	//m_pPlayer->SetCollisonCallBack(OnMoveCollison, (DWORD_PTR)this);
 	m_eState = PLAYERSTATE::MOVE;
 	m_eCurCommand = COMMANDMOVE::NONE;
 	m_ePrevCommand = m_eCurCommand;
 	m_fAnimStayTime = m_eInfo.m_fMoveInertia;
-	m_fAccel = 0;
-	m_fStateStayTime = 0.1f;
 	m_bIsDash = false;
 	m_bIsStop = false;
 	m_bStartDir = true;
 	m_bIsDirChange = false;
-	m_bIsCrushWallTile = false;
 }
 
 CPlayerMove::~CPlayerMove()
 {
 
-}
-
-void CPlayerMove::Stay()
-{
-	if (m_fStateStayTime >= 0)
-		m_fStateStayTime -= fDT;
 }
 
 void CPlayerMove::KeyUpdate()
@@ -113,19 +105,16 @@ void CPlayerMove::KeyUpdate()
 
 void CPlayerMove::update()
 {
-	Stay();
-	if (m_fStateStayTime <= 0)
+	if (m_pPlayer->GetIsWall()[0])
 	{
-		if (m_bIsCrushWallTile)
-		{
-			Exit(PLAYERSTATE::IDLE);
-		}
-		else
-		{
-			KeyUpdate();
-		}
-	Move();
+		m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, m_pPlayer->GetRigidBody()->GetVelocity().y));
+		Exit(PLAYERSTATE::IDLE);
 	}
+	else
+	{
+		KeyUpdate();
+	}
+	Move();
 }
 
 
@@ -135,67 +124,77 @@ void CPlayerMove::Move()
 	fPoint pos = m_pPlayer->GetPos();
 	int dir = m_pPlayer->GetDir() ? 1 : -1;
 
-	pos.x += dir * m_eInfo.m_fVelocity * m_fAccel * fDT;
+	//pos.x += dir * m_eInfo.m_fVelocity * m_fAccel * fDT;
 
+	m_pPlayer->GetRigidBody()->AddForce(fPoint(dir * m_eInfo.m_fVelocity, m_pPlayer->GetRigidBody()->GetVelocity().y));
+	/*
 	if (0 <= pos.x && pos.x <= CCameraManager::getInst()->GetDisLimmit().x)
 	{
 		m_pPlayer->SetPos(pos);
-	}	
+	}
+	*/
 }
 
 
 void CPlayerMove::Anim()
 {
-	if (m_fStateStayTime <= 0)
+	m_pPlayer->GetAnimator()->SetReverce(!m_bStartDir);
+	switch (m_eCurCommand)
 	{
-		if (!m_bIsCrushWallTile)
+	case CPlayerMove::COMMANDMOVE::NONE:
+		m_pPlayer->GetAnimator()->Play(L"Move");
+		m_pPlayer->GetRigidBody()->SetMaxSpeed(m_eInfo.m_fMaxSpeed);
+		break;
+	case CPlayerMove::COMMANDMOVE::DASH:
+		m_pPlayer->GetAnimator()->Play(L"Dash");
+		m_pPlayer->GetRigidBody()->SetMaxSpeed(m_eInfo.m_fMaxSpeed * m_eInfo.g_fAccel);
+		break;
+	case CPlayerMove::COMMANDMOVE::CHANGEDIR:
+		m_fAnimStayTime -= fDT;
+		m_pPlayer->GetAnimator()->Play(L"QuickStop");
+		m_bStartDir ? m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0.f, m_pPlayer->GetRigidBody()->GetVelocity().y))
+			: m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0.f, m_pPlayer->GetRigidBody()->GetVelocity().y));
+		if (0 >= m_fAnimStayTime)
 		{
-			m_pPlayer->GetAnimator()->SetReverce(!m_bStartDir);
-			switch (m_eCurCommand)
-			{
-			case CPlayerMove::COMMANDMOVE::NONE:
-				m_pPlayer->GetAnimator()->Play(L"Move");
-				m_fAccel = 1;
-				break;
-			case CPlayerMove::COMMANDMOVE::DASH:
-				m_pPlayer->GetAnimator()->Play(L"Dash");
-				m_fAccel = m_eInfo.g_fAccel;
-				break;
-			case CPlayerMove::COMMANDMOVE::CHANGEDIR:
-				m_pPlayer->GetAnimator()->Play(L"QuickStop");
-				m_fAnimStayTime -= fDT;
-				m_fAccel = m_fAnimStayTime;
-				if (0 >= m_fAnimStayTime)
-				{
-					m_fAnimStayTime = 0;
-					m_bStartDir = m_pPlayer->GetDir();
-					m_bIsDash ? m_eCurCommand = COMMANDMOVE::DASH : m_eCurCommand = COMMANDMOVE::NONE;
-				}
-				break;
-			case CPlayerMove::COMMANDMOVE::TURNOFF:
-				m_fAnimStayTime -= fDT;
-				m_fAccel = m_fAnimStayTime;
-				if (0 >= m_fAnimStayTime)
-				{
-					m_fAnimStayTime = 0;
-					Exit(PLAYERSTATE::IDLE);
-				}
-				break;
-			case CPlayerMove::COMMANDMOVE::END:
-				break;
-			default:
-				break;
-			}
+			m_fAnimStayTime = 0;
+			m_bStartDir = m_pPlayer->GetDir();
+			m_bIsDash ? m_eCurCommand = COMMANDMOVE::DASH : m_eCurCommand = COMMANDMOVE::NONE;
 		}
+		/*
+		m_fAnimStayTime -= fDT;
+		m_fAccel = m_fAnimStayTime;
+		if (0 >= m_fAnimStayTime)
+		{
+			m_fAnimStayTime = 0;
+			m_bStartDir = m_pPlayer->GetDir();
+			m_bIsDash ? m_eCurCommand = COMMANDMOVE::DASH : m_eCurCommand = COMMANDMOVE::NONE;
+		}
+		*/
+		break;
+	case CPlayerMove::COMMANDMOVE::TURNOFF:
+		m_fAnimStayTime -= fDT;
+		m_bStartDir ? m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_fAnimStayTime * 50, m_pPlayer->GetRigidBody()->GetVelocity().y))
+			: m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_fAnimStayTime * -50, m_pPlayer->GetRigidBody()->GetVelocity().y));
+		if (0 >= m_fAnimStayTime)
+		{
+			m_fAnimStayTime = 0;
+			Exit(PLAYERSTATE::IDLE);
+		}
+		/*
+		m_fAccel = m_fAnimStayTime;
+		if (0 >= m_fAnimStayTime)
+		{
+			m_fAnimStayTime = 0;
+			Exit(PLAYERSTATE::IDLE);
+		}
+		*/
+		break;
+	case CPlayerMove::COMMANDMOVE::END:
+		break;
+	default:
+		break;
 	}
 }
-
-void CPlayerMove::SetCrushWallTile(bool isCrush)
-{
-	m_bIsCrushWallTile = isCrush;
-}
-
-
 
 void CPlayerMove::Enter()
 {
@@ -203,13 +202,10 @@ void CPlayerMove::Enter()
 	m_ePrevCommand = m_eCurCommand;
 	m_fAnimStayTime = m_eInfo.m_fMoveInertia;
 	m_bStartDir = m_pPlayer->GetDir();
-	m_fAccel = 1;
-	m_fStateStayTime = 0.1f;
 	m_bIsDash = false;
 	m_bIsStop = false;
 	m_bIsDirChange = false;
 	m_bIsActive = true;
-	m_bIsCrushWallTile = false;
 }
 
 void CPlayerMove::Exit(PLAYERSTATE state)

@@ -2,6 +2,7 @@
 
 class CCollider;
 class CAnimator;
+class CGravity;
 class CRigidBody;
 
 class CGameObject
@@ -9,7 +10,6 @@ class CGameObject
 	friend class CEventManager;
 
 private:
-	const float m_gravity = 10.f;
 	float m_fAccel;
 
 	wstring m_strName;
@@ -21,6 +21,7 @@ private:
 	// Component
 	CCollider* m_pCollider;
 	CAnimator* m_pAnimator;
+	CGravity* m_pGravity;
 	CRigidBody* m_pRigid;
 
 	
@@ -64,6 +65,9 @@ public:
 
 	CAnimator* GetAnimator();				// 애니메이터 반환
 	void CreateAnimator();					// 애니메이터 생성
+
+	CGravity* GetGravity();					// 중력 반환
+	void CreateGravity();					// 중력 생성
 
 	CRigidBody* GetRigidBody();				//리지드바디 반환
 	void CreateRigidBody();					//리지드바디 생성

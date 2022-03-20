@@ -56,14 +56,15 @@ void CPlayer::PlayerAttack(DWORD_PTR, DWORD_PTR)
 
 CPlayer::CPlayer()
 {
-	m_bIsGroundCount = 0;
+	//m_bIsGroundCount = 0;
 	CStateManager::getInst()->SetPlayer(this);
 	m_colliderState = 0;
 	m_colliderEnterState = 0;
 	m_colliderExitState = 0;
-	m_fStartStay = 2.f;
 	m_bIsRight = true;
-	m_bIsStart = true;
+	m_bIsGround = false;
+	m_bIsWall[0] = false;
+	m_bIsWall[1] = false;
 
 	SetName(L"Player");
 	SetScale(fPoint(32.f, 32.f));
@@ -260,13 +261,11 @@ CPlayer::CPlayer()
 	pAni = GetAnimator()->FindAnimation(L"Down");
 	pAni->GetFrame(0).fptOffset = fPoint(0.f, 5.f);
 
-	// 리지드바디 커비는 필요 없음...ㅠㅜ
-	/*
+	// 리지드바디 쓰자 충돌부분 보니까 써야겠다
 	CreateRigidBody();
 	CRigidBody* rigid = GetRigidBody();
 	rigid->SetMass(1);
-	rigid->SetMaxSpeed(200);
-	*/
+	rigid->SetMaxSpeed(m_fMaxSpeed);
 
 	// 상태
 	CPlayerState* pAnim = new CPlayerAnim();
@@ -283,6 +282,8 @@ CPlayer::CPlayer()
 	CPlayerState* pFall = new CPlayerFall();
 	CStateManager::getInst()->AddState(PLAYERSTATE::Fall, pFall);
 
+	CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
+
 }
 
 CPlayer::~CPlayer()
@@ -298,41 +299,25 @@ CPlayer* CPlayer::Clone()
 	return new CPlayer(*this);
 }
 
-void CPlayer::Enter()
-{
-	if (m_bIsStart)
-	{
-		m_fStartStay -= fDT;
-		if (m_fStartStay < 0)
-		{
-			CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
-			m_bIsStart = false;
-		}
-	}
-}
 
 void CPlayer::update()
 {
-	Enter();
-	if (!m_bIsStart)
+	if (KeyDown(VK_LEFT) || KeyDown(VK_RIGHT))
 	{
-		if (KeyDown(VK_LEFT) || KeyDown(VK_RIGHT))
-		{
-			KeyDown(VK_RIGHT) ? m_bIsRight = true : m_bIsRight = false;
-			//CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::MOVE);
-		}
-		if (KeyDown('C'))
-		{
-			//CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::ATTACK);
-		}
-		if (ANYKEYDOWN)
-		{
-			//CStateManager::getInst()->CommandSave();
-		}
-		if (KEYEMPTYDEFINE)
-		{
-			//CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE);
-		}
+		KeyDown(VK_RIGHT) ? m_bIsRight = true : m_bIsRight = false;
+		//CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::MOVE);
+	}
+	if (KeyDown('C'))
+	{
+		//CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::ATTACK);
+	}
+	if (ANYKEYDOWN)
+	{
+		//CStateManager::getInst()->CommandSave();
+	}
+	if (KEYEMPTYDEFINE)
+	{
+		//CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE);
 	}
 	CStateManager::getInst()->update();
 	GetAnimator()->update();
@@ -343,9 +328,30 @@ void CPlayer::render()
 	component_render();
 }
 
+void CPlayer::SetIsGround(bool ground)
+{
+	m_bIsGround = ground;
+}
+
+void CPlayer::SetIsWall(bool wall, bool isright)
+{
+	m_bIsWall[0] = wall;
+	m_bIsWall[1] = isright;
+}
+
 bool CPlayer::GetDir()
 {
 	return m_bIsRight;
+}
+
+bool CPlayer::GetIsGround()
+{
+	return m_bIsGround;
+}
+
+bool* CPlayer::GetIsWall()
+{
+	return m_bIsWall;
 }
 
 
@@ -384,7 +390,7 @@ void CPlayer::OnCollisionEnter(CCollider* other)
 	{
 		if (((CTile*)pOtherObj)->GetGroup() == GROUP_TILE::GROUND)
 		{
-			++m_bIsGroundCount;
+			//++m_bIsGroundCount;
 		}
 	}
 	list<COLLIDER_FUNC>::iterator iter = m_arrEnterFunc.begin();
@@ -403,6 +409,15 @@ void CPlayer::OnCollisionExit(CCollider* other)
 	{
 		if (((CTile*)pOtherObj)->GetGroup() == GROUP_TILE::GROUND)
 		{
+			if (m_bIsGround)
+			{
+				if (!Key('X') && !Key('V'))
+				{
+					CStateManager::getInst()->ExitState(PLAYERSTATE::JUMP);
+					CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
+				}
+			}
+			/*
 			--m_bIsGroundCount;
 			if (0 == m_bIsGroundCount)
 			{
@@ -412,6 +427,7 @@ void CPlayer::OnCollisionExit(CCollider* other)
 					CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
 				}
 			}
+			*/
 		}
 	}
 

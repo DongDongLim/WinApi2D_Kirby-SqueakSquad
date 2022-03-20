@@ -29,11 +29,13 @@ public:
 class CPlayerIdle : public CPlayerState
 {
 private:
-	int m_limmitDir;
+
 public:
 	CPlayerIdle();
 	~CPlayerIdle();
 
+
+	void KeyUpdate();
 	virtual void Anim();
 	virtual void update();
 	virtual void Enter();
@@ -56,13 +58,10 @@ private:
 	COMMANDMOVE m_eCurCommand;
 	COMMANDMOVE m_ePrevCommand;
 	float m_fAnimStayTime;
-	float m_fAccel;
-	float m_fStateStayTime;
 	bool m_bIsDash;
 	bool m_bIsStop;
 	bool m_bStartDir;
 	bool m_bIsDirChange;
-	bool m_bIsCrushWallTile;
 
 	
 public:
@@ -71,10 +70,7 @@ public:
 
 	void Move();
 	void Anim();
-
-	void SetCrushWallTile(bool isCrush);
 	
-	void Stay();
 	void KeyUpdate();
 	virtual void update();
 	virtual void Enter();

@@ -26,8 +26,9 @@ public:
 	void SetVelocity(fPoint velocity);
 	void AddVelocity(fPoint velocity);
 	void SetMaxSpeed(float maxSpeed);
-
 	void SetFricCoeff(float fricCoeff);
+
+	fPoint GetVelocity();
 
 	void finalupdate();
 

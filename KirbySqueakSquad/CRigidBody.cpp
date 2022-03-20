@@ -5,7 +5,7 @@
 CRigidBody::CRigidBody()
 {
 	m_pOwner = nullptr;
-	m_fFricCoeff = 10.f;
+	m_fFricCoeff = 50.f;
 }
 
 CRigidBody::CRigidBody(const CRigidBody& other)
@@ -52,6 +52,11 @@ void CRigidBody::SetMaxSpeed(float maxSpeed)
 void CRigidBody::SetFricCoeff(float fricCoeff)
 {
 	m_fFricCoeff = fricCoeff;
+}
+
+fPoint CRigidBody::GetVelocity()
+{
+	return m_fVelocity;
 }
 
 void CRigidBody::finalupdate()
@@ -102,7 +107,7 @@ void CRigidBody::Move()
 	{
 		fPoint pos = m_pOwner->GetPos();
 		pos += m_fVelocity * fDT;
-
-		m_pOwner->SetPos(pos);
+		if (0 <= pos.x && pos.x <= CCameraManager::getInst()->GetDisLimmit().x)
+			m_pOwner->SetPos(pos);
 	}
 }

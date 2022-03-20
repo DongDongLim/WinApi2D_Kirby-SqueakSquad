@@ -32,16 +32,18 @@
 // 함수포인터를 위한 타입정의
 typedef void(*COLLIDER_FUNC) (DWORD_PTR, CCollider*);
 
+
 class CState;
 class CD2DImage;
 
 struct PLAYERINFO
 {
-	const float g_fAccel = 1.5f;
-	const float m_fVelocity = 100.f;
+	const float g_fAccel = 2.f;
+	const float m_fVelocity = 800.f;
 	const float m_fMoveInertia = 0.2f;
-	const float m_fVerticalSpeed = 200.f;
+	const float m_fVerticalSpeed = 100.f;
 	const float m_fJumpTime = 1.f;
+	const float m_fMaxSpeed = 100.f;
 
 };
 
@@ -49,8 +51,8 @@ class CPlayer : public CGameObject
 {
 	friend CStateManager;
 private:
+	const float m_fMaxSpeed = 300.f;
 	
-
 	// 플레이어 애니메이션 재생을 위한 이미지들
 	vector<CD2DImage*> m_pImg;
 	// 플레이어 애니메이션 이미지의 키값
@@ -60,9 +62,9 @@ private:
 	
 	//const float m_fCommandTime = 0.2f;
 	bool m_bIsRight;
-	bool m_bIsStart;
-	float m_fStartStay;
-	int m_bIsGroundCount;
+	bool m_bIsGround;
+	bool m_bIsWall[2];
+	//int m_bIsGroundCount;
 	void PlayerAttack(DWORD_PTR, DWORD_PTR);
 	list<COLLIDER_FUNC> m_arrFunc;
 	DWORD_PTR m_colliderState;
@@ -77,11 +79,15 @@ public:
 	~CPlayer();
 	virtual CPlayer* Clone();
 	
-	void Enter();
 	virtual void update();
 	virtual void render();
 
+	void SetIsGround(bool ground);
+	void SetIsWall(bool wall, bool isright);
+
 	bool GetDir();
+	bool GetIsGround();
+	bool* GetIsWall();
 
 	void SetCollisonCallBack(COLLIDER_FUNC pFunc, DWORD_PTR state);
 	//void DeleteColliderCallBack(COLLIDER_FUNC pFunc);

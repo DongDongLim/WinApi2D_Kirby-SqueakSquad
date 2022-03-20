@@ -79,6 +79,9 @@
     <Filter Include="Engin\Component\RigidBody">
       <UniqueIdentifier>{843f6178-f12d-4982-b425-6b94983252bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engin\Component\Gravity">
+      <UniqueIdentifier>{d3f55a21-db06-4f93-929d-d31aa9e85505}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -209,6 +212,9 @@
     </ClInclude>
     <ClInclude Include="CRigidBody.h">
       <Filter>Engin\Component\RigidBody</Filter>
+    </ClInclude>
+    <ClInclude Include="CGravity.h">
+      <Filter>Engin\Component\Gravity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -346,6 +352,9 @@
     </ClCompile>
     <ClCompile Include="CPlayerAnim.cpp">
       <Filter>Object\Character\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CGravity.cpp">
+      <Filter>Engin\Component\Gravity</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

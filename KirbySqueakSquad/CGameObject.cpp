@@ -3,6 +3,7 @@
 #include "CCollider.h"
 #include "CAnimator.h"
 #include "CRigidBody.h"
+#include "CGravity.h"
 
 CGameObject::CGameObject()
 {
@@ -12,6 +13,7 @@ CGameObject::CGameObject()
 	m_pAnimator = nullptr;
 	m_pRigid = nullptr;
 	m_bAlive = true;
+	m_pGravity = nullptr;
 	m_fAccel = 0;
 }
 
@@ -22,6 +24,7 @@ CGameObject::CGameObject(const CGameObject& other)
 	m_fptScale	= other.m_fptScale;
 	m_pCollider = nullptr;
 	m_pAnimator = nullptr;
+	m_pGravity = nullptr;
 	m_pRigid = nullptr;
 	m_bAlive	= true;
 
@@ -34,6 +37,11 @@ CGameObject::CGameObject(const CGameObject& other)
 	{
 		m_pAnimator = new CAnimator(*other.m_pAnimator);
 		m_pAnimator->m_pOwner = this;
+	}
+	if (nullptr != other.m_pRigid)
+	{
+		m_pGravity = new CRigidBody(*other.m_pGravity);
+		m_pGravity->m_pOwner = this;
 	}
 	if (nullptr != other.m_pRigid)
 	{
@@ -51,6 +59,10 @@ CGameObject::~CGameObject()
 	if (nullptr != m_pAnimator)
 	{
 		delete m_pAnimator;
+	}
+	if (nullptr != m_pGravity)
+	{
+		delete m_pGravity;
 	}
 	if (nullptr != m_pRigid)
 	{
@@ -134,6 +146,10 @@ void CGameObject::finalupdate()
 	{
 		m_pCollider->finalupdate();
 	}
+	if (nullptr != m_pGravity)
+	{
+		m_pGravity->finalupdate();
+	}
 	if (nullptr != m_pRigid)
 	{
 		m_pRigid->finalupdate();
@@ -188,6 +204,17 @@ void CGameObject::CreateAnimator()
 {
 	m_pAnimator = new CAnimator;
 	m_pAnimator->m_pOwner = this;
+}
+
+CGravity* CGameObject::GetGravity()
+{
+	return m_pGravity;
+}
+
+void CGameObject::CreateGravity()
+{
+	m_pGravity = new CGravity();
+	m_pGravity->m_pOwner = this;
 }
 
 CRigidBody* CGameObject::GetRigidBody()
