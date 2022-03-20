@@ -61,11 +61,16 @@ void CPlayerFall::update()
 	m_pPlayer->SetPos(pos);
 }
 
+void CPlayerFall::Anim()
+{
+	m_pPlayer->GetAnimator()->SetReverce(!m_pPlayer->GetDir());
+	m_pPlayer->GetAnimator()->Play(L"Fall0");
+}
+
 void CPlayerFall::Enter()
 {
 	m_fGravity = 50.f;
 	m_eTarget = COLLIONTARGET::END;
-	m_pPlayer->GetAnimator()->Play(L"Fall0");
 	m_bIsActive = true;
 
 }

@@ -33,9 +33,6 @@ CPlayerIdle::~CPlayerIdle()
 
 void CPlayerIdle::update()
 {
-	if (1 == CStateManager::getInst()->GetCurPlaySize())
-		m_pPlayer->GetAnimator()->Play(L"Idle");
-	m_pPlayer->GetAnimator()->SetReverce(!m_pPlayer->GetDir());
 	if (KeyDown(VK_LEFT) || KeyDown(VK_RIGHT))
 	{
 		Exit(PLAYERSTATE::MOVE);
@@ -44,6 +41,12 @@ void CPlayerIdle::update()
 	{
 		Exit(PLAYERSTATE::ATTACK);
 	}
+}
+
+void CPlayerIdle::Anim()
+{
+	m_pPlayer->GetAnimator()->SetReverce(!m_pPlayer->GetDir());
+	m_pPlayer->GetAnimator()->Play(L"Idle");
 }
 
 void CPlayerIdle::Enter()

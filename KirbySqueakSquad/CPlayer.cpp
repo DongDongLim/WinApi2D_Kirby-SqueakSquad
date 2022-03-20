@@ -268,6 +268,9 @@ CPlayer::CPlayer()
 	*/
 
 	// ป๓ลย
+	CPlayerState* pAnim = new CPlayerAnim();
+	CStateManager::getInst()->AddState(PLAYERSTATE::Anim, pAnim);
+	CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Anim);
 	CPlayerState* pIdle = new CPlayerIdle();
 	CStateManager::getInst()->AddState(PLAYERSTATE::IDLE, pIdle);
 	CPlayerState* pMove = new CPlayerMove();

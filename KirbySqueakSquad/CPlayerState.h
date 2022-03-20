@@ -16,6 +16,8 @@ public:
 	CPlayer* GetPlayer();
 	bool GetIsActive();
 
+
+	virtual void Anim() {}
 	virtual void update() = 0;
 	virtual void Enter() = 0;
 	virtual void Exit(PLAYERSTATE state) = 0;
@@ -29,6 +31,7 @@ public:
 	CPlayerIdle();
 	~CPlayerIdle();
 
+	virtual void Anim();
 	virtual void update();
 	virtual void Enter();
 	virtual void Exit(PLAYERSTATE state);
@@ -106,7 +109,7 @@ public:
 
 	void SetTarget(COLLIONTARGET target);
 
-	
+	virtual void Anim();
 	virtual void update();
 	virtual void Enter();
 	virtual void Exit(PLAYERSTATE state);
@@ -142,6 +145,20 @@ class CPlayerFly : public CPlayerState
 public:
 	CPlayerFly();
 	~CPlayerFly();
+
+	virtual void update();
+	virtual void Enter();
+	virtual void Exit(PLAYERSTATE state);
+};
+
+class CPlayerAnim : public CPlayerState
+{
+private:
+	vector<PLAYERSTATE> m_arrState;
+
+public:
+	CPlayerAnim();
+	~CPlayerAnim();
 
 	virtual void update();
 	virtual void Enter();

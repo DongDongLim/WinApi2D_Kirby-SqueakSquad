@@ -37,7 +37,6 @@ public:
 	int GetCurPlaySize();
 
 	COMMANDKEY GetCommend();
-	
 
 	CPlayerState* FindState(PLAYERSTATE state);
 	CPlayerState* FindPlayeState(PLAYERSTATE state);

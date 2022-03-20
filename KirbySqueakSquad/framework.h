@@ -98,15 +98,16 @@ enum class TYPE_EVENT
 
 enum class PLAYERSTATE
 {
+	Anim,
 	IDLE,
 	MOVE,
+	DOWN,
 	JUMP,
 	Fall,
-	DOWN,
 	FLY,
 	EAT,
-	ATTACK,
 	TRANSFORM,
+	ATTACK,
 
 	END,
 };

@@ -344,6 +344,9 @@
     <ClCompile Include="CPlayerFall.cpp">
       <Filter>Object\Character\Player\State</Filter>
     </ClCompile>
+    <ClCompile Include="CPlayerAnim.cpp">
+      <Filter>Object\Character\Player\State</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="KirbySqueakSquad.rc">

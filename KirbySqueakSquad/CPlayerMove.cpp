@@ -76,7 +76,6 @@ void CPlayerMove::update()
 	}
 
 	Move();
-	Anim();
 }
 
 void CPlayerMove::Move()
