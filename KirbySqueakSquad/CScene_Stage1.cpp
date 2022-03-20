@@ -36,7 +36,7 @@ void CScene_Stage1::Enter()
 	AddObject(backGround, GROUP_GAMEOBJ::BACKGROUND);
 
 	CPlayer* pPlayer = new CPlayer();
-	pPlayer->SetPos(fPoint(50, 130));
+	pPlayer->SetPos(fPoint(50, 96));
 	AddObject(pPlayer, GROUP_GAMEOBJ::PLAYER);
 
 	CCollisionManager::getInst()->CheckGroup(GROUP_GAMEOBJ::PLAYER, GROUP_GAMEOBJ::TILE);
@@ -44,6 +44,7 @@ void CScene_Stage1::Enter()
 	// Camera Look ÁöÁ¤
 	CCameraManager::getInst()->SetTargetObj(pPlayer);
 	//CCameraManager::getInst()->SetLookAt(fPoint(WINSIZEX / g_winScale / 2.f, WINSIZEY / g_winScale / 2.f));
+
 }
 
 void CScene_Stage1::Exit()

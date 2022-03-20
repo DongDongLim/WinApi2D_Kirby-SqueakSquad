@@ -58,6 +58,8 @@ private:
 	
 	//const float m_fCommandTime = 0.2f;
 	bool m_bIsRight;
+	bool m_bIsStart;
+	float m_fStartStay;
 	int m_bIsGroundCount;
 	void PlayerAttack(DWORD_PTR, DWORD_PTR);
 	list<COLLIDER_FUNC> m_arrFunc;
@@ -73,6 +75,7 @@ public:
 	~CPlayer();
 	virtual CPlayer* Clone();
 	
+	void Enter();
 	virtual void update();
 	virtual void render();
 

@@ -40,6 +40,10 @@ public:
 
 	fPoint GetPos();
 	fPoint GetScale();
+	virtual fPoint GetRightPos();
+	virtual fPoint GetLeftPos();
+	virtual fPoint GetUpPos();
+	virtual fPoint GetDownPos();
 	wstring GetName();
 	GROUP_GAMEOBJ GetGroup();
 

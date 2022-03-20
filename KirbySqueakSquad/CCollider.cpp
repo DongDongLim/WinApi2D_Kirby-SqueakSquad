@@ -48,6 +48,26 @@ fPoint CCollider::GetScale()
 	return m_fptScale;
 }
 
+fPoint CCollider::GetRightPos()
+{
+	return (m_fptFinalPos + fPoint((m_fptScale/2).x, 0));
+}
+
+fPoint CCollider::GetLeftPos()
+{
+	return (m_fptFinalPos - fPoint((m_fptScale / 2).x, 0));
+}
+
+fPoint CCollider::GetUpPos()
+{
+	return (m_fptFinalPos - fPoint(0, (m_fptScale / 2).y));
+}
+
+fPoint CCollider::GetDownPos()
+{
+	return  (m_fptFinalPos + fPoint(0, (m_fptScale / 2).y));
+}
+
 void CCollider::SetOffsetPos(fPoint offsetPos)
 {
 	m_fptOffsetPos = offsetPos;

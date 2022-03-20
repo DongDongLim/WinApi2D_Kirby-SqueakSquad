@@ -55,6 +55,7 @@ private:
 	COMMANDMOVE m_ePrevCommand;
 	float m_animStayTime;
 	float m_gfAccel;
+	float m_fLimmitX[2] = {0};
 	bool m_bIsDash;
 	bool m_bIsStop;
 	bool m_bStartDir;
@@ -68,6 +69,8 @@ public:
 	void Move();
 	void Anim();
 
+	void SetLimmitDisX(float leftX, float rightX);
+
 	virtual void update();
 	virtual void Enter();
 	virtual void Exit(PLAYERSTATE state);
@@ -79,6 +82,8 @@ class CPlayerJump : public CPlayerState
 public:
 	CPlayerJump();
 	~CPlayerJump();
+
+	void Jump();
 
 	virtual void update();
 	virtual void Enter();
@@ -151,6 +156,8 @@ public:
 	virtual void Exit(PLAYERSTATE state);
 };
 
+// 상태 상속 안받고 그냥 돌려도 될듯? 컴퍼넌트로 해도 되겠다
+// TODO : 추후 컴퍼넌트로 돌려서 애니메이션 있는 오브젝트가 모두 사용 가능하도록 변경
 class CPlayerAnim : public CPlayerState
 {
 private:

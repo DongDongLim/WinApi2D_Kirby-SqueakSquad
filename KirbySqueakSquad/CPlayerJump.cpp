@@ -15,10 +15,17 @@ CPlayerJump::~CPlayerJump()
 
 }
 
+void CPlayerJump::Jump()
+{
+
+}
+
 void CPlayerJump::update()
 {
 
 }
+
+
 
 void CPlayerJump::Enter()
 {

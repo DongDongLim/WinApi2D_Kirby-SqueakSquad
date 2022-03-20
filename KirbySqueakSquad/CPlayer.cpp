@@ -61,8 +61,9 @@ CPlayer::CPlayer()
 	m_colliderState = 0;
 	m_colliderEnterState = 0;
 	m_colliderExitState = 0;
+	m_fStartStay = 2.f;
 	m_bIsRight = true;
-	
+	m_bIsStart = true;
 
 	SetName(L"Player");
 	SetScale(fPoint(32.f, 32.f));
@@ -282,9 +283,6 @@ CPlayer::CPlayer()
 	CPlayerState* pFall = new CPlayerFall();
 	CStateManager::getInst()->AddState(PLAYERSTATE::Fall, pFall);
 
-	CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
-
-
 }
 
 CPlayer::~CPlayer()
@@ -300,24 +298,41 @@ CPlayer* CPlayer::Clone()
 	return new CPlayer(*this);
 }
 
+void CPlayer::Enter()
+{
+	if (m_bIsStart)
+	{
+		m_fStartStay -= fDT;
+		if (m_fStartStay < 0)
+		{
+			CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
+			m_bIsStart = false;
+		}
+	}
+}
+
 void CPlayer::update()
 {
-	if (KeyDown(VK_LEFT) || KeyDown(VK_RIGHT))
+	Enter();
+	if (!m_bIsStart)
 	{
-		KeyDown(VK_RIGHT) ? m_bIsRight = true : m_bIsRight = false;
-		//CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::MOVE);
-	}
-	if (KeyDown('C'))
-	{
-		//CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::ATTACK);
-	}
-	if (ANYKEYDOWN)
-	{
-		//CStateManager::getInst()->CommandSave();
-	}
-	if (KEYEMPTYDEFINE)
-	{
-		//CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE);
+		if (KeyDown(VK_LEFT) || KeyDown(VK_RIGHT))
+		{
+			KeyDown(VK_RIGHT) ? m_bIsRight = true : m_bIsRight = false;
+			//CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::MOVE);
+		}
+		if (KeyDown('C'))
+		{
+			//CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::ATTACK);
+		}
+		if (ANYKEYDOWN)
+		{
+			//CStateManager::getInst()->CommandSave();
+		}
+		if (KEYEMPTYDEFINE)
+		{
+			//CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE);
+		}
 	}
 	CStateManager::getInst()->update();
 	GetAnimator()->update();

@@ -88,6 +88,26 @@ fPoint CGameObject::GetScale()
 	return m_fptScale;
 }
 
+fPoint CGameObject::GetRightPos()
+{
+	return (m_fptPos + fPoint((m_fptScale / 2).x, 0));
+}
+
+fPoint CGameObject::GetLeftPos()
+{
+	return (m_fptPos - fPoint((m_fptScale / 2).x, 0));
+}
+
+fPoint CGameObject::GetUpPos()
+{
+	return  (m_fptPos - fPoint(0, (m_fptScale / 2).y));
+}
+
+fPoint CGameObject::GetDownPos()
+{
+	return  (m_fptPos - fPoint(0, (m_fptScale / 2).y));
+}
+
 wstring CGameObject::GetName()
 {
 	return m_strName;

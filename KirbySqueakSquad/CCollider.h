@@ -26,6 +26,10 @@ public:
 	fPoint GetOffsetPos();
 	fPoint GetFinalPos();
 	fPoint GetScale();
+	virtual fPoint GetRightPos();
+	virtual fPoint GetLeftPos();
+	virtual fPoint GetUpPos();
+	virtual fPoint GetDownPos();
 
 	void SetOffsetPos(fPoint offsetPos);
 	void SetFinalPos(fPoint finalPos);

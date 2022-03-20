@@ -5,18 +5,40 @@
 #include "CAnimation.h"
 #include "CPlayer.h"
 #include "CCollider.h"
+#include "CTile.h"
 
 
 void OnCollison(DWORD_PTR state, CCollider* other)
 {
-	if (((CPlayerMove*)state)->GetIsActive())
+	CPlayerMove* stateMove = (CPlayerMove*)state;
+	if (stateMove->GetIsActive())
 	{
 		CGameObject* pOtherObj = other->GetObj();
 		if (pOtherObj->GetGroup() == GROUP_GAMEOBJ::TILE)
 		{
-			fPoint pos = other->GetFinalPos();
-			fPoint scale = other->GetScale();
-
+			if (((CTile*)pOtherObj)->GetGroup() == GROUP_TILE::GROUND)
+			{
+				CPlayer* player = CStateManager::getInst()->GetPlayer();
+				float playerX;
+				float groundX;
+				float playerY;
+				float groundY;
+				playerY = player->GetCollider()->GetDownPos().y;
+				groundY = other->GetUpPos().y;
+				if (player->GetDir())
+				{
+					playerX = player->GetCollider()->GetRightPos().x;
+					groundX = other->GetLeftPos().x;
+				}
+				else
+				{
+					playerX = player->GetCollider()->GetLeftPos().x;
+					groundX = other->GetRightPos().x;
+				}
+				if (1 >= abs(playerX - groundX) && 1 <= abs(playerY - groundY))
+					stateMove->SetLimmitDisX(other->GetLeftPos().x - (player->GetCollider()->GetScale().x/2)
+						, other->GetRightPos().x + (player->GetCollider()->GetScale().x / 2));
+			}
 		}
 	}
 }
@@ -87,7 +109,17 @@ void CPlayerMove::Move()
 	pos.x += dir * m_eInfo.m_fVelocity * m_gfAccel * fDT;
 
 	if (0 <= pos.x && pos.x <= CCameraManager::getInst()->GetDisLimmit().x)
-		m_pPlayer->SetPos(pos);
+	{
+		if (0 != m_fLimmitX[1])
+		{
+			if(m_fLimmitX[0] >= pos.x && pos.x <= m_fLimmitX[1])
+			m_pPlayer->SetPos(pos);
+		}
+		else
+		{
+			m_pPlayer->SetPos(pos);
+		}
+	}
 	
 }
 
@@ -129,6 +161,12 @@ void CPlayerMove::Anim()
 	default:
 		break;
 	}
+}
+
+void CPlayerMove::SetLimmitDisX(float leftX, float rightX)
+{
+	m_fLimmitX[0] = leftX;
+	m_fLimmitX[1] = rightX;
 }
 
 void CPlayerMove::Enter()

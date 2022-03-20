@@ -15,7 +15,10 @@ void OnCollisonEnter(DWORD_PTR state, CCollider* other)
 		{
 			if (((CTile*)pOtherObj)->GetGroup() == GROUP_TILE::GROUND)
 			{
-				((CPlayerFall*)state)->SetTarget(CPlayerFall::COLLIONTARGET::GROUND);
+				float playerY = CStateManager::getInst()->GetPlayer()->GetCollider()->GetDownPos().y;
+				float groundY = other->GetUpPos().y;
+				if (1 >= abs(playerY - groundY))
+					((CPlayerFall*)state)->SetTarget(CPlayerFall::COLLIONTARGET::GROUND);
 			}
 
 		}
