@@ -267,7 +267,6 @@ CPlayer::CPlayer()
 	// 리지드바디 쓰자 충돌부분 보니까 써야겠다
 	CreateRigidBody();
 	CRigidBody* rigid = GetRigidBody();
-	rigid->SetMass(10);
 	rigid->SetMaxSpeed(info.m_fMaxVelocity);
 
 	// 상태

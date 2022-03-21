@@ -6,6 +6,7 @@
 #include "CPlayer.h"
 #include "CCollider.h"
 #include "CTile.h"
+#include "CGravity.h"
 
 
 void OnMoveCollison(DWORD_PTR state, CCollider* other)
@@ -143,8 +144,16 @@ void CPlayerMove::Move()
 	switch (m_eCurCommand)
 	{
 	case CPlayerMove::COMMANDMOVE::NONE:
-		m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_dir * m_eInfo.m_fVelocity, 
-			m_pPlayer->GetRigidBody()->GetVelocity().y));
+		if (m_pPlayer->GetGravity()->GetIsGround())
+		{
+			m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_dir * m_eInfo.m_fVelocity,
+				m_pPlayer->GetRigidBody()->GetVelocity().y));
+		}
+		else
+		{
+			m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_dir * m_eInfo.m_fVelocity * m_eInfo.g_fAccel,
+				m_pPlayer->GetRigidBody()->GetVelocity().y));
+		}
 		//m_pPlayer->GetRigidBody()->AddForce(fPoint(m_dir * m_eInfo.m_fVelocity, 0));
 		break;
 	case CPlayerMove::COMMANDMOVE::DASH:

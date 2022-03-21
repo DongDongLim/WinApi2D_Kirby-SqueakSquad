@@ -6,12 +6,14 @@ CRigidBody::CRigidBody()
 {
 	m_pOwner = nullptr;
 	m_fFricCoeff = 50.f;
+	m_fMass = 0.f;
 }
 
 CRigidBody::CRigidBody(const CRigidBody& other)
 {
 	m_pOwner = nullptr;
 	m_fFricCoeff = 10.f;
+	m_fMass = 0.f;
 }
 
 CRigidBody::~CRigidBody()
@@ -69,6 +71,11 @@ fPoint CRigidBody::GetMaxVelocity()
 	return m_fMaxVelocity;
 }
 
+fPoint CRigidBody::GetDir()
+{
+	return m_fVelocity.normalize();
+}
+
 void CRigidBody::finalupdate()
 {
 	// 길이를 구함
@@ -80,8 +87,10 @@ void CRigidBody::finalupdate()
 		// 가속도에 방향을 정해줌
 		m_fAccel = m_fForce.normalize() * accel;
 	}
+
 	// 중력가속도 적용
 	m_fAccel += m_fGAccel;
+
 	// 속력에 넣어줌
 	m_fVelocity += m_fAccel * fDT;
 	// 마찰력 적용

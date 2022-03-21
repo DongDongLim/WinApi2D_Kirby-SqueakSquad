@@ -108,19 +108,27 @@ void CPlayerIdle::KeyUpdate()
 void CPlayerIdle::update()
 {
 	if (m_pPlayer->GetGravity()->GetIsGround())
-		CStateManager::getInst()->ExitState(PLAYERSTATE::Fall); 
+	{
+		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::Fall))
+		{
+			CStateManager::getInst()->ExitState(PLAYERSTATE::Fall);
+			//m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, 0));
+		}
+		m_fDelayTime = m_fKeepDelayTime;
+	}
 	else
 	{
-		if (nullptr == CStateManager::getInst()->FindPlayeState(PLAYERSTATE::JUMP))
+		m_fDelayTime -= fDT;
+		if (m_fDelayTime <= 0)
 		{
-			m_fDelayTime -= fDT;
-			if (m_fDelayTime <= 0)
+			if (nullptr == CStateManager::getInst()->FindPlayeState(PLAYERSTATE::JUMP))
 			{
 				CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
 				m_fDelayTime = m_fKeepDelayTime;
 			}
 		}
 	}
+
 
 	KeyUpdate();
 }

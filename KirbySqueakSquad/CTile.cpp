@@ -134,8 +134,7 @@ void CTile::Load(FILE* pFile)
 void CTile::OnCollision(CCollider* _pOther)
 {
 	CGameObject* other = _pOther->GetObj();
-	if (GROUP_TILE::GROUND == GetGroup() && other->GetGroup()
-		!= GROUP_GAMEOBJ::TILE)
+	if (GROUP_TILE::GROUND == GetGroup())
 	{
 		float fPosY = _pOther->GetDownPos().y;
 		if (abs(fPosY - GetCollider()->GetUpPos().y) <= 1.f)
@@ -156,8 +155,7 @@ void CTile::OnCollision(CCollider* _pOther)
 void CTile::OnCollisionEnter(CCollider* _pOther)
 {
 	CGameObject* other = _pOther->GetObj();
-	if (GROUP_TILE::GROUND == GetGroup() && other->GetGroup()
-		!= GROUP_GAMEOBJ::TILE)
+	if (GROUP_TILE::GROUND == GetGroup())
 	{
 		float fPosY = _pOther->GetDownPos().y;
 		if (abs(fPosY - GetCollider()->GetUpPos().y) <= 1.f)
@@ -178,14 +176,13 @@ void CTile::OnCollisionEnter(CCollider* _pOther)
 void CTile::OnCollisionExit(CCollider* _pOther)
 {
 	CGameObject* other = _pOther->GetObj();
-	if (GROUP_TILE::GROUND == GetGroup() && other->GetGroup()
-		!= GROUP_GAMEOBJ::TILE)
+	if (GROUP_TILE::GROUND == GetGroup())
 	{
 		float fPosY = _pOther->GetDownPos().y;
 		if (abs(fPosY - GetCollider()->GetUpPos().y) <= 1.f)
 		{
-			if (nullptr != other->GetGravity())
-				other->GetGravity()->SetIsGround(false);			
+			//if (nullptr != other->GetGravity())
+				//other->GetGravity()->SetIsGround(false);			
 		}
 
 	}

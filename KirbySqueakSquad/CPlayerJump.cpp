@@ -41,7 +41,7 @@ void CPlayerJump::Jump()
 		if (0 != m_fTurnKeepSpeed)
 		{
 			m_fTurnSpeed -= fDT;
-			m_pPlayer->GetRigidBody()->AddForce(fPoint(0.f, m_eInfo.m_fVerticalSpeed));
+			//m_pPlayer->GetRigidBody()->AddForce(fPoint(0.f, m_eInfo.m_fVerticalSpeed));
 			//pos -= fPoint(0, m_fTurnSpeed * 4) * fDT;
 			if (m_fTurnSpeed <= -m_fTurnKeepSpeed)
 			{

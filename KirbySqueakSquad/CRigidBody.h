@@ -32,6 +32,7 @@ public:
 
 	fPoint GetVelocity();
 	fPoint GetMaxVelocity();
+	fPoint GetDir();
 
 	void finalupdate();
 
