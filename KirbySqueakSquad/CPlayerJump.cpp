@@ -25,7 +25,8 @@ void CPlayerJump::Jump()
 	{
 		if (Key('X') || Key('V'))
 		{
-			pos -= fPoint(0, m_fJumpSpeed) * fDT;
+			m_pPlayer->GetRigidBody()->AddVelocity(fPoint( 0.f, -m_fJumpSpeed));
+			//pos -= fPoint(0, m_fJumpSpeed) * fDT;
 		}
 		if (KeyUp('X') || KeyUp('V'))
 		{
@@ -39,8 +40,9 @@ void CPlayerJump::Jump()
 	{
 		if (0 != m_fTurnKeepSpeed)
 		{
-			m_fTurnSpeed -= 2 * fDT;
-			pos -= fPoint(0, m_fTurnSpeed * 4) * fDT;
+			m_fTurnSpeed -= fDT;
+			m_pPlayer->GetRigidBody()->AddForce(fPoint(0.f, m_eInfo.m_fVerticalSpeed));
+			//pos -= fPoint(0, m_fTurnSpeed * 4) * fDT;
 			if (m_fTurnSpeed <= -m_fTurnKeepSpeed)
 			{
 				Exit(PLAYERSTATE::Fall);
@@ -60,7 +62,7 @@ void CPlayerJump::Anim()
 		m_pPlayer->GetAnimator()->Play(L"Turn");
 		if (m_fTurnKeepSpeed == 0)
 		{
-			m_fTurnSpeed = m_pPlayer->GetAnimator()->GetFrameSpeed() * m_pPlayer->GetAnimator()->GetAnimSize();
+			m_fTurnSpeed = m_pPlayer->GetAnimator()->GetFrameSpeed() * (m_pPlayer->GetAnimator()->GetAnimSize()-1);
 			m_fTurnKeepSpeed = m_fTurnSpeed;
 		}
 	}

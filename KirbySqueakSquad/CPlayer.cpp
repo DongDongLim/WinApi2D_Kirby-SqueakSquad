@@ -264,12 +264,11 @@ CPlayer::CPlayer()
 	// 중력
 	CreateGravity();
 
-
 	// 리지드바디 쓰자 충돌부분 보니까 써야겠다
 	CreateRigidBody();
 	CRigidBody* rigid = GetRigidBody();
 	rigid->SetMass(1);
-	rigid->SetMaxSpeed(m_fMaxSpeed);
+	rigid->SetMaxSpeed(info.m_fMaxVelocity);
 
 	// 상태
 	CPlayerState* pAnim = new CPlayerAnim();
@@ -286,6 +285,7 @@ CPlayer::CPlayer()
 	CPlayerState* pFall = new CPlayerFall();
 	CStateManager::getInst()->AddState(PLAYERSTATE::Fall, pFall);
 
+	CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::IDLE);
 	CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
 
 }

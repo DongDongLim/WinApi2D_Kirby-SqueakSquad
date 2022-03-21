@@ -8,7 +8,7 @@ CGravity::CGravity()
 {
 	m_pOwner = nullptr;
 	m_bisGround = false;
-	m_fGAccel = fPoint(0.f, 100.f);
+	m_fGAccel = fPoint(0.f, 500.f);
 }
 
 CGravity::~CGravity()

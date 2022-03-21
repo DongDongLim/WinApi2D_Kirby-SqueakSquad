@@ -142,10 +142,6 @@ void CGameObject::SetDead()
 
 void CGameObject::finalupdate()
 {
-	if (nullptr != m_pCollider)
-	{
-		m_pCollider->finalupdate();
-	}
 	if (nullptr != m_pGravity)
 	{
 		m_pGravity->finalupdate();
@@ -153,6 +149,10 @@ void CGameObject::finalupdate()
 	if (nullptr != m_pRigid)
 	{
 		m_pRigid->finalupdate();
+	}
+	if (nullptr != m_pCollider)
+	{
+		m_pCollider->finalupdate();
 	}
 }
 

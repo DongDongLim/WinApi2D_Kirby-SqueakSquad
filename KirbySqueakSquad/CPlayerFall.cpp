@@ -48,9 +48,6 @@ void CPlayerFall::SetTarget(COLLIONTARGET target)
 
 void CPlayerFall::update()
 {
-	if(m_pPlayer->GetGravity()->GetIsGround())
-		Exit(PLAYERSTATE::IDLE);
-	
 	//fPoint pos = m_pPlayer->GetPos();
 	//switch (m_eTarget)
 	//{

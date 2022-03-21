@@ -44,9 +44,9 @@ void CRigidBody::AddVelocity(fPoint velocity)
 	m_fVelocity += velocity;
 }
 
-void CRigidBody::SetMaxSpeed(float maxSpeed)
+void CRigidBody::SetMaxSpeed(fPoint maxSpeed)
 {
-	m_fMaxSpeed = maxSpeed;
+	m_fMaxVelocity = maxSpeed;
 }
 
 void CRigidBody::SetFricCoeff(float fricCoeff)
@@ -62,6 +62,11 @@ fPoint CRigidBody::GetVelocity()
 void CRigidBody::SetGAccel(fPoint gAccel)
 {
 	m_fGAccel = gAccel;
+}
+
+fPoint CRigidBody::GetMaxVelocity()
+{
+	return m_fMaxVelocity;
 }
 
 void CRigidBody::finalupdate()
@@ -95,10 +100,17 @@ void CRigidBody::finalupdate()
 		}
 	}
 
-	if (m_fMaxSpeed < m_fVelocity.Length())
+	if (abs(m_fMaxVelocity.x) < abs(m_fVelocity.x))
 	{
 		// 같은 방향의 크기 max로 바꿔줌
-		m_fVelocity = m_fVelocity.normalize() * m_fMaxSpeed;
+		// max로 바꿔주려면 기존 방향을 max바꿔줘야해서
+		// 기존방향 / 절대값(기존방향)이면 +-는 기존, 값은 1일되어
+		// 기존방향 max를 할 수 있음
+		m_fVelocity.x = m_fVelocity.x/ abs(m_fVelocity.x) * m_fMaxVelocity.x;
+	}
+	if (abs(m_fMaxVelocity.y) < abs(m_fVelocity.y))
+	{
+		m_fVelocity.y = m_fVelocity.y / abs(m_fVelocity.y) * m_fMaxVelocity.y;
 	}
 	Move();
 	// 힘을 준 순간에만 영향을 주도록 초기화

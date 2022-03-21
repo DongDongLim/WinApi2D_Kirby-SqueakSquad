@@ -38,12 +38,12 @@ class CD2DImage;
 
 struct PLAYERINFO
 {
+	const fPoint m_fMaxVelocity = fPoint(50.f, 200.f);
 	const float g_fAccel = 2.f;
 	const float m_fVelocity = 800.f;
 	const float m_fMoveInertia = 0.2f;
 	const float m_fVerticalSpeed = 100.f;
 	const float m_fJumpTime = 1.f;
-	const float m_fMaxSpeed = 100.f;
 
 };
 
@@ -51,8 +51,7 @@ class CPlayer : public CGameObject
 {
 	friend CStateManager;
 private:
-	const float m_fMaxSpeed = 300.f;
-	
+	PLAYERINFO info;
 	// 플레이어 애니메이션 재생을 위한 이미지들
 	vector<CD2DImage*> m_pImg;
 	// 플레이어 애니메이션 이미지의 키값

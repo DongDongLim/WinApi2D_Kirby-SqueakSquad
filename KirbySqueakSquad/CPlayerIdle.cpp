@@ -5,6 +5,7 @@
 #include "CPlayer.h"
 #include "CCollider.h"
 #include "CTile.h"
+#include "CGravity.h"
 
 
 
@@ -104,6 +105,9 @@ void CPlayerIdle::KeyUpdate()
 
 void CPlayerIdle::update()
 {
+	if (m_pPlayer->GetGravity()->GetIsGround())
+		CStateManager::getInst()->ExitState(PLAYERSTATE::Fall); 
+
 	KeyUpdate();
 }
 
@@ -120,7 +124,7 @@ void CPlayerIdle::Enter()
 
 void CPlayerIdle::Exit(PLAYERSTATE state)
 {
-	m_bIsActive = false;
+	//m_bIsActive = false;
 	CEventManager::getInst()->EventLoadPlayerState(state);
-	CStateManager::getInst()->ExitState(m_eState); 
+	//CStateManager::getInst()->ExitState(m_eState); 
 }

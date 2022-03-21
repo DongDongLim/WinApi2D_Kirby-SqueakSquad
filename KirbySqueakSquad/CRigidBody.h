@@ -11,9 +11,9 @@ private:
 	fPoint m_fAccel;		// 가속도
 	fPoint m_fVelocity;		// 속도
 	fPoint m_fGAccel;		// 중력가속도
+	fPoint m_fMaxVelocity;		// 최대 속력
 	float m_fMass;			// 질량
 	float m_fFricCoeff;		// 마찰력
-	float m_fMaxSpeed;		// 최대 속력
 
 public:
 	CRigidBody();
@@ -26,11 +26,12 @@ public:
 		
 	void SetVelocity(fPoint velocity);
 	void AddVelocity(fPoint velocity);
-	void SetMaxSpeed(float maxSpeed);
+	void SetMaxSpeed(fPoint maxVelocity);
 	void SetFricCoeff(float fricCoeff);
 	void SetGAccel(fPoint gAceel);
 
 	fPoint GetVelocity();
+	fPoint GetMaxVelocity();
 
 	void finalupdate();
 

@@ -134,20 +134,32 @@ void CTile::Load(FILE* pFile)
 void CTile::OnCollision(CCollider* _pOther)
 {
 	CGameObject* other = _pOther->GetObj();
+	if (GROUP_TILE::GROUND == GetGroup())
+	{
 	if (nullptr != other->GetGravity())
 		other->GetGravity()->SetIsGround(true);
+
+	}
 }
 
 void CTile::OnCollisionEnter(CCollider* _pOther)
 {
 	CGameObject* other = _pOther->GetObj();
-	if (nullptr != other->GetGravity())
-		other->GetGravity()->SetIsGround(true);
+	if (GROUP_TILE::GROUND == GetGroup())
+	{
+		if (nullptr != other->GetGravity())
+			other->GetGravity()->SetIsGround(true);
+
+	}
 }
 
 void CTile::OnCollisionExit(CCollider* _pOther)
 {
 	CGameObject* other = _pOther->GetObj();
+	if (GROUP_TILE::GROUND == GetGroup())
+	{
 	if (nullptr != other->GetGravity())
 		other->GetGravity()->SetIsGround(false);
+
+	}
 }

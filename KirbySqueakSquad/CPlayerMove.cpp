@@ -143,11 +143,12 @@ void CPlayerMove::Anim()
 	{
 	case CPlayerMove::COMMANDMOVE::NONE:
 		m_pPlayer->GetAnimator()->Play(L"Move");
-		m_pPlayer->GetRigidBody()->SetMaxSpeed(m_eInfo.m_fMaxSpeed);
+		m_pPlayer->GetRigidBody()->SetMaxSpeed(m_eInfo.m_fMaxVelocity);
 		break;
 	case CPlayerMove::COMMANDMOVE::DASH:
 		m_pPlayer->GetAnimator()->Play(L"Dash");
-		m_pPlayer->GetRigidBody()->SetMaxSpeed(m_eInfo.m_fMaxSpeed * m_eInfo.g_fAccel);
+		m_pPlayer->GetRigidBody()->SetMaxSpeed(fPoint(m_eInfo.m_fMaxVelocity.x
+			* m_eInfo.g_fAccel, m_pPlayer->GetRigidBody()->GetMaxVelocity().y));
 		break;
 	case CPlayerMove::COMMANDMOVE::CHANGEDIR:
 		m_fAnimStayTime -= fDT;
@@ -172,13 +173,20 @@ void CPlayerMove::Anim()
 		*/
 		break;
 	case CPlayerMove::COMMANDMOVE::TURNOFF:
-		m_fAnimStayTime -= fDT;
-		m_bStartDir ? m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_fAnimStayTime * 50, m_pPlayer->GetRigidBody()->GetVelocity().y))
-			: m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_fAnimStayTime * -50, m_pPlayer->GetRigidBody()->GetVelocity().y));
-		if (0 >= m_fAnimStayTime)
+		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::Fall))
 		{
-			m_fAnimStayTime = 0;
 			Exit(PLAYERSTATE::IDLE);
+		}
+		else
+		{
+			m_fAnimStayTime -= fDT;
+				m_bStartDir ? m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_fAnimStayTime * 50, m_pPlayer->GetRigidBody()->GetVelocity().y))
+				: m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_fAnimStayTime * -50, m_pPlayer->GetRigidBody()->GetVelocity().y));
+				if (0 >= m_fAnimStayTime)
+				{
+					m_fAnimStayTime = 0;
+					Exit(PLAYERSTATE::IDLE);
+				}
 		}
 		/*
 		m_fAccel = m_fAnimStayTime;
