@@ -4,6 +4,7 @@
 #include "CPlayer.h"
 #include "CCollider.h"
 #include "CGravity.h"
+#include "CPlayerState.h"
 
 CTile::CTile()
 {
@@ -129,61 +130,4 @@ void CTile::Load(FILE* pFile)
 	int group;
 	fread(&group, sizeof(int), 1, pFile);
 	m_group = (GROUP_TILE)group;
-}
-
-void CTile::OnCollision(CCollider* _pOther)
-{
-	CGameObject* other = _pOther->GetObj();
-	if (GROUP_TILE::GROUND == GetGroup())
-	{
-		float fPosY = _pOther->GetDownPos().y;
-		if (abs(fPosY - GetCollider()->GetUpPos().y) <= 1.f)
-		{
-			if (nullptr != other->GetGravity())
-			{
-				other->GetGravity()->SetIsGround(true);
-				float otherUpLength =
-					GetCollider()->GetUpPos().y
-					- _pOther->GetScale().y / 2 - _pOther->GetOffsetPos().y;
-				other->SetPos(fPoint(other->GetPos().x, otherUpLength));
-			}
-		}
-
-	}
-}
-
-void CTile::OnCollisionEnter(CCollider* _pOther)
-{
-	CGameObject* other = _pOther->GetObj();
-	if (GROUP_TILE::GROUND == GetGroup())
-	{
-		float fPosY = _pOther->GetDownPos().y;
-		if (abs(fPosY - GetCollider()->GetUpPos().y) <= 1.f)
-		{
-			if (nullptr != other->GetGravity())
-			{
-				other->GetGravity()->SetIsGround(true);
-				float otherUpLength =
-					GetCollider()->GetUpPos().y
-					- _pOther->GetScale().y/2 - _pOther->GetOffsetPos().y;
-				other->SetPos(fPoint(other->GetPos().x, otherUpLength));
-			}
-		}
-
-	}
-}
-
-void CTile::OnCollisionExit(CCollider* _pOther)
-{
-	CGameObject* other = _pOther->GetObj();
-	if (GROUP_TILE::GROUND == GetGroup())
-	{
-		float fPosY = _pOther->GetDownPos().y;
-		if (abs(fPosY - GetCollider()->GetUpPos().y) <= 1.f)
-		{
-			//if (nullptr != other->GetGravity())
-				//other->GetGravity()->SetIsGround(false);			
-		}
-
-	}
 }

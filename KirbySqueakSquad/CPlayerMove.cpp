@@ -122,15 +122,7 @@ void CPlayerMove::KeyUpdate()
 
 void CPlayerMove::update()
 {
-	if (m_pPlayer->GetIsWall()[0])
-	{
-		m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, m_pPlayer->GetRigidBody()->GetVelocity().y));
-		Exit(PLAYERSTATE::IDLE);
-	}
-	else
-	{
-		KeyUpdate();
-	}
+	KeyUpdate();
 	Move();
 }
 
@@ -178,7 +170,7 @@ void CPlayerMove::Move()
 	case CPlayerMove::COMMANDMOVE::TURNOFF:
 		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::Fall))
 		{
-			Exit(PLAYERSTATE::IDLE);
+			//Exit(PLAYERSTATE::IDLE);
 		}
 		else
 		{

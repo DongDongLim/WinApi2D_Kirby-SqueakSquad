@@ -2,6 +2,7 @@
 #include "CGravity.h"
 #include "CGameObject.h"
 #include "CRigidBody.h"
+#include "CPlayer.h"
 
 
 CGravity::CGravity()
@@ -27,8 +28,9 @@ bool CGravity::GetIsGround()
 
 void CGravity::finalupdate()
 {
+	m_pOwner->GetRigidBody()->SetGAccel(m_fGAccel);
 	if (!m_bisGround)
-		m_pOwner->GetRigidBody()->SetGAccel(m_fGAccel);
-	//else
-		//m_pOwner->GetRigidBody()->SetGAccel(fPoint(0, 0));
+		m_pOwner->GetRigidBody()->SetMaxPositiveVelocity(m_fMaxPositiveVelocity);
+	else
+		m_pOwner->GetRigidBody()->SetMaxPositiveVelocity(fPoint(m_fMaxPositiveVelocity.x, 0));
 }

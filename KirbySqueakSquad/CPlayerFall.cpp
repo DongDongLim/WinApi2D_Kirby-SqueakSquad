@@ -30,7 +30,6 @@ void OnFallCollisonEnter(DWORD_PTR state, CCollider* other)
 CPlayerFall::CPlayerFall()
 {
 	m_eState = PLAYERSTATE::Fall;
-	m_fGravity = m_eInfo.m_fVerticalSpeed;
 	m_eTarget = COLLIONTARGET::END;
 	//m_pPlayer->SetCollisonEnterCallBack(OnFallCollisonEnter, (DWORD_PTR)this);
 }
@@ -48,21 +47,7 @@ void CPlayerFall::SetTarget(COLLIONTARGET target)
 
 void CPlayerFall::update()
 {
-	//fPoint pos = m_pPlayer->GetPos();
-	//switch (m_eTarget)
-	//{
-	//case CPlayerFall::COLLIONTARGET::GROUND:
-	//	Exit(PLAYERSTATE::IDLE);
-	//	break;
-	//case CPlayerFall::COLLIONTARGET::MON:
-	//	break;
-	//case CPlayerFall::COLLIONTARGET::END:
-	//	//pos += fPoint(0, m_fGravity) * fDT;
-	//	break;
-	//default:
-	//	break;
-	//}
-	//m_pPlayer->SetPos(pos);
+
 }
 
 void CPlayerFall::Anim()

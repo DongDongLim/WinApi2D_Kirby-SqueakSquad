@@ -29,14 +29,22 @@ public:
 class CPlayerIdle : public CPlayerState
 {
 private:
-	float m_fDelayTime;
-	float m_fKeepDelayTime;
-
+	// 땅과의 거리체크
+	float m_fGroundLength;
+	// 벽과의 거리체크
+	float m_fWallLength;
+	CCollider* m_pPlayerCollider;
+	//한번에 만나는 벽은 최대 8개임;
+	CCollider* m_pGroundCollider[8];
+	bool m_bIsJump;
 
 public:
 	CPlayerIdle();
 	~CPlayerIdle();
 
+	void GoundCheck();
+
+	void AddGroundCollider(CCollider* ground);
 
 	void KeyUpdate();
 	virtual void Anim();
@@ -88,6 +96,7 @@ private:
 	float m_fJumpSpeed;
 	float m_fTurnSpeed;
 	float m_fTurnKeepSpeed;
+	float m_fMaXHeight;
 
 public:
 	CPlayerJump();
@@ -116,7 +125,6 @@ public:
 private:
 
 	COLLIONTARGET m_eTarget;
-	float m_fGravity;
 
 
 public:

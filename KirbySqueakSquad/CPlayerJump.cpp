@@ -10,7 +10,9 @@ CPlayerJump::CPlayerJump()
 	m_eState = PLAYERSTATE::JUMP;
 	m_fJumpSpeed = m_eInfo.m_fVerticalSpeed;
 	m_fTurnSpeed = 0;
+	m_fTurnKeepSpeed = 0;
 	isTurn = false;
+	m_fMaXHeight = 0;
 }
 
 CPlayerJump::~CPlayerJump()
@@ -25,8 +27,12 @@ void CPlayerJump::Jump()
 	{
 		if (Key('X') || Key('V'))
 		{
-			m_pPlayer->GetRigidBody()->AddVelocity(fPoint( 0.f, -m_fJumpSpeed));
-			//pos -= fPoint(0, m_fJumpSpeed) * fDT;
+			if (m_fMaXHeight >= m_pPlayer->GetPos().y)
+				isTurn = true;
+			else
+				m_pPlayer->GetRigidBody()->
+				AddVelocity(fPoint(0.f, -m_fJumpSpeed));
+			
 		}
 		if (KeyUp('X') || KeyUp('V'))
 		{
@@ -83,6 +89,7 @@ void CPlayerJump::Enter()
 	m_fTurnSpeed = 0;
 	m_fTurnKeepSpeed = 0;
 	isTurn = false;
+	m_fMaXHeight = m_pPlayer->GetPos().y - 40.f;
 }
 
 void CPlayerJump::Exit(PLAYERSTATE state)

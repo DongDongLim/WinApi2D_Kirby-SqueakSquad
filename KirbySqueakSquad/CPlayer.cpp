@@ -62,9 +62,6 @@ CPlayer::CPlayer()
 	m_colliderEnterState = 0;
 	m_colliderExitState = 0;
 	m_bIsRight = true;
-	m_bIsGround = false;
-	m_bIsWall[0] = false;
-	m_bIsWall[1] = false;
 
 	SetName(L"Player");
 	SetScale(fPoint(32.f, 32.f));
@@ -267,7 +264,6 @@ CPlayer::CPlayer()
 	// 리지드바디 쓰자 충돌부분 보니까 써야겠다
 	CreateRigidBody();
 	CRigidBody* rigid = GetRigidBody();
-	rigid->SetMaxSpeed(info.m_fMaxVelocity);
 
 	// 상태
 	CPlayerState* pAnim = new CPlayerAnim();
@@ -331,31 +327,12 @@ void CPlayer::render()
 	component_render();
 }
 
-void CPlayer::SetIsGround(bool ground)
-{
-	m_bIsGround = ground;
-}
-
-void CPlayer::SetIsWall(bool wall, bool isright)
-{
-	m_bIsWall[0] = wall;
-	m_bIsWall[1] = isright;
-}
 
 bool CPlayer::GetDir()
 {
 	return m_bIsRight;
 }
 
-bool CPlayer::GetIsGround()
-{
-	return m_bIsGround;
-}
-
-bool* CPlayer::GetIsWall()
-{
-	return m_bIsWall;
-}
 
 
 
@@ -388,14 +365,6 @@ void CPlayer::OnCollision(CCollider* other)
 
 void CPlayer::OnCollisionEnter(CCollider* other)
 {
-	CGameObject* pOtherObj = other->GetObj();
-	if (pOtherObj->GetGroup() == GROUP_GAMEOBJ::TILE)
-	{
-		if (((CTile*)pOtherObj)->GetGroup() == GROUP_TILE::GROUND)
-		{
-			//++m_bIsGroundCount;
-		}
-	}
 	list<COLLIDER_FUNC>::iterator iter = m_arrEnterFunc.begin();
 	for (; iter != m_arrEnterFunc.end(); ++iter)
 	{
@@ -406,34 +375,6 @@ void CPlayer::OnCollisionEnter(CCollider* other)
 
 void CPlayer::OnCollisionExit(CCollider* other)
 {
-	
-	//CGameObject* pOtherObj = other->GetObj();
-	//if (pOtherObj->GetGroup() == GROUP_GAMEOBJ::TILE)
-	//{
-	//	if (((CTile*)pOtherObj)->GetGroup() == GROUP_TILE::GROUND)
-	//	{
-	//		if (m_bIsGround)
-	//		{
-	//			if (!Key('X') && !Key('V'))
-	//			{
-	//				CStateManager::getInst()->ExitState(PLAYERSTATE::JUMP);
-	//				CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
-	//			}
-	//		}
-	//		/*
-	//		--m_bIsGroundCount;
-	//		if (0 == m_bIsGroundCount)
-	//		{
-	//			if (!Key('X') && !Key('V'))
-	//			{
-	//				CStateManager::getInst()->ExitState(PLAYERSTATE::JUMP);
-	//				CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
-	//			}
-	//		}
-	//		*/
-	//	}
-	//}
-
 	list<COLLIDER_FUNC>::iterator iter = m_arrExitFunc.begin();
 	for (; iter != m_arrExitFunc.end(); ++iter)
 	{

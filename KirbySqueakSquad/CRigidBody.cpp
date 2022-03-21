@@ -7,6 +7,9 @@ CRigidBody::CRigidBody()
 	m_pOwner = nullptr;
 	m_fFricCoeff = 50.f;
 	m_fMass = 0.f;
+	m_fPositiveMaxVelocity = fPoint(75.f, 200.f);
+	m_fNegativeMaxVelocity = fPoint(-75.f, -200.f);
+	m_fDelayTime = 0.01f;
 }
 
 CRigidBody::CRigidBody(const CRigidBody& other)
@@ -14,6 +17,9 @@ CRigidBody::CRigidBody(const CRigidBody& other)
 	m_pOwner = nullptr;
 	m_fFricCoeff = 10.f;
 	m_fMass = 0.f;
+	m_fPositiveMaxVelocity = fPoint(75.f, 200.f);
+	m_fNegativeMaxVelocity = fPoint(-75.f, -200.f);
+	m_fDelayTime = 0.01f;
 }
 
 CRigidBody::~CRigidBody()
@@ -46,9 +52,14 @@ void CRigidBody::AddVelocity(fPoint velocity)
 	m_fVelocity += velocity;
 }
 
-void CRigidBody::SetMaxSpeed(fPoint maxSpeed)
+void CRigidBody::SetMaxPositiveVelocity(fPoint maxSpeed)
 {
-	m_fMaxVelocity = maxSpeed;
+	m_fPositiveMaxVelocity = maxSpeed;
+}
+
+void CRigidBody::SetMaxNegativeVelocity(fPoint maxSpeed)
+{
+	m_fNegativeMaxVelocity = maxSpeed;
 }
 
 void CRigidBody::SetFricCoeff(float fricCoeff)
@@ -66,9 +77,24 @@ void CRigidBody::SetGAccel(fPoint gAccel)
 	m_fGAccel = gAccel;
 }
 
-fPoint CRigidBody::GetMaxVelocity()
+void CRigidBody::RecoveryMaxPositiveVelocity()
 {
-	return m_fMaxVelocity;
+	m_fPositiveMaxVelocity = fPoint(75.f, 200.f);
+}
+
+void CRigidBody::RecoveryMaxNegativeVelocity()
+{
+	m_fNegativeMaxVelocity = fPoint(-75.f, -200.f);
+}
+
+fPoint CRigidBody::GetMaxPositiveVelocity()
+{
+	return m_fPositiveMaxVelocity;
+}
+
+fPoint CRigidBody::GetMaxNegativeVelocity()
+{
+	return m_fNegativeMaxVelocity;
 }
 
 fPoint CRigidBody::GetDir()
@@ -109,17 +135,34 @@ void CRigidBody::finalupdate()
 		}
 	}
 
-	if (abs(m_fMaxVelocity.x) < abs(m_fVelocity.x))
+	if (m_fVelocity.x > 0)
 	{
-		// 같은 방향의 크기 max로 바꿔줌
-		// max로 바꿔주려면 기존 방향을 max바꿔줘야해서
-		// 기존방향 / 절대값(기존방향)이면 +-는 기존, 값은 1일되어
-		// 기존방향 max를 할 수 있음
-		m_fVelocity.x = m_fVelocity.x/ abs(m_fVelocity.x) * m_fMaxVelocity.x;
+		if (m_fPositiveMaxVelocity.x < m_fVelocity.x)
+		{
+			m_fVelocity.x = m_fPositiveMaxVelocity.x;
+		}
 	}
-	if (abs(m_fMaxVelocity.y) < abs(m_fVelocity.y))
+	else
 	{
-		m_fVelocity.y = m_fVelocity.y / abs(m_fVelocity.y) * m_fMaxVelocity.y;
+		if (m_fNegativeMaxVelocity.x > m_fVelocity.x)
+		{
+			m_fVelocity.x = m_fNegativeMaxVelocity.x;
+		}
+
+	}
+	if (m_fVelocity.y > 0)
+	{
+		if (m_fPositiveMaxVelocity.y < m_fVelocity.y)
+		{
+			m_fVelocity.y = m_fPositiveMaxVelocity.y;
+		}
+	}
+	else
+	{
+		if (m_fNegativeMaxVelocity.y > m_fVelocity.y)
+		{
+			m_fVelocity.y = m_fNegativeMaxVelocity.y;
+		}
 	}
 	Move();
 	// 힘을 준 순간에만 영향을 주도록 초기화
@@ -131,13 +174,18 @@ void CRigidBody::finalupdate()
 
 void CRigidBody::Move()
 {
-	// 이동 속력
-	float fSpeed = m_fVelocity.Length();
-	if (0.f != fSpeed)
-	{
-		fPoint pos = m_pOwner->GetPos();
-		pos += m_fVelocity * fDT;
-		if (0 <= pos.x && pos.x <= CCameraManager::getInst()->GetDisLimmit().x)
-			m_pOwner->SetPos(pos);
-	}
+	/*m_fDelayTime -= fDT;
+	if (m_fDelayTime <= 0)
+	{*/
+		// 이동 속력
+		float fSpeed = m_fVelocity.Length();
+		if (0.f != fSpeed)
+		{
+			fPoint pos = m_pOwner->GetPos();
+			pos += m_fVelocity * fDT;
+			if (0 <= pos.x && pos.x <= CCameraManager::getInst()->GetDisLimmit().x)
+				m_pOwner->SetPos(pos);
+		}
+		/*m_fDelayTime = 0.01f;
+	}*/
 }

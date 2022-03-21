@@ -38,8 +38,6 @@ class CD2DImage;
 
 struct PLAYERINFO
 {
-	// 속력 제한
-	const fPoint m_fMaxVelocity = fPoint(75.f, 200.f);
 	const float g_fAccel = 2.f;
 	// 속력
 	const float m_fVelocity = 50.f;
@@ -65,8 +63,6 @@ private:
 	
 	//const float m_fCommandTime = 0.2f;
 	bool m_bIsRight;
-	bool m_bIsGround;
-	bool m_bIsWall[2];
 	//int m_bIsGroundCount;
 	void PlayerAttack(DWORD_PTR, DWORD_PTR);
 	list<COLLIDER_FUNC> m_arrFunc;
@@ -85,12 +81,7 @@ public:
 	virtual void update();
 	virtual void render();
 
-	void SetIsGround(bool ground);
-	void SetIsWall(bool wall, bool isright);
-
 	bool GetDir();
-	bool GetIsGround();
-	bool* GetIsWall();
 
 	void SetCollisonCallBack(COLLIDER_FUNC pFunc, DWORD_PTR state);
 	//void DeleteColliderCallBack(COLLIDER_FUNC pFunc);

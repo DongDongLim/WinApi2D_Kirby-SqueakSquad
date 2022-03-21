@@ -102,6 +102,7 @@ void CScene_Tool::Enter()
 
 	CCameraManager::getInst()->SetLookAt(fPoint(WINSIZEX / g_winScale / 2.f, WINSIZEY / g_winScale / 2.f));
 
+
 }
 
 void CScene_Tool::Exit()
