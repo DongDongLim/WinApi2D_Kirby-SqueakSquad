@@ -134,10 +134,21 @@ void CTile::Load(FILE* pFile)
 void CTile::OnCollision(CCollider* _pOther)
 {
 	CGameObject* other = _pOther->GetObj();
-	if (GROUP_TILE::GROUND == GetGroup())
+	if (GROUP_TILE::GROUND == GetGroup() && other->GetGroup()
+		!= GROUP_GAMEOBJ::TILE)
 	{
-	if (nullptr != other->GetGravity())
-		other->GetGravity()->SetIsGround(true);
+		float fPosY = _pOther->GetDownPos().y;
+		if (abs(fPosY - GetCollider()->GetUpPos().y) <= 1.f)
+		{
+			if (nullptr != other->GetGravity())
+			{
+				other->GetGravity()->SetIsGround(true);
+				float otherUpLength =
+					GetCollider()->GetUpPos().y
+					- _pOther->GetScale().y / 2 - _pOther->GetOffsetPos().y;
+				other->SetPos(fPoint(other->GetPos().x, otherUpLength));
+			}
+		}
 
 	}
 }
@@ -145,10 +156,21 @@ void CTile::OnCollision(CCollider* _pOther)
 void CTile::OnCollisionEnter(CCollider* _pOther)
 {
 	CGameObject* other = _pOther->GetObj();
-	if (GROUP_TILE::GROUND == GetGroup())
+	if (GROUP_TILE::GROUND == GetGroup() && other->GetGroup()
+		!= GROUP_GAMEOBJ::TILE)
 	{
-		if (nullptr != other->GetGravity())
-			other->GetGravity()->SetIsGround(true);
+		float fPosY = _pOther->GetDownPos().y;
+		if (abs(fPosY - GetCollider()->GetUpPos().y) <= 1.f)
+		{
+			if (nullptr != other->GetGravity())
+			{
+				other->GetGravity()->SetIsGround(true);
+				float otherUpLength =
+					GetCollider()->GetUpPos().y
+					- _pOther->GetScale().y/2 - _pOther->GetOffsetPos().y;
+				other->SetPos(fPoint(other->GetPos().x, otherUpLength));
+			}
+		}
 
 	}
 }
@@ -156,10 +178,15 @@ void CTile::OnCollisionEnter(CCollider* _pOther)
 void CTile::OnCollisionExit(CCollider* _pOther)
 {
 	CGameObject* other = _pOther->GetObj();
-	if (GROUP_TILE::GROUND == GetGroup())
+	if (GROUP_TILE::GROUND == GetGroup() && other->GetGroup()
+		!= GROUP_GAMEOBJ::TILE)
 	{
-	if (nullptr != other->GetGravity())
-		other->GetGravity()->SetIsGround(false);
+		float fPosY = _pOther->GetDownPos().y;
+		if (abs(fPosY - GetCollider()->GetUpPos().y) <= 1.f)
+		{
+			if (nullptr != other->GetGravity())
+				other->GetGravity()->SetIsGround(false);			
+		}
 
 	}
 }

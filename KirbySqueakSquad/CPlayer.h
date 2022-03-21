@@ -38,10 +38,14 @@ class CD2DImage;
 
 struct PLAYERINFO
 {
-	const fPoint m_fMaxVelocity = fPoint(50.f, 200.f);
+	// 加仿 力茄
+	const fPoint m_fMaxVelocity = fPoint(75.f, 200.f);
 	const float g_fAccel = 2.f;
-	const float m_fVelocity = 800.f;
-	const float m_fMoveInertia = 0.2f;
+	// 加仿
+	const float m_fVelocity = 50.f;
+	// 皑加
+	const float m_fMoveInertia = 0.f;
+	// 技肺 加档
 	const float m_fVerticalSpeed = 100.f;
 	const float m_fJumpTime = 1.f;
 

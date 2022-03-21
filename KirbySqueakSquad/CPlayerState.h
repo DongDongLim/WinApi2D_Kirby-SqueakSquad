@@ -29,6 +29,9 @@ public:
 class CPlayerIdle : public CPlayerState
 {
 private:
+	float m_fDelayTime;
+	float m_fKeepDelayTime;
+
 
 public:
 	CPlayerIdle();
@@ -62,6 +65,7 @@ private:
 	bool m_bIsStop;
 	bool m_bStartDir;
 	bool m_bIsDirChange;
+	int m_dir;
 
 	
 public:

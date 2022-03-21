@@ -57,6 +57,7 @@ CPlayerMove::CPlayerMove()
 	m_bIsStop = false;
 	m_bStartDir = true;
 	m_bIsDirChange = false;
+	m_dir = 0;
 }
 
 CPlayerMove::~CPlayerMove()
@@ -74,6 +75,13 @@ void CPlayerMove::KeyUpdate()
 			{
 				m_fAnimStayTime = m_eInfo.m_fMoveInertia;
 				m_eCurCommand = COMMANDMOVE::TURNOFF;
+				/*if (abs(m_pPlayer->GetRigidBody()->GetVelocity().x) > 60.f)
+				{
+					if ((m_pPlayer->GetRigidBody()->GetVelocity().x) < 0)
+						(m_pPlayer->GetRigidBody()->SetVelocity(fPoint(-60.f, m_pPlayer->GetRigidBody()->GetVelocity().y)));
+					else
+						(m_pPlayer->GetRigidBody()->SetVelocity(fPoint(60.f, m_pPlayer->GetRigidBody()->GetVelocity().y)));
+				}*/
 			}
 		}
 	}
@@ -94,6 +102,14 @@ void CPlayerMove::KeyUpdate()
 			{
 				m_fAnimStayTime = m_eInfo.m_fMoveInertia;
 				m_eCurCommand = COMMANDMOVE::CHANGEDIR;
+				// TODO: 숫자 변수로 바꾸기
+				/*if (abs(m_pPlayer->GetRigidBody()->GetVelocity().x) > 60.f)
+				{
+					if ((m_pPlayer->GetRigidBody()->GetVelocity().x) < 0)
+						(m_pPlayer->GetRigidBody()->SetVelocity(fPoint(-60.f, m_pPlayer->GetRigidBody()->GetVelocity().y)));
+					else
+						(m_pPlayer->GetRigidBody()->SetVelocity(fPoint(60.f, m_pPlayer->GetRigidBody()->GetVelocity().y)));
+				}*/
 			}
 		}
 	}
@@ -122,11 +138,62 @@ void CPlayerMove::update()
 void CPlayerMove::Move()
 {	
 	fPoint pos = m_pPlayer->GetPos();
-	int dir = m_pPlayer->GetDir() ? 1 : -1;
+	m_dir = m_bStartDir ? 1 : -1;
 
+	switch (m_eCurCommand)
+	{
+	case CPlayerMove::COMMANDMOVE::NONE:
+		m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_dir * m_eInfo.m_fVelocity, 
+			m_pPlayer->GetRigidBody()->GetVelocity().y));
+		//m_pPlayer->GetRigidBody()->AddForce(fPoint(m_dir * m_eInfo.m_fVelocity, 0));
+		break;
+	case CPlayerMove::COMMANDMOVE::DASH:
+		m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_dir * m_eInfo.m_fVelocity * m_eInfo.g_fAccel,
+			m_pPlayer->GetRigidBody()->GetVelocity().y));
+		break;
+	case CPlayerMove::COMMANDMOVE::CHANGEDIR:
+		m_fAnimStayTime += fDT;
+
+		m_bStartDir ? m_pPlayer->GetRigidBody()->AddVelocity(fPoint(-m_fAnimStayTime, 0))
+			: m_pPlayer->GetRigidBody()->AddVelocity(fPoint(m_fAnimStayTime, 0));
+
+		// TODO: 숫자 변수로 바꾸기
+		if ((m_dir > 0 && m_dir > m_pPlayer->GetRigidBody()->GetVelocity().x)
+			|| (m_dir < 0 && m_dir < m_pPlayer->GetRigidBody()->GetVelocity().x))
+		{
+			m_bStartDir = m_pPlayer->GetDir();
+			m_bIsDash ? m_eCurCommand = COMMANDMOVE::DASH : m_eCurCommand = COMMANDMOVE::NONE;
+		}
+
+		break;
+	case CPlayerMove::COMMANDMOVE::TURNOFF:
+		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::Fall))
+		{
+			Exit(PLAYERSTATE::IDLE);
+		}
+		else
+		{
+			m_fAnimStayTime += fDT;
+			m_bStartDir ? m_pPlayer->GetRigidBody()->AddVelocity(fPoint(-m_fAnimStayTime, 0))
+				: m_pPlayer->GetRigidBody()->AddVelocity(fPoint(m_fAnimStayTime,0));
+
+			// TODO: 숫자 변수로 바꾸기
+			if ((m_dir > 0 && m_dir > m_pPlayer->GetRigidBody()->GetVelocity().x)
+				|| (m_dir < 0 && m_dir < m_pPlayer->GetRigidBody()->GetVelocity().x))
+			{
+				//m_bStartDir = m_pPlayer->GetDir();
+				Exit(PLAYERSTATE::IDLE);
+			}
+		}
+		break;
+	case CPlayerMove::COMMANDMOVE::END:
+		break;
+	default:
+		break;
+	}
+	
+	
 	//pos.x += dir * m_eInfo.m_fVelocity * m_fAccel * fDT;
-
-	m_pPlayer->GetRigidBody()->AddForce(fPoint(dir * m_eInfo.m_fVelocity, m_pPlayer->GetRigidBody()->GetVelocity().y));
 	/*
 	if (0 <= pos.x && pos.x <= CCameraManager::getInst()->GetDisLimmit().x)
 	{
@@ -143,24 +210,13 @@ void CPlayerMove::Anim()
 	{
 	case CPlayerMove::COMMANDMOVE::NONE:
 		m_pPlayer->GetAnimator()->Play(L"Move");
-		m_pPlayer->GetRigidBody()->SetMaxSpeed(m_eInfo.m_fMaxVelocity);
 		break;
 	case CPlayerMove::COMMANDMOVE::DASH:
-		m_pPlayer->GetAnimator()->Play(L"Dash");
-		m_pPlayer->GetRigidBody()->SetMaxSpeed(fPoint(m_eInfo.m_fMaxVelocity.x
-			* m_eInfo.g_fAccel, m_pPlayer->GetRigidBody()->GetMaxVelocity().y));
+		m_pPlayer->GetAnimator()->Play(L"Dash");	
 		break;
 	case CPlayerMove::COMMANDMOVE::CHANGEDIR:
-		m_fAnimStayTime -= fDT;
 		m_pPlayer->GetAnimator()->Play(L"QuickStop");
-		m_bStartDir ? m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0.f, m_pPlayer->GetRigidBody()->GetVelocity().y))
-			: m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0.f, m_pPlayer->GetRigidBody()->GetVelocity().y));
-		if (0 >= m_fAnimStayTime)
-		{
-			m_fAnimStayTime = 0;
-			m_bStartDir = m_pPlayer->GetDir();
-			m_bIsDash ? m_eCurCommand = COMMANDMOVE::DASH : m_eCurCommand = COMMANDMOVE::NONE;
-		}
+
 		/*
 		m_fAnimStayTime -= fDT;
 		m_fAccel = m_fAnimStayTime;
@@ -173,21 +229,6 @@ void CPlayerMove::Anim()
 		*/
 		break;
 	case CPlayerMove::COMMANDMOVE::TURNOFF:
-		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::Fall))
-		{
-			Exit(PLAYERSTATE::IDLE);
-		}
-		else
-		{
-			m_fAnimStayTime -= fDT;
-				m_bStartDir ? m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_fAnimStayTime * 50, m_pPlayer->GetRigidBody()->GetVelocity().y))
-				: m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_fAnimStayTime * -50, m_pPlayer->GetRigidBody()->GetVelocity().y));
-				if (0 >= m_fAnimStayTime)
-				{
-					m_fAnimStayTime = 0;
-					Exit(PLAYERSTATE::IDLE);
-				}
-		}
 		/*
 		m_fAccel = m_fAnimStayTime;
 		if (0 >= m_fAnimStayTime)
@@ -214,6 +255,7 @@ void CPlayerMove::Enter()
 	m_bIsStop = false;
 	m_bIsDirChange = false;
 	m_bIsActive = true;
+	m_dir = 0;
 }
 
 void CPlayerMove::Exit(PLAYERSTATE state)

@@ -11,14 +11,14 @@
 
 void OnIdleCollisonExit(DWORD_PTR state, CCollider* other)
 {
-	if (((CPlayerMove*)state)->GetIsActive())
+	/*if (((CPlayerMove*)state)->GetIsActive())
 	{
 		CGameObject* pOtherObj = other->GetObj();
 		if (pOtherObj->GetGroup() == GROUP_GAMEOBJ::TILE)
 		{
 			CStateManager::getInst()->ExitState(PLAYERSTATE::IDLE);
 		}
-	}
+	}*/
 }
 
 void OnIdleCollison(DWORD_PTR state, CCollider* other)
@@ -68,6 +68,8 @@ CPlayerIdle::CPlayerIdle()
 	m_eState = PLAYERSTATE::IDLE;
 	m_pPlayer->SetCollisonExitCallBack(OnIdleCollisonExit, (DWORD_PTR)this);
 	m_pPlayer->SetCollisonCallBack(OnIdleCollison, (DWORD_PTR)this);
+	m_fDelayTime = 0.2f;
+	m_fKeepDelayTime = m_fDelayTime;
 }
 
 CPlayerIdle::~CPlayerIdle()
@@ -107,9 +109,23 @@ void CPlayerIdle::update()
 {
 	if (m_pPlayer->GetGravity()->GetIsGround())
 		CStateManager::getInst()->ExitState(PLAYERSTATE::Fall); 
+	else
+	{
+		if (nullptr == CStateManager::getInst()->FindPlayeState(PLAYERSTATE::JUMP))
+		{
+			m_fDelayTime -= fDT;
+			if (m_fDelayTime <= 0)
+			{
+				CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
+				m_fDelayTime = m_fKeepDelayTime;
+			}
+		}
+	}
 
 	KeyUpdate();
 }
+
+
 
 void CPlayerIdle::Anim()
 {

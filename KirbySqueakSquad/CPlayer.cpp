@@ -267,7 +267,7 @@ CPlayer::CPlayer()
 	// 리지드바디 쓰자 충돌부분 보니까 써야겠다
 	CreateRigidBody();
 	CRigidBody* rigid = GetRigidBody();
-	rigid->SetMass(1);
+	rigid->SetMass(10);
 	rigid->SetMaxSpeed(info.m_fMaxVelocity);
 
 	// 상태
@@ -407,33 +407,33 @@ void CPlayer::OnCollisionEnter(CCollider* other)
 
 void CPlayer::OnCollisionExit(CCollider* other)
 {
-
-	CGameObject* pOtherObj = other->GetObj();
-	if (pOtherObj->GetGroup() == GROUP_GAMEOBJ::TILE)
-	{
-		if (((CTile*)pOtherObj)->GetGroup() == GROUP_TILE::GROUND)
-		{
-			if (m_bIsGround)
-			{
-				if (!Key('X') && !Key('V'))
-				{
-					CStateManager::getInst()->ExitState(PLAYERSTATE::JUMP);
-					CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
-				}
-			}
-			/*
-			--m_bIsGroundCount;
-			if (0 == m_bIsGroundCount)
-			{
-				if (!Key('X') && !Key('V'))
-				{
-					CStateManager::getInst()->ExitState(PLAYERSTATE::JUMP);
-					CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
-				}
-			}
-			*/
-		}
-	}
+	
+	//CGameObject* pOtherObj = other->GetObj();
+	//if (pOtherObj->GetGroup() == GROUP_GAMEOBJ::TILE)
+	//{
+	//	if (((CTile*)pOtherObj)->GetGroup() == GROUP_TILE::GROUND)
+	//	{
+	//		if (m_bIsGround)
+	//		{
+	//			if (!Key('X') && !Key('V'))
+	//			{
+	//				CStateManager::getInst()->ExitState(PLAYERSTATE::JUMP);
+	//				CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
+	//			}
+	//		}
+	//		/*
+	//		--m_bIsGroundCount;
+	//		if (0 == m_bIsGroundCount)
+	//		{
+	//			if (!Key('X') && !Key('V'))
+	//			{
+	//				CStateManager::getInst()->ExitState(PLAYERSTATE::JUMP);
+	//				CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
+	//			}
+	//		}
+	//		*/
+	//	}
+	//}
 
 	list<COLLIDER_FUNC>::iterator iter = m_arrExitFunc.begin();
 	for (; iter != m_arrExitFunc.end(); ++iter)
