@@ -76,13 +76,6 @@ void CPlayerMove::KeyUpdate()
 			{
 				m_fAnimStayTime = m_eInfo.m_fMoveInertia;
 				m_eCurCommand = COMMANDMOVE::TURNOFF;
-				/*if (abs(m_pPlayer->GetRigidBody()->GetVelocity().x) > 60.f)
-				{
-					if ((m_pPlayer->GetRigidBody()->GetVelocity().x) < 0)
-						(m_pPlayer->GetRigidBody()->SetVelocity(fPoint(-60.f, m_pPlayer->GetRigidBody()->GetVelocity().y)));
-					else
-						(m_pPlayer->GetRigidBody()->SetVelocity(fPoint(60.f, m_pPlayer->GetRigidBody()->GetVelocity().y)));
-				}*/
 			}
 		}
 	}
@@ -103,14 +96,6 @@ void CPlayerMove::KeyUpdate()
 			{
 				m_fAnimStayTime = m_eInfo.m_fMoveInertia;
 				m_eCurCommand = COMMANDMOVE::CHANGEDIR;
-				// TODO: 숫자 변수로 바꾸기
-				/*if (abs(m_pPlayer->GetRigidBody()->GetVelocity().x) > 60.f)
-				{
-					if ((m_pPlayer->GetRigidBody()->GetVelocity().x) < 0)
-						(m_pPlayer->GetRigidBody()->SetVelocity(fPoint(-60.f, m_pPlayer->GetRigidBody()->GetVelocity().y)));
-					else
-						(m_pPlayer->GetRigidBody()->SetVelocity(fPoint(60.f, m_pPlayer->GetRigidBody()->GetVelocity().y)));
-				}*/
 			}
 		}
 	}
@@ -154,6 +139,12 @@ void CPlayerMove::Move()
 		m_bStartDir ? m_pPlayer->GetRigidBody()->AddVelocity(fPoint(-m_fAnimStayTime, 0))
 			: m_pPlayer->GetRigidBody()->AddVelocity(fPoint(m_fAnimStayTime, 0));
 
+		if (m_fAnimStayTime > 0.2f)
+		{
+			m_bStartDir = m_pPlayer->GetDir();
+			m_bIsDash ? m_eCurCommand = COMMANDMOVE::DASH : m_eCurCommand = COMMANDMOVE::NONE;
+		}
+		/*
 		// TODO: 숫자 변수로 바꾸기
 		if ((m_dir > 0 && m_dir > m_pPlayer->GetRigidBody()->GetVelocity().x)
 			|| (m_dir < 0 && m_dir < m_pPlayer->GetRigidBody()->GetVelocity().x))
@@ -161,7 +152,7 @@ void CPlayerMove::Move()
 			m_bStartDir = m_pPlayer->GetDir();
 			m_bIsDash ? m_eCurCommand = COMMANDMOVE::DASH : m_eCurCommand = COMMANDMOVE::NONE;
 		}
-
+		*/
 		break;
 	case CPlayerMove::COMMANDMOVE::TURNOFF:
 		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::Fall))
@@ -174,6 +165,13 @@ void CPlayerMove::Move()
 			m_bStartDir ? m_pPlayer->GetRigidBody()->AddVelocity(fPoint(-m_fAnimStayTime, 0))
 				: m_pPlayer->GetRigidBody()->AddVelocity(fPoint(m_fAnimStayTime,0));
 
+			if (m_fAnimStayTime > 0.2f)
+			{
+				m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, 0));
+				Exit(PLAYERSTATE::IDLE);
+			}
+
+			/* 임시로 바꿔야됨ㅠㅠ
 			// TODO: 숫자 변수로 바꾸기
 			if ((m_dir > 0 && m_dir > m_pPlayer->GetRigidBody()->GetVelocity().x)
 				|| (m_dir < 0 && m_dir < m_pPlayer->GetRigidBody()->GetVelocity().x))
@@ -182,6 +180,7 @@ void CPlayerMove::Move()
 				m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, 0));
 				Exit(PLAYERSTATE::IDLE);
 			}
+			*/
 		}
 		break;
 	case CPlayerMove::COMMANDMOVE::END:

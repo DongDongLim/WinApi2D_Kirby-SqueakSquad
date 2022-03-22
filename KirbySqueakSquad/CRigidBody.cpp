@@ -16,7 +16,7 @@ CRigidBody::CRigidBody()
 CRigidBody::CRigidBody(const CRigidBody& other)
 {
 	m_pOwner = nullptr;
-	m_fFricCoeff = 10.f;
+	m_fFricCoeff = 50.f;
 	m_fMass = 0.f;
 	m_fPositiveMaxVelocity = fPoint(75.f, 200.f);
 	m_fNegativeMaxVelocity = fPoint(-75.f, -200.f);
@@ -124,6 +124,10 @@ void CRigidBody::finalupdate()
 
 	// 속력에 넣어줌
 	m_fVelocity += m_fAccel * fDT;
+	if (abs(m_fPrevVelocity.y - m_fVelocity.y) > 10.f)
+	{
+		int a = 0;
+	}
 	// 마찰력 적용
 	if (!m_fVelocity.IsZero())
 	{
