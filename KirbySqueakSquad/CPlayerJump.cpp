@@ -54,13 +54,16 @@ void CPlayerJump::Jump()
 				Exit(PLAYERSTATE::Fall);
 			}
 		}
+		if (KeyDown(VK_UP) || KeyDown('X') || KeyDown('V'))
+		{
+			Exit(PLAYERSTATE::FLY);
+		}
 	}
 	m_pPlayer->SetPos(pos);
 }
 
 void CPlayerJump::Anim()
 {
-	m_pPlayer->GetAnimator()->SetReverce(!m_pPlayer->GetDir());
 	if (!isTurn)
 		m_pPlayer->GetAnimator()->Play(L"Jump");
 	else

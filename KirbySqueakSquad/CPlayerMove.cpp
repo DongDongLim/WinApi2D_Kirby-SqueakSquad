@@ -133,12 +133,12 @@ void CPlayerMove::Move()
 			m_pPlayer->GetRigidBody()->GetVelocity().y));
 		break;
 	case CPlayerMove::COMMANDMOVE::CHANGEDIR:
-
+		
 		m_fAnimStayTime += fDT;
-
+		
 		m_bStartDir ? m_pPlayer->GetRigidBody()->AddVelocity(fPoint(-m_fAnimStayTime, 0))
 			: m_pPlayer->GetRigidBody()->AddVelocity(fPoint(m_fAnimStayTime, 0));
-
+		
 		if (m_fAnimStayTime > 0.2f)
 		{
 			m_bStartDir = m_pPlayer->GetDir();
@@ -193,7 +193,6 @@ void CPlayerMove::Move()
 
 void CPlayerMove::Anim()
 {
-	m_pPlayer->GetAnimator()->SetReverce(!m_bStartDir);
 	switch (m_eCurCommand)
 	{
 	case CPlayerMove::COMMANDMOVE::NONE:
@@ -203,6 +202,7 @@ void CPlayerMove::Anim()
 		m_pPlayer->GetAnimator()->Play(L"Dash");	
 		break;
 	case CPlayerMove::COMMANDMOVE::CHANGEDIR:
+		m_pPlayer->GetAnimator()->SetReverce(m_pPlayer->GetDir());
 		m_pPlayer->GetAnimator()->Play(L"QuickStop");
 		break;
 	case CPlayerMove::COMMANDMOVE::TURNOFF:

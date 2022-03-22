@@ -45,14 +45,22 @@ void CPlayerFall::SetTarget(COLLIONTARGET target)
 }
 
 
+
 void CPlayerFall::update()
 {
+	KeyUpdate();
+}
 
+void CPlayerFall::KeyUpdate()
+{
+	if (KeyDown(VK_UP) || KeyDown('X') || KeyDown('V'))
+	{
+		Exit(PLAYERSTATE::FLY);
+	}
 }
 
 void CPlayerFall::Anim()
 {
-	m_pPlayer->GetAnimator()->SetReverce(!m_pPlayer->GetDir());
 	m_pPlayer->GetAnimator()->Play(L"Fall0");
 }
 

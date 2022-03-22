@@ -21,6 +21,7 @@ CPlayerAnim::~CPlayerAnim()
 
 void CPlayerAnim::update()
 {
+	m_pPlayer->GetAnimator()->SetReverce(!m_pPlayer->GetDir());
 	CPlayerState* state = nullptr;
 	for (int i = m_arrState.size() - 1; i >= 0; --i)
 	{

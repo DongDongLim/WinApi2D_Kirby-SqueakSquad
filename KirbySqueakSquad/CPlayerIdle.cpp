@@ -53,6 +53,9 @@ void CPlayerIdle::GoundCheck()
 	m_eInfo.g_bIsDown = false;
 	fPoint fLeftUpPos = fPoint(-1, -1).normalize();
 	fPoint fRightDownPos = fPoint(1, 1).normalize();
+	float fRealTimeLength;
+	float fLengthX;
+	float fLengthY;
 
 	// 지금 오브젝트 기준으로 생각했는데 플레이어 기준으로 생각해보자 굳이?
 	/* TODO:
@@ -65,14 +68,27 @@ void CPlayerIdle::GoundCheck()
 	{
 		if (nullptr != m_pGroundCollider[i])
 		{
-			float fRealTimeLength = fPoint(abs(m_pPlayerCollider->GetFinalPos().x
-				- m_pGroundCollider[i]->GetFinalPos().x)
-				, abs(m_pPlayerCollider->GetFinalPos().y
-					- m_pGroundCollider[i]->GetFinalPos().y)).Length();
+			fLengthX = (m_pPlayerCollider->GetFinalPos() - m_pGroundCollider[i]->GetFinalPos()).x;
+			fLengthY = (m_pPlayerCollider->GetFinalPos() - m_pGroundCollider[i]->GetFinalPos()).y;
+			fRealTimeLength = fPoint(abs(fLengthX), abs(fLengthY)).Length();
+			if (abs(fLengthX) > abs(fLengthY))
+			{
+				m_fGroundLength = fPoint(
+					abs((m_pGroundCollider[i]->GetScale()/2).x
+						+ (m_pPlayerCollider->GetScale()/2).x)
+					, abs(fLengthY)).Length();
+			}
+			else
+			{
+				m_fGroundLength = fPoint(
+					abs(fLengthX)
+					, abs((m_pGroundCollider[i]->GetScale() / 2).y
+						+ (m_pPlayerCollider->GetScale() / 2).y)).Length();
+			}
+
 			if (m_fGroundLength >= fRealTimeLength)
 			{
-				fPoint fPlayerDisPos = (m_pPlayerCollider->GetFinalPos() - m_pGroundCollider[i]->GetFinalPos()).normalize();
-
+				fPoint fPlayerDisPos = fPoint(fLengthX, fLengthY).normalize();
 
 				if (fPlayerDisPos.y <= fLeftUpPos.y)
 				{
@@ -194,8 +210,11 @@ void CPlayerIdle::KeyUpdate()
 	{
 		if (m_pPlayer->GetGravity()->GetIsGround())
 		{
-			CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::JUMP);
-			m_bIsJump = true;
+			if (nullptr == CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY))
+			{
+				CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::JUMP);
+				m_bIsJump = true;
+			}
 		}
 	}
 }
@@ -227,7 +246,6 @@ void CPlayerIdle::update()
 
 void CPlayerIdle::Anim()
 {
-	m_pPlayer->GetAnimator()->SetReverce(!m_pPlayer->GetDir());
 	m_pPlayer->GetAnimator()->Play(L"Idle");
 }
 

@@ -204,9 +204,9 @@ CPlayer::CPlayer()
 	GetAnimator()->CreateAnimation(
 		m_wAnimKey[7]->at(1),
 		m_pImg[7],
-		fPoint((float)(pixelSize * 2), 0.f),
+		fPoint((float)(pixelSize), 0.f),
 		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.1f, 2);
+		fPoint(pixelSize, 0.f), 0.05f, 4);
 
 	GetAnimator()->CreateAnimation(
 		m_wAnimKey[8]->at(0),
@@ -264,6 +264,7 @@ CPlayer::CPlayer()
 	// 리지드바디 쓰자 충돌부분 보니까 써야겠다
 	CreateRigidBody();
 	CRigidBody* rigid = GetRigidBody();
+	rigid->SetMass(1);
 
 	// 상태
 	CPlayerState* pAnim = new CPlayerAnim();
@@ -279,6 +280,8 @@ CPlayer::CPlayer()
 	CStateManager::getInst()->AddState(PLAYERSTATE::JUMP, pJump);
 	CPlayerState* pFall = new CPlayerFall();
 	CStateManager::getInst()->AddState(PLAYERSTATE::Fall, pFall);
+	CPlayerState* pFly = new CPlayerFly();
+	CStateManager::getInst()->AddState(PLAYERSTATE::FLY, pFly);
 
 	CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::IDLE);
 	CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);

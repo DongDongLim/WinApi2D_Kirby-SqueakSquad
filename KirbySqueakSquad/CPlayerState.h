@@ -135,6 +135,7 @@ public:
 
 	void SetTarget(COLLIONTARGET target);
 
+	void KeyUpdate();
 	virtual void Anim();
 	virtual void update();
 	virtual void Enter();
@@ -167,11 +168,17 @@ public:
 
 class CPlayerFly : public CPlayerState
 {
+private:
+	float m_fAnimSpeed;
+	float m_fKeepTimer;
 
 public:
 	CPlayerFly();
 	~CPlayerFly();
 
+	void Anim();
+
+	void KeyUpdate();
 	virtual void update();
 	virtual void Enter();
 	virtual void Exit(PLAYERSTATE state);
