@@ -191,8 +191,8 @@ void CRenderManager::RenderFillEllipse(float dstX, float dstY, float dstW, float
 
 void CRenderManager::RenderLine(fPoint startPoint, fPoint endPoint, COLORREF color, float strokeWidth)
 {
-	D2D1_POINT_2F start = { startPoint.x, startPoint.y };
-	D2D1_POINT_2F end = { endPoint.x, endPoint.y };
+	D2D1_POINT_2F start = { startPoint.x * g_winScale, startPoint.y * g_winScale };
+	D2D1_POINT_2F end = { endPoint.x * g_winScale, endPoint.y * g_winScale };
 
 	int red = color & 0xFF;
 	int green = (color >> 8) & 0xFF;

@@ -2,6 +2,7 @@
 #include "CStateManager.h"
 
 class CGameObject;
+class AI;
 
 struct tEvent
 {
@@ -28,5 +29,6 @@ public:
 	void EventDeleteObject(CGameObject* pObj);
 	void EventChangeScene(GROUP_SCENE scene);
 	void EventLoadPlayerState(PLAYERSTATE state);
+	void EventChangeAIState(AI* ai, STATE_MON state);
 };
 

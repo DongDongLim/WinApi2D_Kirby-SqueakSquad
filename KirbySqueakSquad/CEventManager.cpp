@@ -2,6 +2,7 @@
 #include "CEventManager.h"
 #include "CGameObject.h"
 #include "CScene.h"
+#include "AI.h"
 
 CEventManager::CEventManager()
 {
@@ -53,6 +54,15 @@ void CEventManager::Execute(const tEvent& event)
 		// wParam : next state		
 		PLAYERSTATE nextState = (PLAYERSTATE)event.wParam;
 		CStateManager::getInst()->LoadState(nextState);
+	}
+	break;
+	case TYPE_EVENT::CHANGE_AI_STATE:
+	{
+		// lParam : AI
+		// wParam : next state
+		AI* pAI = (AI*)event.lParam;
+		STATE_MON nextState = (STATE_MON)event.wParam;
+		pAI->ChangeState(nextState);
 	}
 	break;
 	}
@@ -117,4 +127,14 @@ void CEventManager::EventLoadPlayerState(PLAYERSTATE state)
 	AddEvent(event);
 	// TODO : 예시에서 왜 여기만 CEventManager::getInst()를 사용해서 부르나요?
 	//CEventManager::getInst()->AddEvent(event);
+}
+
+void CEventManager::EventChangeAIState(AI* ai, STATE_MON state)
+{
+	tEvent event = {};
+	event.eEven = TYPE_EVENT::CHANGE_AI_STATE;
+	event.lParam = (DWORD_PTR)ai;
+	event.wParam = (DWORD_PTR)state;
+
+	AddEvent(event);
 }

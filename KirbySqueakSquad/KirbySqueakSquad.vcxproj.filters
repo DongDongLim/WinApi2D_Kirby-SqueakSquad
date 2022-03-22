@@ -64,9 +64,6 @@
     <Filter Include="Util">
       <UniqueIdentifier>{48df5aa7-75ba-4fa3-8665-c2d016e699ce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Object\State">
-      <UniqueIdentifier>{ad72a7e3-394f-46a5-b0ed-539ee1e050b5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Object\Character\Player">
       <UniqueIdentifier>{52b508b6-1545-4969-943f-159867e9edcc}</UniqueIdentifier>
     </Filter>
@@ -81,6 +78,15 @@
     </Filter>
     <Filter Include="Engin\Component\Gravity">
       <UniqueIdentifier>{d3f55a21-db06-4f93-929d-d31aa9e85505}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Character\Monster">
+      <UniqueIdentifier>{801beeaf-42ec-4845-b33c-2a75cd8bce07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engin\Component\AI">
+      <UniqueIdentifier>{8ec587b4-47e7-482d-bf63-1c91a79343bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engin\Component\AI\State">
+      <UniqueIdentifier>{7728235f-366a-42f9-b2c2-a6b4d0ee3fb8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -189,9 +195,6 @@
     <ClInclude Include="CScene_Stage1.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="CState.h">
-      <Filter>Object\State</Filter>
-    </ClInclude>
     <ClInclude Include="CStateManager.h">
       <Filter>Engin\Manager</Filter>
     </ClInclude>
@@ -215,6 +218,21 @@
     </ClInclude>
     <ClInclude Include="CGravity.h">
       <Filter>Engin\Component\Gravity</Filter>
+    </ClInclude>
+    <ClInclude Include="CMonster.h">
+      <Filter>Object\Character\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="AI.h">
+      <Filter>Engin\Component\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="CIdleState.h">
+      <Filter>Engin\Component\AI\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CTraceState.h">
+      <Filter>Engin\Component\AI\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CState.h">
+      <Filter>Engin\Component\AI\State</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -305,9 +323,6 @@
     <ClCompile Include="CScene_Stage1.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="CState.cpp">
-      <Filter>Object\State</Filter>
-    </ClCompile>
     <ClCompile Include="CStateManager.cpp">
       <Filter>Engin\Manager</Filter>
     </ClCompile>
@@ -355,6 +370,21 @@
     </ClCompile>
     <ClCompile Include="CGravity.cpp">
       <Filter>Engin\Component\Gravity</Filter>
+    </ClCompile>
+    <ClCompile Include="CMonster.cpp">
+      <Filter>Object\Character\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="AI.cpp">
+      <Filter>Engin\Component\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="CTraceState.cpp">
+      <Filter>Engin\Component\AI\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CIdleState.cpp">
+      <Filter>Engin\Component\AI\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CState.cpp">
+      <Filter>Engin\Component\AI\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

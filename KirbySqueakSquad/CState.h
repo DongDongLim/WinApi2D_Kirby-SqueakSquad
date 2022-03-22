@@ -1,40 +1,28 @@
 #pragma once
-#include "CPlayer.h"
 
-// 함수포인터를 위한 타입정의
-typedef void(CPlayer::*ONER_FUNC)(DWORD_PTR, DWORD_PTR);
+class AI;
+class CMonster;
 
 class CState
 {
-protected:
-	ONER_FUNC m_pFunc;
-	DWORD_PTR m_pParam1;
-	DWORD_PTR m_pParam2;
+	friend class AI;
 
-	ONER_FUNC m_pEFunc;
-	DWORD_PTR m_pEParam1;
-	DWORD_PTR m_pEParam2;
-
-	ONER_FUNC m_pUFunc;
-	DWORD_PTR m_pUParam1;
-	DWORD_PTR m_pUParam2;
-
-	CPlayer* m_pOner;
+private:
+	AI* m_pOwnerAI;
+	STATE_MON m_eState;
 
 public:
-	CState();
-	CState(CPlayer* oner);
-	~CState();
+	CState(STATE_MON state);
+	virtual ~CState();
 
-	virtual void update();
-	virtual void Enter();
-	virtual void Exit();
-	
+	AI* GetOwnerAI();
+	STATE_MON GetType();
+	CMonster* GetMonster();
 
-	void SetEnterCallBack(ONER_FUNC pFunc, DWORD_PTR param1, DWORD_PTR param2);
+	virtual void update() = 0;
+	virtual void Enter() = 0;
+	virtual void Exit() = 0;
 
-	void SetUpdageCallBack(ONER_FUNC pFunc, DWORD_PTR param1, DWORD_PTR param2);
 
-	void SetExitCallBack(ONER_FUNC pFunc, DWORD_PTR param1, DWORD_PTR param2);
 };
 

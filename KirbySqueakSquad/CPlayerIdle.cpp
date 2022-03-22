@@ -263,7 +263,7 @@ void CPlayerIdle::render()
 			{
 
 				COLORREF rgb = RGB(0, 0, 0);
-				rgb = RGB(255, 0, 0);
+				rgb = RGB(255, 0, 255);
 
 				fPoint fptRenderStartPos = CCameraManager::getInst()->GetRenderPos(m_pGroundCollider[i]->GetFinalPos());
 				fPoint fptRenderFinalPos = CCameraManager::getInst()->GetRenderPos(m_pPlayerCollider->GetFinalPos());

@@ -2,6 +2,7 @@
 #include "CScene_Stage1.h"
 #include "Map_Start.h"
 #include "CPlayer.h"
+#include "CMonster.h"
 #include "CMap.h"
 #include "CBackGround.h"
 #include "CStateManager.h"
@@ -39,8 +40,11 @@ void CScene_Stage1::Enter()
 	pPlayer->SetPos(fPoint(50, 96));
 	AddObject(pPlayer, GROUP_GAMEOBJ::PLAYER);
 
+	CMonster* pMon = CMonster::Create(MON_TYPE::NORMAL, fPoint(150.f, 128.5f));
+	AddObject(pMon, GROUP_GAMEOBJ::MONSTER);
+
 	CCollisionManager::getInst()->CheckGroup(GROUP_GAMEOBJ::PLAYER, GROUP_GAMEOBJ::TILE);
-	
+	CCollisionManager::getInst()->CheckGroup(GROUP_GAMEOBJ::PLAYER, GROUP_GAMEOBJ::MONSTER);
 	// Camera Look ÁöÁ¤
 	CCameraManager::getInst()->SetTargetObj(pPlayer);
 	//CCameraManager::getInst()->SetLookAt(fPoint(WINSIZEX / g_winScale / 2.f, WINSIZEY / g_winScale / 2.f));
