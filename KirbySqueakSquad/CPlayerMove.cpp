@@ -114,10 +114,6 @@ void CPlayerMove::KeyUpdate()
 			}
 		}
 	}
-	if (KeyDown('X') || KeyDown('V'))
-	{
-		CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::JUMP);
-	}
 }
 
 void CPlayerMove::update()
@@ -146,13 +142,13 @@ void CPlayerMove::Move()
 			m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_dir * m_eInfo.m_fVelocity * m_eInfo.g_fAccel,
 				m_pPlayer->GetRigidBody()->GetVelocity().y));
 		}
-		//m_pPlayer->GetRigidBody()->AddForce(fPoint(m_dir * m_eInfo.m_fVelocity, 0));
 		break;
 	case CPlayerMove::COMMANDMOVE::DASH:
 		m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_dir * m_eInfo.m_fVelocity * m_eInfo.g_fAccel,
 			m_pPlayer->GetRigidBody()->GetVelocity().y));
 		break;
 	case CPlayerMove::COMMANDMOVE::CHANGEDIR:
+
 		m_fAnimStayTime += fDT;
 
 		m_bStartDir ? m_pPlayer->GetRigidBody()->AddVelocity(fPoint(-m_fAnimStayTime, 0))
@@ -183,6 +179,7 @@ void CPlayerMove::Move()
 				|| (m_dir < 0 && m_dir < m_pPlayer->GetRigidBody()->GetVelocity().x))
 			{
 				//m_bStartDir = m_pPlayer->GetDir();
+				m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, 0));
 				Exit(PLAYERSTATE::IDLE);
 			}
 		}
@@ -192,15 +189,6 @@ void CPlayerMove::Move()
 	default:
 		break;
 	}
-	
-	
-	//pos.x += dir * m_eInfo.m_fVelocity * m_fAccel * fDT;
-	/*
-	if (0 <= pos.x && pos.x <= CCameraManager::getInst()->GetDisLimmit().x)
-	{
-		m_pPlayer->SetPos(pos);
-	}
-	*/
 }
 
 
@@ -217,27 +205,8 @@ void CPlayerMove::Anim()
 		break;
 	case CPlayerMove::COMMANDMOVE::CHANGEDIR:
 		m_pPlayer->GetAnimator()->Play(L"QuickStop");
-
-		/*
-		m_fAnimStayTime -= fDT;
-		m_fAccel = m_fAnimStayTime;
-		if (0 >= m_fAnimStayTime)
-		{
-			m_fAnimStayTime = 0;
-			m_bStartDir = m_pPlayer->GetDir();
-			m_bIsDash ? m_eCurCommand = COMMANDMOVE::DASH : m_eCurCommand = COMMANDMOVE::NONE;
-		}
-		*/
 		break;
 	case CPlayerMove::COMMANDMOVE::TURNOFF:
-		/*
-		m_fAccel = m_fAnimStayTime;
-		if (0 >= m_fAnimStayTime)
-		{
-			m_fAnimStayTime = 0;
-			Exit(PLAYERSTATE::IDLE);
-		}
-		*/
 		break;
 	case CPlayerMove::COMMANDMOVE::END:
 		break;

@@ -29,8 +29,4 @@ bool CGravity::GetIsGround()
 void CGravity::finalupdate()
 {
 	m_pOwner->GetRigidBody()->SetGAccel(m_fGAccel);
-	if (!m_bisGround)
-		m_pOwner->GetRigidBody()->SetMaxPositiveVelocity(m_fMaxPositiveVelocity);
-	else
-		m_pOwner->GetRigidBody()->SetMaxPositiveVelocity(fPoint(m_fMaxPositiveVelocity.x, 0));
 }

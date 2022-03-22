@@ -40,7 +40,7 @@ void CCore::render()
 	// 오른쪽 상단에 FPS 표시
 	WCHAR strFPS[6];
 	swprintf_s(strFPS, L"%5d", CTimeManager::getInst()->GetFPS());
-	CRenderManager::getInst()->RenderText(strFPS, WINSIZEX - 50, 10, WINSIZEX, 50, 12, RGB(0, 0, 0));
+	CRenderManager::getInst()->RenderText(strFPS, WINSIZEX / 2 - 50, 10, WINSIZEX / 2, 50, 12, RGB(0, 0, 0));
 
 	CRenderManager::getInst()->GetRenderTarget()->EndDraw();
 }

@@ -47,11 +47,17 @@ struct PLAYERINFO
 	const float m_fVerticalSpeed = 100.f;
 	const float m_fJumpTime = 1.f;
 
+
+	bool g_bIsRight = false;
+	bool g_bIsUp = false;
+	bool g_bIsDown = false;
+	bool g_bIsLeft = false;
+
 };
 
 class CPlayer : public CGameObject
 {
-	friend CStateManager;
+	friend class CStateManager;
 private:
 	PLAYERINFO info;
 	// 플레이어 애니메이션 재생을 위한 이미지들
@@ -80,6 +86,7 @@ public:
 	
 	virtual void update();
 	virtual void render();
+	PLAYERINFO& GetPlaeyrInfo();
 
 	bool GetDir();
 

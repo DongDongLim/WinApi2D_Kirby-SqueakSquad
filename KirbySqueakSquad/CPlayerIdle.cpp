@@ -9,7 +9,7 @@
 
 
 
-void OnIdleCollison(DWORD_PTR state, CCollider* other)
+void OnIdleCollisonEnter(DWORD_PTR state, CCollider* other)
 {
 	if (other->GetObj()->GetGroup() == GROUP_GAMEOBJ::TILE)
 	{
@@ -26,7 +26,7 @@ void OnIdleCollison(DWORD_PTR state, CCollider* other)
 CPlayerIdle::CPlayerIdle()
 {
 	m_eState = PLAYERSTATE::IDLE;
-	//m_pPlayer->SetCollisonCallBack(OnIdleCollison, (DWORD_PTR)this);
+	m_pPlayer->SetCollisonEnterCallBack(OnIdleCollisonEnter, (DWORD_PTR)this);
 	m_fWallLength = 0;
 	m_pPlayerCollider = m_pPlayer->GetCollider();
 	m_fGroundLength = (m_pPlayerCollider->GetScale() / 2).Length()
@@ -43,71 +43,117 @@ CPlayerIdle::~CPlayerIdle()
 
 }
 
+
+
 void CPlayerIdle::GoundCheck()
 {
-	// 지금 오브젝트 기준으로 생각했는데 플레이어 기준으로 생각해보자
+	m_eInfo.g_bIsRight = false;
+	m_eInfo.g_bIsLeft = false;
+	m_eInfo.g_bIsUp = false;
+	m_eInfo.g_bIsDown = false;
+	fPoint fLeftUpPos = fPoint(-1, -1).normalize();
+	fPoint fRightDownPos = fPoint(1, 1).normalize();
+
+	// 지금 오브젝트 기준으로 생각했는데 플레이어 기준으로 생각해보자 굳이?
+	/* TODO:
+		지금은 정사각 콜라이더들을 기준으로 했기 때문에 기능이 돌아가지만
+		직각사각형 콜라이더들이 부딫혔을때는 두 콜라이더를 이어주는 선이 둘과 겹치지 않을때
+		각각의 가장 가까운 대각선을 기준으로 다시 설정해서 비교해주는 과정이 필요함
+		현재 커비의 콜라이더는 정사각이므로 추가하지는 않았음
+	*/
 	for (int i = 0; i < 8; ++i)
 	{
-		float fRealTimeLength = fPoint(abs(m_pPlayerCollider->GetFinalPos().x
-			- m_pGroundCollider[i]->GetFinalPos().x)
-			, abs(m_pPlayerCollider->GetFinalPos().y
-				- m_pGroundCollider[i]->GetFinalPos().y)).Length();
-		if (m_fGroundLength > fRealTimeLength)
+		if (nullptr != m_pGroundCollider[i])
 		{
-			fPoint fLeftUpPos = fPoint(-1, -1).normalize();
-			fPoint fRightDownPos = fPoint(1, 1).normalize();
-			fPoint fPlayerDisPos = (m_pPlayerCollider->GetFinalPos() - m_pGroundCollider[i]->GetFinalPos()).normalize();;
-			if (fPlayerDisPos.y < fLeftUpPos.y)
+			float fRealTimeLength = fPoint(abs(m_pPlayerCollider->GetFinalPos().x
+				- m_pGroundCollider[i]->GetFinalPos().x)
+				, abs(m_pPlayerCollider->GetFinalPos().y
+					- m_pGroundCollider[i]->GetFinalPos().y)).Length();
+			if (m_fGroundLength >= fRealTimeLength)
 			{
-				m_pPlayer->GetRigidBody()->
-					SetMaxPositiveVelocity(fPoint(
-						m_pPlayer->GetRigidBody()->
-						GetMaxPositiveVelocity().x,
-						0));
-				m_pPlayer->SetPos(fPoint(m_pPlayer->GetPos().x
-					, ((fPlayerDisPos * fRealTimeLength)
-					+ m_pPlayerCollider->GetOffsetPos()).y));
+				fPoint fPlayerDisPos = (m_pPlayerCollider->GetFinalPos() - m_pGroundCollider[i]->GetFinalPos()).normalize();
+
+
+				if (fPlayerDisPos.y <= fLeftUpPos.y)
+				{
+					if (m_pPlayer->GetRigidBody()->GetDir().y > 0)
+					{
+						m_pPlayer->GetRigidBody()->SetVelocity(
+							fPoint(m_pPlayer->GetRigidBody()->GetVelocity().x, 0));
+						
+
+						m_pPlayer->SetPos(fPoint(m_pPlayer->GetPos().x
+							, (m_pGroundCollider[i]->GetFinalPos().y)
+							- ((m_pPlayerCollider->GetOffsetPos().y)
+								+ (m_pPlayerCollider->GetScale() / 2).y
+								+ (m_pGroundCollider[i]->GetScale() / 2).y)));
+					}
+					m_eInfo.g_bIsDown = true;
+					m_pPlayer->GetGravity()->SetIsGround(true);
+				}
+				else if (fPlayerDisPos.y >= fRightDownPos.y)
+				{
+					if (m_pPlayer->GetRigidBody()->GetDir().y < 0)
+					{
+						m_pPlayer->GetRigidBody()->SetVelocity(
+							fPoint(m_pPlayer->GetRigidBody()->GetVelocity().x, 0));
+						
+
+						m_pPlayer->SetPos(fPoint(m_pPlayer->GetPos().x
+							, (m_pGroundCollider[i]->GetFinalPos().y)
+							+ ((m_pPlayerCollider->GetOffsetPos().y)
+								+ (m_pPlayerCollider->GetScale() / 2).y
+								+ (m_pGroundCollider[i]->GetScale() / 2).y)));
+					}
+
+					m_eInfo.g_bIsUp = true;
+				}
+				else if (fPlayerDisPos.x < fLeftUpPos.x)
+				{
+					if (m_pPlayer->GetRigidBody()->GetDir().x > 0)
+					{
+						m_pPlayer->GetRigidBody()->SetVelocity(
+							fPoint(0, m_pPlayer->GetRigidBody()->GetVelocity().y));
+						
+
+						m_pPlayer->SetPos(fPoint(
+							(m_pGroundCollider[i]->GetFinalPos().x)
+							- ((m_pPlayerCollider->GetOffsetPos().x)
+								+ (m_pPlayerCollider->GetScale() / 2).x
+								+ (m_pGroundCollider[i]->GetScale() / 2).x)
+							, m_pPlayer->GetPos().y));
+					}
+
+					m_eInfo.g_bIsRight = true;
+				}
+				else if (fPlayerDisPos.x > fRightDownPos.x)
+				{
+					if (m_pPlayer->GetRigidBody()->GetDir().x < 0)
+					{
+						m_pPlayer->GetRigidBody()->SetVelocity(
+							fPoint(0, m_pPlayer->GetRigidBody()->GetVelocity().y));
+						
+
+						m_pPlayer->SetPos(fPoint(
+							(m_pGroundCollider[i]->GetFinalPos().x)
+							+ ((m_pPlayerCollider->GetOffsetPos().x)
+								+ (m_pPlayerCollider->GetScale() / 2).x
+								+ (m_pGroundCollider[i]->GetScale() / 2).x)
+							, m_pPlayer->GetPos().y));
+					}
+
+					m_eInfo.g_bIsLeft = true;
+				}
 			}
-			if (fPlayerDisPos.y > fRightDownPos.y)
+			else
 			{
-				m_pPlayer->GetRigidBody()->
-					SetMaxNegativeVelocity(fPoint(
-						m_pPlayer->GetRigidBody()->
-						GetMaxNegativeVelocity().x,
-						0));
-				m_pPlayer->SetPos(fPoint(m_pPlayer->GetPos().x
-					, ((fPlayerDisPos * fRealTimeLength)
-						+ m_pPlayerCollider->GetOffsetPos()).y));
+				m_pGroundCollider[i] = nullptr;
 			}
-			if (fPlayerDisPos.x < fLeftUpPos.x)
-			{
-				m_pPlayer->GetRigidBody()->
-					SetMaxNegativeVelocity(fPoint(
-						0,
-						m_pPlayer->GetRigidBody()->
-						GetMaxNegativeVelocity().y));
-				m_pPlayer->SetPos(fPoint(
-					((fPlayerDisPos * fRealTimeLength)
-						+ m_pPlayerCollider->GetOffsetPos()).x
-					, m_pPlayer->GetPos().y));
-			}
-			if (fPlayerDisPos.x > fRightDownPos.x)
-			{
-				m_pPlayer->GetRigidBody()->
-					SetMaxPositiveVelocity(fPoint(
-						0,
-						m_pPlayer->GetRigidBody()->
-						GetMaxPositiveVelocity().y));
-				m_pPlayer->SetPos(fPoint(
-					((fPlayerDisPos * fRealTimeLength)
-						+ m_pPlayerCollider->GetOffsetPos()).x
-					, m_pPlayer->GetPos().y));
-			}			
 		}
-		else
-		{
-			m_pGroundCollider[i] = nullptr;
-		}
+	}
+	if (!m_eInfo.g_bIsDown)
+	{
+		m_pPlayer->GetGravity()->SetIsGround(false);
 	}
 }
 
@@ -128,13 +174,17 @@ void CPlayerIdle::KeyUpdate()
 {
 	if (Key(VK_LEFT))
 	{
-		if (0 != m_pPlayer->GetRigidBody()->GetMaxNegativeVelocity().x)
+		if (!m_eInfo.g_bIsLeft)
 			Exit(PLAYERSTATE::MOVE);
+		else
+			CStateManager::getInst()->ExitState(PLAYERSTATE::MOVE);
 	}
 	if (Key(VK_RIGHT))
 	{
-		if (0 != m_pPlayer->GetRigidBody()->GetMaxPositiveVelocity().x)
+		if (!m_eInfo.g_bIsRight)
 			Exit(PLAYERSTATE::MOVE);
+		else
+			CStateManager::getInst()->ExitState(PLAYERSTATE::MOVE);
 	}
 	if (KeyDown('C'))
 	{
@@ -142,14 +192,16 @@ void CPlayerIdle::KeyUpdate()
 	}
 	if (KeyDown('X') || KeyDown('V'))
 	{
-		CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::JUMP);
-		m_bIsJump = true;
+		if (m_pPlayer->GetGravity()->GetIsGround())
+		{
+			CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::JUMP);
+			m_bIsJump = true;
+		}
 	}
 }
 
 void CPlayerIdle::update()
 {
-	
 	GoundCheck();
 
 	if (m_pPlayer->GetGravity()->GetIsGround())
@@ -177,6 +229,36 @@ void CPlayerIdle::Anim()
 {
 	m_pPlayer->GetAnimator()->SetReverce(!m_pPlayer->GetDir());
 	m_pPlayer->GetAnimator()->Play(L"Idle");
+}
+
+void CPlayerIdle::render()
+{
+	for (int i = 0; i < 8; ++i)
+	{
+		if (nullptr != m_pGroundCollider[i])
+		{
+			float fRealTimeLength = fPoint(abs(m_pPlayerCollider->GetFinalPos().x
+				- m_pGroundCollider[i]->GetFinalPos().x)
+				, abs(m_pPlayerCollider->GetFinalPos().y
+					- m_pGroundCollider[i]->GetFinalPos().y)).Length();
+			if (m_fGroundLength > fRealTimeLength)
+			{
+
+				COLORREF rgb = RGB(0, 0, 0);
+				rgb = RGB(255, 0, 0);
+
+				fPoint fptRenderStartPos = CCameraManager::getInst()->GetRenderPos(m_pGroundCollider[i]->GetFinalPos());
+				fPoint fptRenderFinalPos = CCameraManager::getInst()->GetRenderPos(m_pPlayerCollider->GetFinalPos());
+
+				CRenderManager::getInst()->RenderLine(
+					fptRenderStartPos,
+					fptRenderFinalPos,
+					rgb,
+					2.f
+				);
+			}
+		}
+	}
 }
 
 void CPlayerIdle::Enter()

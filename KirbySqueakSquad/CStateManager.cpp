@@ -77,6 +77,15 @@ void CStateManager::update()
 	m_arrErase.clear();
 }
 
+void CStateManager::render()
+{
+	map<PLAYERSTATE, CPlayerState*>::iterator iter = m_mCurPlayeState.begin();
+	for (; iter != m_mCurPlayeState.end(); ++iter)
+	{
+		iter->second->render();
+	}
+}
+
 void CStateManager::SetCommend(COMMANDKEY commend)
 {
 	m_eCurCommand = commend;

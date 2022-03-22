@@ -1,6 +1,7 @@
 #include "framework.h"
 #include "CRigidBody.h"
 #include "CGameObject.h"
+#include "CGravity.h"
 
 CRigidBody::CRigidBody()
 {
@@ -115,7 +116,11 @@ void CRigidBody::finalupdate()
 	}
 
 	// 중력가속도 적용
-	m_fAccel += m_fGAccel;
+	if (nullptr != m_pOwner->GetGravity())
+	{
+		if(!m_pOwner->GetGravity()->GetIsGround())
+			m_fAccel += m_fGAccel;
+	}
 
 	// 속력에 넣어줌
 	m_fVelocity += m_fAccel * fDT;
@@ -165,6 +170,7 @@ void CRigidBody::finalupdate()
 		}
 	}
 	Move();
+	m_fPrevVelocity = m_fVelocity;
 	// 힘을 준 순간에만 영향을 주도록 초기화
 	m_fForce = fPoint(0.f, 0.f);
 	m_fAccel = fPoint(0.f, 0.f);

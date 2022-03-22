@@ -68,7 +68,7 @@ CPlayer::CPlayer()
 
 	// 콜라이더
 	CreateCollider();
-	GetCollider()->SetScale(fPoint(19.f, 17.f));
+	GetCollider()->SetScale(fPoint(17.f, 17.f));
 	GetCollider()->SetOffsetPos(fPoint(0.f, 7.f));
 
 	// 애니메이션
@@ -325,6 +325,12 @@ void CPlayer::update()
 void CPlayer::render()
 {
 	component_render();
+	CStateManager::getInst()->render();
+}
+
+PLAYERINFO& CPlayer::GetPlaeyrInfo()
+{
+	return info;
 }
 
 

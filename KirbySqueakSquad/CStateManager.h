@@ -32,6 +32,7 @@ public:
 	//void CommandSave();
 
 	void update();
+	void render();
 
 	void SetCommend(COMMANDKEY commend);
 	int GetCurPlaySize();

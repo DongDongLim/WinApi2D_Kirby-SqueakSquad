@@ -21,6 +21,7 @@ public:
 
 
 	virtual void Anim() {}
+	virtual void render() {}
 	virtual void update() = 0;
 	virtual void Enter() = 0;
 	virtual void Exit(PLAYERSTATE state) = 0;
@@ -48,6 +49,7 @@ public:
 
 	void KeyUpdate();
 	virtual void Anim();
+	virtual void render();
 	virtual void update();
 	virtual void Enter();
 	virtual void Exit(PLAYERSTATE state);

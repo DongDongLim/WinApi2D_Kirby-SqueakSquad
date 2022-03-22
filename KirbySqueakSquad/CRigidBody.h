@@ -10,6 +10,7 @@ private:
 	fPoint m_fForce;		// 방향에 적용되는 힘
 	fPoint m_fAccel;		// 가속도
 	fPoint m_fVelocity;		// 속도
+	fPoint m_fPrevVelocity;		// 속도
 	fPoint m_fGAccel;		// 중력가속도
 	fPoint m_fPositiveMaxVelocity;	// 양의 최대 속력
 	fPoint m_fNegativeMaxVelocity;	// 음의 최대 속력
