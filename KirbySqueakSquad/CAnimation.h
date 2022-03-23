@@ -23,7 +23,8 @@ private:
 	int				m_iCurFrm;		// 현재 프레임의 index
 	float			m_fAccTime;		// 다음 프레임까지 축적시간
 
-	bool			m_bReverse;
+	bool			m_bReverseRender;
+	bool			m_bReverseRenderRenderPlay;
 
 public:
 	CAnimation();
@@ -33,6 +34,7 @@ public:
 	void SetName(const wstring& strName);
 	const wstring& GetName();
 
+	void SetReversePlay(bool isreverse);
 	void SetReverse(bool reverse);
 	void SetFrame(int frmIndex);
 	tAniFrm& GetFrame(int frmIndex);	

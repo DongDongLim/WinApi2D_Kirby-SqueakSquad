@@ -26,6 +26,8 @@ class CMonster : public CGameObject
 private:
 	tMonInfo m_tInfo;
 	AI* m_pAI;
+	bool m_bIsEaten;
+	bool m_bIsLive;
 
 public:
 	CMonster();
@@ -43,6 +45,9 @@ public:
 	void SetSpeed(float speed);
 	void SetAI(AI* ai);
 	void SetMonInfo(const tMonInfo& info);
+	void SetLive(bool isLive);
+	void SetEaten(bool isEaten);
+	bool GetIsEaten();
 
 	void OnCollisionEnter(CCollider* pOther);
 };

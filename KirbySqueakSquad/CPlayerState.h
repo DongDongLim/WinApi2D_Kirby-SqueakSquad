@@ -30,26 +30,14 @@ public:
 class CPlayerIdle : public CPlayerState
 {
 private:
-	// 땅과의 거리체크
-	float m_fGroundLength;
-	// 벽과의 거리체크
-	float m_fWallLength;
 	CCollider* m_pPlayerCollider;
-	//한번에 만나는 벽은 최대 8개임;
-	CCollider* m_pGroundCollider[8];
-	bool m_bIsJump;
 
 public:
 	CPlayerIdle();
 	~CPlayerIdle();
 
-	void GoundCheck();
-
-	void AddGroundCollider(CCollider* ground);
-
 	void KeyUpdate();
 	virtual void Anim();
-	virtual void render();
 	virtual void update();
 	virtual void Enter();
 	virtual void Exit(PLAYERSTATE state);
@@ -64,6 +52,7 @@ private:
 		DASH,
 		CHANGEDIR,
 		TURNOFF,
+		IMPACT,
 
 		END
 	};
@@ -142,13 +131,25 @@ public:
 	virtual void Exit(PLAYERSTATE state);
 };
 
+
+class CAttackObj;
+
 class CPlayerAttack : public CPlayerState
 {
+private:
+	float nomalanimtime;
+	float nomalanimKeeptime;
+
+	fPoint m_fAttRange;
+
+	CAttackObj* m_pAttackobj;
 
 public:
 	CPlayerAttack();
 	~CPlayerAttack();
 
+
+	virtual void Anim();
 	virtual void update();
 	virtual void Enter();
 	virtual void Exit(PLAYERSTATE state);

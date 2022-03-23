@@ -8,48 +8,12 @@
 #include "CTile.h"
 #include "CGravity.h"
 
-
-void OnMoveCollison(DWORD_PTR state, CCollider* other)
-{
-	CPlayerMove* stateMove = (CPlayerMove*)state;
-	if (stateMove->GetIsActive())
-	{
-		CGameObject* pOtherObj = other->GetObj();
-		if (pOtherObj->GetGroup() == GROUP_GAMEOBJ::TILE)
-		{
-			if (((CTile*)pOtherObj)->GetGroup() == GROUP_TILE::GROUND)
-			{
-				CPlayer* player = CStateManager::getInst()->GetPlayer();
-				float playerX;
-				float groundX;
-				float playerY;
-				float groundY;
-				playerY = player->GetCollider()->GetDownPos().y;
-				groundY = other->GetUpPos().y;
-				if (player->GetDir())
-				{
-					playerX = player->GetCollider()->GetRightPos().x;
-					groundX = other->GetLeftPos().x;
-				}
-				else
-				{
-					playerX = player->GetCollider()->GetLeftPos().x;
-					groundX = other->GetRightPos().x;
-				}
-				if (1 >= abs(playerX - groundX) && 1 <= abs(playerY - groundY))
-				{
-					player->GetRigidBody()->SetVelocity(fPoint(0, player->GetRigidBody()->GetVelocity().y));
-					stateMove->Exit(PLAYERSTATE::IDLE);
-				}
-			}
-		}
-	}
-}
-
+/* TODO :
+	나중에 무브도 항시 적용으로 바꿔서 여기서 속도가 0이면 idle 애니메이션 적용받도록 해야겠다 그럼 idle 상태함수랑 합쳐도 무방할지도..?
+*/
 
 CPlayerMove::CPlayerMove()
 {
-	//m_pPlayer->SetCollisonCallBack(OnMoveCollison, (DWORD_PTR)this);
 	m_eState = PLAYERSTATE::MOVE;
 	m_eCurCommand = COMMANDMOVE::NONE;
 	m_ePrevCommand = m_eCurCommand;
@@ -99,12 +63,21 @@ void CPlayerMove::KeyUpdate()
 			}
 		}
 	}
+	if (KeyDown('C'))
+	{
+		if (nullptr == CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY))
+		{
+			if (m_pPlayer->GetGravity()->GetIsGround())
+				m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, 0));
+			Exit(PLAYERSTATE::ATTACK);
+		}
+	}
 }
 
 void CPlayerMove::update()
 {
-	KeyUpdate();
 	Move();
+	KeyUpdate();
 }
 
 
@@ -114,10 +87,22 @@ void CPlayerMove::Move()
 	fPoint pos = m_pPlayer->GetPos();
 	m_dir = m_bStartDir ? 1 : -1;
 
+	if (m_dir == 1)
+	{
+		if(m_pPlayer->GetPlaeyrInfo().g_bIsRight)
+			m_eCurCommand = COMMANDMOVE::IMPACT;
+	}
+	else
+	{
+		if (m_pPlayer->GetPlaeyrInfo().g_bIsLeft)
+			m_eCurCommand = COMMANDMOVE::IMPACT;
+	}
+
 	switch (m_eCurCommand)
 	{
 	case CPlayerMove::COMMANDMOVE::NONE:
-		if (m_pPlayer->GetGravity()->GetIsGround())
+		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::JUMP)
+			&& nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::Fall))
 		{
 			m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_dir * m_eInfo.m_fVelocity,
 				m_pPlayer->GetRigidBody()->GetVelocity().y));
@@ -155,9 +140,10 @@ void CPlayerMove::Move()
 		*/
 		break;
 	case CPlayerMove::COMMANDMOVE::TURNOFF:
-		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::Fall))
+		if ((nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::Fall))
+			|| (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::JUMP)))
 		{
-			//Exit(PLAYERSTATE::IDLE);
+			//Exit(PLAYERSTATE::END);
 		}
 		else
 		{
@@ -168,7 +154,7 @@ void CPlayerMove::Move()
 			if (m_fAnimStayTime > 0.2f)
 			{
 				m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, 0));
-				Exit(PLAYERSTATE::IDLE);
+				Exit(PLAYERSTATE::END);
 			}
 
 			/* 임시로 바꿔야됨ㅠㅠ
@@ -178,9 +164,17 @@ void CPlayerMove::Move()
 			{
 				//m_bStartDir = m_pPlayer->GetDir();
 				m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, 0));
-				Exit(PLAYERSTATE::IDLE);
+				Exit(PLAYERSTATE::END);
 			}
 			*/
+		}
+		break;
+	case CPlayerMove::COMMANDMOVE::IMPACT:
+		m_fAnimStayTime += fDT;
+		if (m_fAnimStayTime > 0.2f)
+		{
+			m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, 0));
+			Exit(PLAYERSTATE::END);
 		}
 		break;
 	case CPlayerMove::COMMANDMOVE::END:
@@ -207,6 +201,9 @@ void CPlayerMove::Anim()
 		break;
 	case CPlayerMove::COMMANDMOVE::TURNOFF:
 		break;
+	case CPlayerMove::COMMANDMOVE::IMPACT:
+		m_pPlayer->GetAnimator()->Play(L"WallImpact");
+		break;
 	case CPlayerMove::COMMANDMOVE::END:
 		break;
 	default:
@@ -230,6 +227,7 @@ void CPlayerMove::Enter()
 void CPlayerMove::Exit(PLAYERSTATE state)
 {
 	m_bIsActive = false;
-	CEventManager::getInst()->EventLoadPlayerState(state);
+	if (state != PLAYERSTATE::END)
+		CEventManager::getInst()->EventLoadPlayerState(state);
 	CStateManager::getInst()->ExitState(m_eState);
 }

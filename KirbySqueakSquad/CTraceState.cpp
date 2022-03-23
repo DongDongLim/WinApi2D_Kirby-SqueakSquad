@@ -33,6 +33,10 @@ void CTraceState::update()
 	fPoint pos = pMonster->GetPos();
 	pos += fvDiff.normalize() * 100 * fDT;
 	pMonster->SetPos(pos);
+	if (fLen < 8.f)
+	{
+		pMonster->SetLive(false);
+	}
 }
 
 void CTraceState::Enter()

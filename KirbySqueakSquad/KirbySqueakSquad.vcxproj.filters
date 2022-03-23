@@ -88,6 +88,9 @@
     <Filter Include="Engin\Component\AI\State">
       <UniqueIdentifier>{7728235f-366a-42f9-b2c2-a6b4d0ee3fb8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object\Character\Player\Attack">
+      <UniqueIdentifier>{f3940822-663f-4e8f-b533-2bac916e85bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -233,6 +236,9 @@
     </ClInclude>
     <ClInclude Include="CState.h">
       <Filter>Engin\Component\AI\State</Filter>
+    </ClInclude>
+    <ClInclude Include="CAttackObj.h">
+      <Filter>Object\Character\Player\Attack</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -385,6 +391,9 @@
     </ClCompile>
     <ClCompile Include="CState.cpp">
       <Filter>Engin\Component\AI\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CAttackObj.cpp">
+      <Filter>Object\Character\Player\Attack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

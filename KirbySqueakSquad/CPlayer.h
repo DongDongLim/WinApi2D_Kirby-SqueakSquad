@@ -45,6 +45,7 @@ struct PLAYERINFO
 	const float m_fMoveInertia = 0.f;
 	// 세로 속도
 	const float m_fVerticalSpeed = 100.f;
+
 	const float m_fJumpTime = 1.f;
 
 
@@ -55,11 +56,23 @@ struct PLAYERINFO
 
 };
 
+
+enum class ATTACK_TYPE
+{
+	NORMAL,
+
+
+	SIZE,
+};
+
+
+
 class CPlayer : public CGameObject
 {
 	friend class CStateManager;
 private:
 	PLAYERINFO info;
+	ATTACK_TYPE m_eAttackType;
 	// 플레이어 애니메이션 재생을 위한 이미지들
 	vector<CD2DImage*> m_pImg;
 	// 플레이어 애니메이션 이미지의 키값
@@ -69,14 +82,21 @@ private:
 	
 	//const float m_fCommandTime = 0.2f;
 	bool m_bIsRight;
-	//int m_bIsGroundCount;
-	void PlayerAttack(DWORD_PTR, DWORD_PTR);
 	list<COLLIDER_FUNC> m_arrFunc;
 	DWORD_PTR m_colliderState;
 	list<COLLIDER_FUNC> m_arrEnterFunc;
 	DWORD_PTR m_colliderEnterState;
 	list<COLLIDER_FUNC> m_arrExitFunc;
 	DWORD_PTR m_colliderExitState;
+
+
+	// 땅과의 거리체크
+	float m_fGroundLength;
+	// 벽과의 거리체크
+	float m_fWallLength;
+
+	//한번에 만나는 벽은 최대 8개임;
+	CCollider* m_pGroundCollider[8];
 
 public:
 
@@ -86,8 +106,17 @@ public:
 	
 	virtual void update();
 	virtual void render();
+	void GroundCheckRender();
+
+	ATTACK_TYPE GetAttackType();
 	PLAYERINFO& GetPlaeyrInfo();
 
+
+	CCollider* GetGround();
+	void AddGroundCollider(CCollider* ground);
+	void GroundCheck();
+
+	void SetDir(bool dir);
 	bool GetDir();
 
 	void SetCollisonCallBack(COLLIDER_FUNC pFunc, DWORD_PTR state);

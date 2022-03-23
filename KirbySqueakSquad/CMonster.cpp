@@ -13,6 +13,8 @@ CMonster::CMonster()
 	CD2DImage* m_pImg = CResourceManager::getInst()->LoadD2DImage(L"MonsterTex", L"texture\\Animation\\sprite0.png");
 
 	m_pAI = nullptr;
+	m_bIsEaten = false;
+	m_bIsLive = true;
 
 	SetName(L"Monster");
 	SetScale(fPoint(32.f, 32.f));
@@ -87,20 +89,25 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 
 void CMonster::render()
 {
-	fPoint pos = GetPos();
-	fPoint scale = GetScale();
-	pos = CCameraManager::getInst()->GetRenderPos(pos);
+	if (m_bIsLive)
+	{
+		fPoint pos = GetPos();
+		fPoint scale = GetScale();
+		pos = CCameraManager::getInst()->GetRenderPos(pos);
 
-	component_render();
+		component_render();
+	}
 }
 
 void CMonster::update()
 {
-	if (nullptr != GetAnimator())
-		GetAnimator()->update();
+	if (m_bIsLive)
+	{
+		if (nullptr != GetAnimator())
+			GetAnimator()->update();
+	}
 	if (nullptr != m_pAI)
 		m_pAI->update();
-
 }
 
 float CMonster::GetSpeed()
@@ -127,6 +134,21 @@ void CMonster::SetAI(AI* ai)
 void CMonster::SetMonInfo(const tMonInfo& info)
 {
 	m_tInfo = info;
+}
+
+void CMonster::SetLive(bool isLive)
+{
+	m_bIsLive = isLive;
+}
+
+void CMonster::SetEaten(bool isEaten)
+{
+	m_bIsEaten = isEaten;
+}
+
+bool CMonster::GetIsEaten()
+{
+	return m_bIsEaten;
 }
 
 void CMonster::OnCollisionEnter(CCollider* pOther)

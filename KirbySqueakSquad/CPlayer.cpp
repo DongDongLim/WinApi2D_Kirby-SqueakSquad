@@ -7,61 +7,22 @@
 #include "CState.h"
 #include "CPlayerState.h"
 #include "CTile.h"
+#include "CGravity.h"
 
-
-float nomalanimtime = 1.f;
-bool start = false;
-
-
-
-// 애니메이션 나누는 기능 되나 확인용으로 짬
-void CPlayer::PlayerAttack(DWORD_PTR, DWORD_PTR)
-{
-	if (!start)
-	{
-		GetAnimator()->Play(L"InHale0");
-		nomalanimtime = GetAnimator()->GetAnimSize() * GetAnimator()->GetFrameSpeed();
-		start = true;
-	}
-	else
-	{
-		nomalanimtime -= fDT;
-		if (0 >= nomalanimtime)
-		{
-			if (GetAnimator()->GetCurAnim()->GetName() == L"InHale0")
-			{
-				GetAnimator()->Play(L"InHale1");
-				nomalanimtime = 1.f;
-			}
-			else if (GetAnimator()->GetCurAnim()->GetName() == L"InHale1")
-			{
-				GetAnimator()->Play(L"InHale2");
-				nomalanimtime = 1.f;
-			}
-			else if (GetAnimator()->GetCurAnim()->GetName() == L"InHale2")
-			{
-				GetAnimator()->Play(L"InHale3");
-				nomalanimtime = GetAnimator()->GetAnimSize() * GetAnimator()->GetFrameSpeed();
-			}
-			else if (GetAnimator()->GetCurAnim()->GetName() == L"InHale3")
-			{
-				start = false;
-				//CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE);
-					
-			}
-		}
-	}
-	
-}
 
 CPlayer::CPlayer()
 {
 	//m_bIsGroundCount = 0;
 	CStateManager::getInst()->SetPlayer(this);
+	m_eAttackType = ATTACK_TYPE::NORMAL;
 	m_colliderState = 0;
 	m_colliderEnterState = 0;
 	m_colliderExitState = 0;
 	m_bIsRight = true;
+	for (int i = 0; i < 8; ++i)
+	{
+		m_pGroundCollider[i] = nullptr;
+	}
 
 	SetName(L"Player");
 	SetScale(fPoint(32.f, 32.f));
@@ -112,6 +73,7 @@ CPlayer::CPlayer()
 	m_wAnimKey[1]->push_back(L"Move");
 	m_wAnimKey[2]->push_back(L"Dash");
 	m_wAnimKey[2]->push_back(L"QuickStop");
+	m_wAnimKey[2]->push_back(L"WallImpact");
 	m_wAnimKey[3]->push_back(L"DownSlide");
 	m_wAnimKey[4]->push_back(L"Jump");
 	m_wAnimKey[4]->push_back(L"Turn");
@@ -156,6 +118,13 @@ CPlayer::CPlayer()
 		m_wAnimKey[2]->at(1),
 		m_pImg[2],
 		fPoint((float)(pixelSize * 8), 0.f),
+		fPoint(pixelSize, pixelSize),
+		fPoint(pixelSize, 0.f), 0.5f, 1);
+
+	GetAnimator()->CreateAnimation(
+		m_wAnimKey[2]->at(2),
+		m_pImg[2],
+		fPoint((float)(pixelSize * 9), 0.f),
 		fPoint(pixelSize, pixelSize),
 		fPoint(pixelSize, 0.f), 0.5f, 1);
 
@@ -240,14 +209,17 @@ CPlayer::CPlayer()
 	{
 		if (1 == m_wAnimKey[i]->size())
 		{
+			float time = 0.1f;
+			if (i == 6)
+				time = 0.05f;
 			UINT frameCount = (UINT)CResourceManager::getInst()->
-				FindD2DImage(m_wImgKey[0])->GetWidth() / (UINT)pixelSize;
+				FindD2DImage(m_wImgKey[i])->GetWidth() / (UINT)pixelSize;
 			GetAnimator()->CreateAnimation(
 				m_wAnimKey[i]->at(0),
 				m_pImg[i],
 				fPoint(0.f, 0.f),
 				fPoint(pixelSize, pixelSize),
-				fPoint(pixelSize, 0.f), 0.1f, frameCount);
+				fPoint(pixelSize, 0.f), time, frameCount);
 		}
 	}
 	GetAnimator()->Play(L"Fall0");
@@ -286,6 +258,12 @@ CPlayer::CPlayer()
 	CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::IDLE);
 	CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
 
+
+
+	m_fWallLength = 0;
+	m_fGroundLength = (GetCollider()->GetScale() / 2).Length()
+		+ (fPoint(CTile::SIZE_TILE, CTile::SIZE_TILE) / 2).Length();
+
 }
 
 CPlayer::~CPlayer()
@@ -304,31 +282,64 @@ CPlayer* CPlayer::Clone()
 
 void CPlayer::update()
 {
-	if (KeyDown(VK_LEFT) || KeyDown(VK_RIGHT))
-	{
-		KeyDown(VK_RIGHT) ? m_bIsRight = true : m_bIsRight = false;
-		//CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::MOVE);
-	}
-	if (KeyDown('C'))
-	{
-		//CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::ATTACK);
-	}
-	if (ANYKEYDOWN)
-	{
-		//CStateManager::getInst()->CommandSave();
-	}
-	if (KEYEMPTYDEFINE)
-	{
-		//CStateManager::getInst()->ChangeState(PLAYERSTATE::IDLE);
-	}
+	
+	GroundCheck();
 	CStateManager::getInst()->update();
 	GetAnimator()->update();
 }
 
 void CPlayer::render()
 {
+	GroundCheckRender();
 	component_render();
 	CStateManager::getInst()->render();
+}
+
+void CPlayer::GroundCheckRender()
+{
+	float fRealTimeLength;
+	float fLengthX;
+	float fLengthY;
+	CCollider* m_pPlayerCollider = GetCollider();
+	for (int i = 0; i < 8; ++i)
+	{
+		if (nullptr != m_pGroundCollider[i])
+		{
+			fLengthX = (m_pPlayerCollider->GetFinalPos() - m_pGroundCollider[i]->GetFinalPos()).x;
+			fLengthY = (m_pPlayerCollider->GetFinalPos() - m_pGroundCollider[i]->GetFinalPos()).y;
+			fRealTimeLength = fPoint(abs(fLengthX), abs(fLengthY)).Length();
+			if (abs(fLengthX) > abs(fLengthY))
+			{
+				m_fGroundLength = fPoint(
+					abs((m_pGroundCollider[i]->GetScale() / 2).x
+						+ (m_pPlayerCollider->GetScale() / 2).x)
+					, abs(fLengthY)).Length();
+			}
+			else
+			{
+				m_fGroundLength = fPoint(
+					abs(fLengthX)
+					, abs((m_pGroundCollider[i]->GetScale() / 2).y
+						+ (m_pPlayerCollider->GetScale() / 2).y)).Length();
+			}
+			if (m_fGroundLength >= fRealTimeLength)
+			{
+
+				COLORREF rgb = RGB(0, 0, 0);
+				rgb = RGB(255, 0, 255);
+
+				fPoint fptRenderStartPos = CCameraManager::getInst()->GetRenderPos(m_pGroundCollider[i]->GetFinalPos());
+				fPoint fptRenderFinalPos = CCameraManager::getInst()->GetRenderPos(m_pPlayerCollider->GetFinalPos());
+
+				CRenderManager::getInst()->RenderLine(
+					fptRenderStartPos,
+					fptRenderFinalPos,
+					rgb,
+					2.f
+				);
+			}
+		}
+	}
 }
 
 PLAYERINFO& CPlayer::GetPlaeyrInfo()
@@ -337,9 +348,165 @@ PLAYERINFO& CPlayer::GetPlaeyrInfo()
 }
 
 
+
+CCollider* CPlayer::GetGround()
+{
+	return *m_pGroundCollider;
+}
+
+void CPlayer::AddGroundCollider(CCollider* ground)
+{
+	for (int i = 0; i < 8; ++i)
+	{
+		if (nullptr == m_pGroundCollider[i])
+		{
+			m_pGroundCollider[i] = ground;
+			break;
+		}
+	}
+}
+
+void CPlayer::GroundCheck()
+{
+	info.g_bIsDown = false;
+	info.g_bIsUp = false;
+	info.g_bIsRight = false;
+	info.g_bIsLeft = false;
+
+	fPoint fLeftUpPos = fPoint(-1, -1).normalize();
+	fPoint fRightDownPos = fPoint(1, 1).normalize();
+	float fRealTimeLength;
+	float fLengthX;
+	float fLengthY;
+	CCollider* m_pPlayerCollider = GetCollider();
+
+	// 지금 오브젝트 기준으로 생각했는데 플레이어 기준으로 생각해보자 굳이?
+	/* TODO:
+		지금은 정사각 콜라이더들을 기준으로 했기 때문에 기능이 돌아가지만
+		직각사각형 콜라이더들이 부딫혔을때는 두 콜라이더를 이어주는 선이 둘과 겹치지 않을때
+		각각의 가장 가까운 대각선을 기준으로 다시 설정해서 비교해주는 과정이 필요함
+		현재 커비의 콜라이더는 정사각이므로 추가하지는 않았음
+	*/
+	for (int i = 0; i < 8; ++i)
+	{
+		if (nullptr != m_pGroundCollider[i])
+		{
+			fLengthX = (m_pPlayerCollider->GetFinalPos() - m_pGroundCollider[i]->GetFinalPos()).x;
+			fLengthY = (m_pPlayerCollider->GetFinalPos() - m_pGroundCollider[i]->GetFinalPos()).y;
+			fRealTimeLength = fPoint(abs(fLengthX), abs(fLengthY)).Length();
+			if (abs(fLengthX) > abs(fLengthY))
+			{
+				m_fGroundLength = fPoint(
+					abs((m_pGroundCollider[i]->GetScale() / 2).x
+						+ (m_pPlayerCollider->GetScale() / 2).x)
+					, abs(fLengthY)).Length();
+			}
+			else
+			{
+				m_fGroundLength = fPoint(
+					abs(fLengthX)
+					, abs((m_pGroundCollider[i]->GetScale() / 2).y
+						+ (m_pPlayerCollider->GetScale() / 2).y)).Length();
+			}
+
+			if (m_fGroundLength >= fRealTimeLength)
+			{
+				fPoint fPlayerDisPos = fPoint(fLengthX, fLengthY).normalize();
+
+				if (fPlayerDisPos.y <= fLeftUpPos.y)
+				{
+					if (GetRigidBody()->GetDir().y > 0)
+					{
+						GetRigidBody()->SetVelocity(
+							fPoint(GetRigidBody()->GetVelocity().x, 0));
+
+
+						SetPos(fPoint(GetPos().x
+							, (m_pGroundCollider[i]->GetFinalPos().y)
+							- ((m_pPlayerCollider->GetOffsetPos().y)
+								+ (m_pPlayerCollider->GetScale() / 2).y
+								+ (m_pGroundCollider[i]->GetScale() / 2).y)));
+					}
+					info.g_bIsDown = true;
+					GetGravity()->SetIsGround(true);
+				}
+				else if (fPlayerDisPos.y >= fRightDownPos.y)
+				{
+					if (GetRigidBody()->GetDir().y < 0)
+					{
+						GetRigidBody()->SetVelocity(
+							fPoint(GetRigidBody()->GetVelocity().x, 0));
+
+
+						SetPos(fPoint(GetPos().x
+							, (m_pGroundCollider[i]->GetFinalPos().y)
+							+ ((m_pPlayerCollider->GetOffsetPos().y)
+								+ (m_pPlayerCollider->GetScale() / 2).y
+								+ (m_pGroundCollider[i]->GetScale() / 2).y)));
+					}
+
+					info.g_bIsUp = true;
+				}
+				else if (fPlayerDisPos.x < fLeftUpPos.x)
+				{
+					if (GetRigidBody()->GetDir().x > 0)
+					{
+						GetRigidBody()->SetVelocity(
+							fPoint(0, GetRigidBody()->GetVelocity().y));
+
+
+						SetPos(fPoint(
+							(m_pGroundCollider[i]->GetFinalPos().x)
+							- ((m_pPlayerCollider->GetOffsetPos().x)
+								+ (m_pPlayerCollider->GetScale() / 2).x
+								+ (m_pGroundCollider[i]->GetScale() / 2).x)
+							, GetPos().y));
+
+					}
+
+					info.g_bIsRight = true;
+				}
+				else if (fPlayerDisPos.x > fRightDownPos.x)
+				{
+					if (GetRigidBody()->GetDir().x < 0)
+					{
+						GetRigidBody()->SetVelocity(
+							fPoint(0, GetRigidBody()->GetVelocity().y));
+
+
+						SetPos(fPoint(
+							(m_pGroundCollider[i]->GetFinalPos().x)
+							+ ((m_pPlayerCollider->GetOffsetPos().x)
+								+ (m_pPlayerCollider->GetScale() / 2).x
+								+ (m_pGroundCollider[i]->GetScale() / 2).x)
+							, GetPos().y));
+
+					}
+
+					info.g_bIsLeft = true;
+				}
+			}
+			else
+			{
+				m_pGroundCollider[i] = nullptr;
+			}
+		}
+	}
+	if (!info.g_bIsDown)
+	{
+		GetGravity()->SetIsGround(false);
+	}
+}
+
+
 bool CPlayer::GetDir()
 {
 	return m_bIsRight;
+}
+
+void CPlayer::SetDir(bool dir)
+{
+	m_bIsRight = dir;
 }
 
 
@@ -362,6 +529,11 @@ void CPlayer::SetCollisonExitCallBack(COLLIDER_FUNC pFunc, DWORD_PTR state)
 	m_colliderExitState = state;
 }
 
+ATTACK_TYPE CPlayer::GetAttackType()
+{
+	return m_eAttackType;
+}
+
 void CPlayer::OnCollision(CCollider* other)
 {
 	list<COLLIDER_FUNC>::iterator iter = m_arrFunc.begin();
@@ -374,6 +546,15 @@ void CPlayer::OnCollision(CCollider* other)
 
 void CPlayer::OnCollisionEnter(CCollider* other)
 {
+	if (other->GetObj()->GetGroup() == GROUP_GAMEOBJ::TILE)
+	{
+		CTile* tile = (CTile*)other->GetObj();
+		if (tile->GetGroup() == GROUP_TILE::GROUND)
+		{
+			AddGroundCollider((CCollider*)other);
+		}
+	}
+
 	list<COLLIDER_FUNC>::iterator iter = m_arrEnterFunc.begin();
 	for (; iter != m_arrEnterFunc.end(); ++iter)
 	{

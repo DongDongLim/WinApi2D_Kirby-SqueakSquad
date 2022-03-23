@@ -7,31 +7,10 @@
 #include "CAnimator.h"
 #include "CGravity.h"
 
-void OnFallCollisonEnter(DWORD_PTR state, CCollider* other)
-{
-	if (((CPlayerMove*)state)->GetIsActive())
-	{
-		CGameObject* pOtherObj = other->GetObj();
-		if (pOtherObj->GetGroup() == GROUP_GAMEOBJ::TILE)
-		{
-			if (((CTile*)pOtherObj)->GetGroup() == GROUP_TILE::GROUND)
-			{
-				float playerY = CStateManager::getInst()->GetPlayer()->GetCollider()->GetDownPos().y;
-				float groundY = other->GetUpPos().y;
-				if (1 >= abs(playerY - groundY))
-					((CPlayerFall*)state)->SetTarget(CPlayerFall::COLLIONTARGET::GROUND);
-			}
-
-		}
-	}
-}
-
-
 CPlayerFall::CPlayerFall()
 {
 	m_eState = PLAYERSTATE::Fall;
 	m_eTarget = COLLIONTARGET::END;
-	//m_pPlayer->SetCollisonEnterCallBack(OnFallCollisonEnter, (DWORD_PTR)this);
 }
 
 CPlayerFall::~CPlayerFall()
@@ -48,7 +27,16 @@ void CPlayerFall::SetTarget(COLLIONTARGET target)
 
 void CPlayerFall::update()
 {
-	KeyUpdate();
+	if (m_pPlayer->GetGravity()->GetIsGround())
+	{
+		if (nullptr == CStateManager::getInst()->FindPlayeState(PLAYERSTATE::ATTACK))
+			Exit(PLAYERSTATE::IDLE);
+		else
+			m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, 0));
+	}
+	else
+		KeyUpdate();
+
 }
 
 void CPlayerFall::KeyUpdate()
@@ -56,6 +44,13 @@ void CPlayerFall::KeyUpdate()
 	if (KeyDown(VK_UP) || KeyDown('X') || KeyDown('V'))
 	{
 		Exit(PLAYERSTATE::FLY);
+	}
+	if (KeyDown('C'))
+	{
+		if (nullptr == CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY))
+		{
+			Exit(PLAYERSTATE::ATTACK);
+		}
 	}
 }
 

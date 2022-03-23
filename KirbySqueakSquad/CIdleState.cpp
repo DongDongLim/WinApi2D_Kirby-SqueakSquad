@@ -17,18 +17,20 @@ void CIdleState::update()
 	CPlayer* pPlayer = CStateManager::getInst()->GetPlayer();
 	if (nullptr == pPlayer)
 		return;
-
-	fPoint fptPlayerPos = pPlayer->GetPos();
-
 	CMonster* pMonster = GetMonster();
-	fPoint fptMonsterPos = pMonster->GetPos();
+	if (pMonster->GetIsEaten())
+		ChangeAIState(GetOwnerAI(), STATE_MON::TRACE);
+	//fPoint fptPlayerPos = pPlayer->GetPos();
 
-	fVec2 fvDiff = fptPlayerPos - fptMonsterPos;
-	float fLen = fvDiff.Length();
-	if (fLen < pMonster->GetMonInfo().fRecogRange)
-	{
-		//ChangeAIState(GetOwnerAI(), STATE_MON::TRACE);
-	}
+	//CMonster* pMonster = GetMonster();
+	//fPoint fptMonsterPos = pMonster->GetPos();
+
+	//fVec2 fvDiff = fptPlayerPos - fptMonsterPos;
+	//float fLen = fvDiff.Length();
+	//if (fLen < pMonster->GetMonInfo().fRecogRange)
+	//{
+	//	//ChangeAIState(GetOwnerAI(), STATE_MON::TRACE);
+	//}
 
 }
 

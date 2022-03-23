@@ -66,7 +66,7 @@ void CAnimator::CreateAnimation(const wstring& strName, CD2DImage* tex, fPoint l
 	pAni->SetName(strName);
 	pAni->m_pAnimator = this;
 	pAni->Create(tex, lt, slice, step, duration, frmCount);
-	pAni->m_bReverse = reverse;
+	pAni->m_bReverseRender = reverse;
 
 	m_mapAni.insert(make_pair(strName, pAni));
 }
@@ -85,6 +85,13 @@ CAnimation* CAnimator::FindAnimation(const wstring& strName)
 void CAnimator::Play(const wstring& strName)
 {
 	m_pCurAni = FindAnimation(strName);
+	m_pCurAni->SetReversePlay(false);
+}
+
+void CAnimator::ReversePlay(const wstring& strName)
+{
+	m_pCurAni = FindAnimation(strName);
+	m_pCurAni->SetReversePlay(true);
 }
 
 int CAnimator::GetAnimSize()

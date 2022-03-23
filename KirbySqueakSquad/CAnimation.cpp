@@ -11,6 +11,7 @@ CAnimation::CAnimation()
     m_pImg = nullptr;
     m_iCurFrm = 0;
     m_fAccTime = 0;
+    m_bReverseRenderRenderPlay = false;
 }
 
 CAnimation::CAnimation(const CAnimation& pOther)
@@ -22,7 +23,7 @@ CAnimation::CAnimation(const CAnimation& pOther)
     }
     m_iCurFrm = pOther.m_iCurFrm;
     m_fAccTime = pOther.m_fAccTime;
-    m_bReverse = pOther.m_bReverse;
+    m_bReverseRender = pOther.m_bReverseRender;
 
     m_pAnimator = nullptr;
     m_pImg = pOther.m_pImg;
@@ -42,9 +43,14 @@ const wstring& CAnimation::GetName()
     return m_strName;
 }
 
+void CAnimation::SetReversePlay(bool isreverse)
+{
+    m_bReverseRenderRenderPlay = isreverse;
+}
+
 void CAnimation::SetReverse(bool reverse)
 {
-    m_bReverse = reverse;
+    m_bReverseRender = reverse;
 }
 
 void CAnimation::SetFrame(int frmIndex)
@@ -73,9 +79,18 @@ void CAnimation::update()
 
     if (m_vecFrm[m_iCurFrm].fDuration < m_fAccTime)
     {
-        m_iCurFrm++;
-        m_iCurFrm %= m_vecFrm.size();
-        m_fAccTime -= m_vecFrm[m_iCurFrm].fDuration;
+        if (m_bReverseRenderRenderPlay)
+        {
+            --m_iCurFrm;
+            m_iCurFrm %= m_vecFrm.size();
+            m_fAccTime -= m_vecFrm[m_iCurFrm].fDuration;
+        }
+        else
+        {
+            ++m_iCurFrm;
+            m_iCurFrm %= m_vecFrm.size();
+            m_fAccTime -= m_vecFrm[m_iCurFrm].fDuration;
+        }
     }
 }
 
@@ -90,7 +105,7 @@ void CAnimation::render()
     fptPos = CCameraManager::getInst()->GetRenderPos(fptPos);
 
 
-    if (m_bReverse)
+    if (m_bReverseRender)
     {
         CRenderManager::getInst()->RenderRevFrame(
             m_pImg,

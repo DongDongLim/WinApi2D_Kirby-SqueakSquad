@@ -28,6 +28,7 @@ public:
 		fPoint step, float duration, UINT frmCount, bool reverse = false);
 	CAnimation* FindAnimation(const wstring& strName);
 	void Play(const wstring& strName);
+	void ReversePlay(const wstring& strName);
 	int GetAnimSize();
 	float GetFrameSpeed();
 	CAnimation* GetCurAnim();

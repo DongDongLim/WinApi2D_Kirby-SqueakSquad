@@ -28,5 +28,7 @@ void CPlayerEat::Enter()
 void CPlayerEat::Exit(PLAYERSTATE state)
 {
 	m_bIsActive = false;
-	CEventManager::getInst()->EventLoadPlayerState(state);
+	if (state != PLAYERSTATE::END)
+		CEventManager::getInst()->EventLoadPlayerState(state);
+	CStateManager::getInst()->ExitState(m_eState);
 }
