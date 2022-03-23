@@ -27,7 +27,7 @@ void CIdleState::update()
 	float fLen = fvDiff.Length();
 	if (fLen < pMonster->GetMonInfo().fRecogRange)
 	{
-		ChangeAIState(GetOwnerAI(), STATE_MON::TRACE);
+		//ChangeAIState(GetOwnerAI(), STATE_MON::TRACE);
 	}
 
 }
