@@ -8,6 +8,7 @@
 #include "CPlayerState.h"
 #include "CTile.h"
 #include "CGravity.h"
+#include "CMonster.h"
 
 
 CPlayer::CPlayer()
@@ -189,14 +190,14 @@ CPlayer::CPlayer()
 		m_pImg[8],
 		fPoint((float)(pixelSize * 2), 0.f),
 		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.1f, 2);
+		fPoint(pixelSize, 0.f), 0.07f, 2);
 
 	GetAnimator()->CreateAnimation(
 		m_wAnimKey[8]->at(2),
 		m_pImg[8],
 		fPoint((float)(pixelSize * 4), 0.f),
 		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.1f, 2);
+		fPoint(pixelSize, 0.f), 0.05f, 2);
 
 	GetAnimator()->CreateAnimation(
 		m_wAnimKey[8]->at(3),
@@ -210,7 +211,9 @@ CPlayer::CPlayer()
 		if (1 == m_wAnimKey[i]->size())
 		{
 			float time = 0.1f;
-			if (i == 6)
+			if (i == 3)
+				time = 0.01f;
+			else if (i == 6)
 				time = 0.05f;
 			UINT frameCount = (UINT)CResourceManager::getInst()->
 				FindD2DImage(m_wImgKey[i])->GetWidth() / (UINT)pixelSize;
@@ -254,6 +257,10 @@ CPlayer::CPlayer()
 	CStateManager::getInst()->AddState(PLAYERSTATE::Fall, pFall);
 	CPlayerState* pFly = new CPlayerFly();
 	CStateManager::getInst()->AddState(PLAYERSTATE::FLY, pFly);
+	CPlayerState* pEat = new CPlayerEat();
+	CStateManager::getInst()->AddState(PLAYERSTATE::EAT, pEat);
+	CPlayerState* pDown = new CPlayerDown();
+	CStateManager::getInst()->AddState(PLAYERSTATE::DOWN, pDown);
 
 	CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::IDLE);
 	CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::Fall);
@@ -293,9 +300,9 @@ void CPlayer::update()
 
 void CPlayer::render()
 {
-	GroundCheckRender();
 	component_render();
 	CStateManager::getInst()->render();
+	GroundCheckRender();
 }
 
 void CPlayer::GroundCheckRender()
@@ -359,12 +366,25 @@ CCollider* CPlayer::GetGround()
 
 void CPlayer::AddGroundCollider(CCollider* ground)
 {
+	bool istrue = false;
 	for (int i = 0; i < 8; ++i)
 	{
-		if (nullptr == m_pGroundCollider[i])
+		if (nullptr != m_pGroundCollider[i])
 		{
-			m_pGroundCollider[i] = ground;
+			if (m_pGroundCollider[i] == ground)
+				istrue = true;
 			break;
+		}
+	}
+	if (!istrue)
+	{
+		for (int i = 0; i < 8; ++i)
+		{
+			if (nullptr == m_pGroundCollider[i])
+			{
+				m_pGroundCollider[i] = ground;
+				break;
+			}
 		}
 	}
 }
@@ -541,6 +561,15 @@ ATTACK_TYPE CPlayer::GetAttackType()
 
 void CPlayer::OnCollision(CCollider* other)
 {
+	if (other->GetObj()->GetGroup() == GROUP_GAMEOBJ::TILE)
+	{
+		CTile* tile = (CTile*)other->GetObj();
+		if (tile->GetGroup() == GROUP_TILE::GROUND)
+		{
+			AddGroundCollider((CCollider*)other);
+		}
+	}
+
 	list<COLLIDER_FUNC>::iterator iter = m_arrFunc.begin();
 	for (; iter != m_arrFunc.end(); ++iter)
 	{
@@ -551,12 +580,12 @@ void CPlayer::OnCollision(CCollider* other)
 
 void CPlayer::OnCollisionEnter(CCollider* other)
 {
-	if (other->GetObj()->GetGroup() == GROUP_GAMEOBJ::TILE)
+	if (other->GetObj()->GetGroup() == GROUP_GAMEOBJ::MONSTER)
 	{
-		CTile* tile = (CTile*)other->GetObj();
-		if (tile->GetGroup() == GROUP_TILE::GROUND)
+		CMonster* mon = (CMonster*)other->GetObj();
+		if (mon->GetIsEaten())
 		{
-			AddGroundCollider((CCollider*)other);
+			CStateManager::getInst()->LoadState(PLAYERSTATE::EAT);
 		}
 	}
 

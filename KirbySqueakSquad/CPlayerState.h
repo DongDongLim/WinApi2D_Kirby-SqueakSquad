@@ -131,6 +131,25 @@ public:
 	virtual void Exit(PLAYERSTATE state);
 };
 
+class CPlayerDown : public CPlayerState
+{
+private:
+	float nomalanimtime;
+	float nomalanimKeeptime;
+
+
+	bool m_startDir;
+
+public:
+	CPlayerDown();
+	~CPlayerDown();
+
+	virtual void Anim();
+	virtual void update();
+	virtual void Enter();
+	virtual void Exit(PLAYERSTATE state);
+};
+
 
 class CAttackObj;
 
@@ -139,7 +158,7 @@ class CPlayerAttack : public CPlayerState
 private:
 	float nomalanimtime;
 	float nomalanimKeeptime;
-
+	bool m_startDir;
 	fPoint m_fAttRange;
 
 	CAttackObj* m_pAttackobj[4];
@@ -148,6 +167,7 @@ public:
 	CPlayerAttack();
 	~CPlayerAttack();
 
+	void NomalAttack();
 
 	virtual void Anim();
 	virtual void update();

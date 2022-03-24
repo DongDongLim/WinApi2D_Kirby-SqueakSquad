@@ -12,6 +12,7 @@ private:
 	map<wstring, CAnimation*>	m_mapAni;
 	CAnimation* m_pCurAni;
 	CGameObject* m_pOwner;
+	bool m_bIsStop;
 
 public:
 	CAnimator();
@@ -22,6 +23,8 @@ public:
 
 	void update();
 	void render();
+
+	void Stop();
 
 	void SetReverce(bool reverce);
 	void CreateAnimation(const wstring& strName, CD2DImage* tex, fPoint lt, fPoint slice,

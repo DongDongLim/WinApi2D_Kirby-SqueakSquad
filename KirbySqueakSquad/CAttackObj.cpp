@@ -12,6 +12,8 @@ CAttackObj::CAttackObj()
 
 	m_pPlayer = CStateManager::getInst()->GetPlayer();
 
+	SetScale(m_pPlayer->GetCollider()->GetScale());
+
 	CreateCollider();
 
 	CreateRigidBody();
@@ -64,6 +66,7 @@ void CAttackObj::Exit()
 
 
 
+
 void CAttackObj::update()
 {
 	if (m_bIsActivity)
@@ -79,11 +82,41 @@ void CAttackObj::render()
 {
 	if (m_bIsActivity)
 	{
-		fPoint pos = GetPos();
-		fPoint scale = GetScale();
-		pos = CCameraManager::getInst()->GetRenderPos(pos);
+		if (m_pPlayer->GetAttackType() == ATTACK_TYPE::NORMAL)
+		{
+			fPoint pos = GetCollider()->GetFinalPos();
+			fPoint scale = GetCollider()->GetScale();
+			pos = CCameraManager::getInst()->GetRenderPos(pos);
+
+			COLORREF rgb = RGB(0, 0, 0);
+
+			rgb = RGB(255, 255, 255);
+
+
+			CRenderManager::getInst()->RenderRectangle(
+				pos.x - scale.x / 2,
+				pos.y - m_fRange.y / 2.f,
+				pos.x + m_fRange.x / 2.f,
+				pos.y + m_fRange.y / 2.f,
+				rgb);
+		}
 
 		component_render();
+	}
+}
+
+void CAttackObj::finalupdate()
+{
+	if (m_bIsActivity)
+	{
+		if (nullptr != GetRigidBody())
+		{
+			GetRigidBody()->finalupdate();
+		}
+		if (nullptr != GetCollider())
+		{
+			GetCollider()->finalupdate();
+		}
 	}
 }
 

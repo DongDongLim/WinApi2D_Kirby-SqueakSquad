@@ -38,6 +38,7 @@ public:
 
 	virtual void render();
 	virtual void update();
+	virtual void finalupdate();
 
 	float GetSpeed();
 	const tMonInfo& GetMonInfo();

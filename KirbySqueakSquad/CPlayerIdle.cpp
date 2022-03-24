@@ -28,6 +28,21 @@ void CPlayerIdle::KeyUpdate()
 		{
 			Exit(PLAYERSTATE::ATTACK);
 		}
+		else
+		{
+			if (m_pPlayer->GetGravity()->GetIsGround())
+				m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, 0));
+			if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::MOVE))
+				CStateManager::getInst()->FindPlayeState(PLAYERSTATE::MOVE)->Exit(PLAYERSTATE::END);
+			Exit(PLAYERSTATE::ATTACK);
+		}
+	}
+	else if (KeyDown(VK_DOWN))
+	{
+		if (m_pPlayer->GetGravity()->GetIsGround())
+		{
+			Exit(PLAYERSTATE::DOWN);
+		}
 	}
 	else
 	{
@@ -65,6 +80,10 @@ void CPlayerIdle::update()
 {
 	if (m_pPlayer->GetGravity()->GetIsGround())
 	{
+		if (nullptr == CStateManager::getInst()->FindPlayeState(PLAYERSTATE::MOVE))
+		{
+			m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, 0));
+		}
 		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::Fall))
 		{
 			CStateManager::getInst()->ExitState(PLAYERSTATE::Fall);

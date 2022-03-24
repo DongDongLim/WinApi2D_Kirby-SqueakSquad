@@ -6,6 +6,7 @@ CAnimator::CAnimator()
 {
 	m_pCurAni = nullptr;
 	m_pOwner = nullptr;
+	m_bIsStop = false;
 }
 
 CAnimator::CAnimator(const CAnimator& pOther)
@@ -37,9 +38,12 @@ CGameObject* CAnimator::GetObj()
 
 void CAnimator::update()
 {
-	if (nullptr != m_pCurAni)
+	if (!m_bIsStop)
 	{
-		m_pCurAni->update();
+		if (nullptr != m_pCurAni)
+		{
+			m_pCurAni->update();
+		}
 	}
 }
 
@@ -49,6 +53,11 @@ void CAnimator::render()
 	{
 		m_pCurAni->render();
 	}
+}
+
+void CAnimator::Stop()
+{
+	m_bIsStop = true;
 }
 
 void CAnimator::SetReverce(bool reverce)
@@ -86,12 +95,14 @@ void CAnimator::Play(const wstring& strName)
 {
 	m_pCurAni = FindAnimation(strName);
 	m_pCurAni->SetReversePlay(false);
+	m_bIsStop = false;
 }
 
 void CAnimator::ReversePlay(const wstring& strName)
 {
 	m_pCurAni = FindAnimation(strName);
 	m_pCurAni->SetReversePlay(true);
+	m_bIsStop = false;
 }
 
 int CAnimator::GetAnimSize()

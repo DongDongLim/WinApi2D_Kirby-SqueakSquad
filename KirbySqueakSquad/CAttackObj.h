@@ -25,6 +25,8 @@ public:
 	void Enter();
 	void Exit();
 
+	virtual void finalupdate();
+
 	virtual void update();
 	virtual void render();
 

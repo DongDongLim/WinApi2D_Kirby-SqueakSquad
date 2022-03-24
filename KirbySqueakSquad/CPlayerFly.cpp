@@ -30,13 +30,6 @@ void CPlayerFly::Anim()
 				m_pPlayer->GetAnimator()->Play(L"UpMove");
 				m_fKeepTimer = 0;
 			}
-			else if (KeyDown('C'))
-			{
-				m_pPlayer->GetAnimator()->ReversePlay(L"Up");
-				m_fAnimSpeed = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
-				//m_fKeepTimer = m_fAnimSpeed;
-				m_bIsActive = false;
-			}
 			else
 			{
 				m_pPlayer->GetAnimator()->Play(L"UpIdle");

@@ -7,6 +7,8 @@
 #include "AI.h"
 #include "CIdleState.h"
 #include "CTraceState.h"
+#include "CGravity.h"
+#include "CRigidBody.h"
 
 CMonster::CMonster()
 {
@@ -108,6 +110,25 @@ void CMonster::update()
 	}
 	if (nullptr != m_pAI)
 		m_pAI->update();
+}
+
+void CMonster::finalupdate()
+{
+	if (m_bIsLive)
+	{
+		if (nullptr != GetGravity())
+		{
+			GetGravity()->finalupdate();
+		}
+		if (nullptr != GetRigidBody())
+		{
+			GetRigidBody()->finalupdate();
+		}
+		if (nullptr != GetCollider())
+		{
+			GetCollider()->finalupdate();
+		}
+	}
 }
 
 float CMonster::GetSpeed()

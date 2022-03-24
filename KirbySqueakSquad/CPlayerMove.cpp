@@ -62,7 +62,7 @@ void CPlayerMove::KeyUpdate()
 				m_eCurCommand = COMMANDMOVE::CHANGEDIR;
 			}
 		}
-	}
+	}/*
 	if (KeyDown('C'))
 	{
 		if (nullptr == CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY))
@@ -71,7 +71,7 @@ void CPlayerMove::KeyUpdate()
 				m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, 0));
 			Exit(PLAYERSTATE::ATTACK);
 		}
-	}
+	}*/
 }
 
 void CPlayerMove::update()
@@ -124,12 +124,7 @@ void CPlayerMove::Move()
 		m_bStartDir ? m_pPlayer->GetRigidBody()->AddVelocity(fPoint(-m_fAnimStayTime, 0))
 			: m_pPlayer->GetRigidBody()->AddVelocity(fPoint(m_fAnimStayTime, 0));
 		
-		if (m_fAnimStayTime > 0.2f)
-		{
-			m_bStartDir = m_pPlayer->GetDir();
-			m_bIsDash ? m_eCurCommand = COMMANDMOVE::DASH : m_eCurCommand = COMMANDMOVE::NONE;
-		}
-		/*
+		
 		// TODO: 숫자 변수로 바꾸기
 		if ((m_dir > 0 && m_dir > m_pPlayer->GetRigidBody()->GetVelocity().x)
 			|| (m_dir < 0 && m_dir < m_pPlayer->GetRigidBody()->GetVelocity().x))
@@ -137,11 +132,18 @@ void CPlayerMove::Move()
 			m_bStartDir = m_pPlayer->GetDir();
 			m_bIsDash ? m_eCurCommand = COMMANDMOVE::DASH : m_eCurCommand = COMMANDMOVE::NONE;
 		}
-		*/
 		break;
 	case CPlayerMove::COMMANDMOVE::TURNOFF:
-		if ((nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::Fall))
-			|| (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::JUMP)))
+		if ((nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::Fall)))
+		{
+			if (m_pPlayer->GetGravity()->GetIsGround())
+			{
+				m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, 0));
+				Exit(PLAYERSTATE::END);
+			}
+
+		}
+		else if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::JUMP))
 		{
 			//Exit(PLAYERSTATE::END);
 		}
@@ -151,13 +153,12 @@ void CPlayerMove::Move()
 			m_bStartDir ? m_pPlayer->GetRigidBody()->AddVelocity(fPoint(-m_fAnimStayTime, 0))
 				: m_pPlayer->GetRigidBody()->AddVelocity(fPoint(m_fAnimStayTime,0));
 
-			if (m_fAnimStayTime > 0.2f)
+			/*if (m_fAnimStayTime > 0.2f)
 			{
 				m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, 0));
 				Exit(PLAYERSTATE::END);
-			}
+			}*/
 
-			/* 임시로 바꿔야됨ㅠㅠ
 			// TODO: 숫자 변수로 바꾸기
 			if ((m_dir > 0 && m_dir > m_pPlayer->GetRigidBody()->GetVelocity().x)
 				|| (m_dir < 0 && m_dir < m_pPlayer->GetRigidBody()->GetVelocity().x))
@@ -166,7 +167,6 @@ void CPlayerMove::Move()
 				m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, 0));
 				Exit(PLAYERSTATE::END);
 			}
-			*/
 		}
 		break;
 	case CPlayerMove::COMMANDMOVE::IMPACT:

@@ -395,6 +395,9 @@
     <ClCompile Include="CAttackObj.cpp">
       <Filter>Object\Character\Player\Attack</Filter>
     </ClCompile>
+    <ClCompile Include="CPlayerDown.cpp">
+      <Filter>Object\Character\Player\State</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="KirbySqueakSquad.rc">
