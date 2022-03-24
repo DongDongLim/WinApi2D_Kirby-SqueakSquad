@@ -282,7 +282,10 @@ CPlayer* CPlayer::Clone()
 
 void CPlayer::update()
 {
-	
+	if (KeyDown(VK_LEFT) || KeyDown(VK_RIGHT))
+	{
+		KeyDown(VK_LEFT) ? SetDir(false) : SetDir(true);
+	}
 	GroundCheck();
 	CStateManager::getInst()->update();
 	GetAnimator()->update();

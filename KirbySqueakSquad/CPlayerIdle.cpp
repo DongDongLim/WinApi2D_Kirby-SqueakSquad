@@ -31,10 +31,6 @@ void CPlayerIdle::KeyUpdate()
 	}
 	else
 	{
-		if (KeyDown(VK_LEFT) || KeyDown(VK_RIGHT))
-		{
-			KeyDown(VK_LEFT) ? m_pPlayer->SetDir(false) : m_pPlayer->SetDir(true);
-		}
 		if (Key(VK_UP))
 		{
 			if (m_pPlayer->GetGravity()->GetIsGround())

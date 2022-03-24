@@ -68,6 +68,8 @@ void CAttackObj::update()
 {
 	if (m_bIsActivity)
 	{
+		SetPos(m_pPlayer->GetCollider()->GetFinalPos());
+
 		if (nullptr != GetAnimator())
 			GetAnimator()->update();
 	}
