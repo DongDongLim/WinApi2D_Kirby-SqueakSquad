@@ -142,7 +142,7 @@ private:
 
 	fPoint m_fAttRange;
 
-	CAttackObj* m_pAttackobj;
+	CAttackObj* m_pAttackobj[4];
 
 public:
 	CPlayerAttack();

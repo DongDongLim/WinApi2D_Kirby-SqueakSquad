@@ -14,9 +14,12 @@ CPlayerAttack::CPlayerAttack()
 	nomalanimtime = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
 	nomalanimKeeptime = nomalanimtime;
 	m_fAttRange = fPoint(0, 0);
-	m_pAttackobj = new CAttackObj();
-	CSceneManager::getInst()->GetCurScene()->
-		AddObject(m_pAttackobj, GROUP_GAMEOBJ::MISSILE_PLAYER);
+	for (int i = 0; i < 4; ++i)
+	{
+		m_pAttackobj[i] = new CAttackObj();
+		CSceneManager::getInst()->GetCurScene()->
+			AddObject(m_pAttackobj[i], GROUP_GAMEOBJ::MISSILE_PLAYER);
+	}
 	CCollisionManager::getInst()->CheckGroup(
 		GROUP_GAMEOBJ::MISSILE_PLAYER, GROUP_GAMEOBJ::MONSTER);
 }
@@ -33,7 +36,7 @@ void CPlayerAttack::update()
 	}
 	else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale1")
 	{
-		m_pAttackobj->SetRange(fPoint(64.f, 48.f));
+		m_pAttackobj[0]->SetRange(fPoint(64.f, 48.f));
 		if (!Key('C'))
 		{
 			m_pPlayer->GetAnimator()->Play(L"InHale3");
@@ -43,7 +46,7 @@ void CPlayerAttack::update()
 	}
 	else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale2")
 	{
-		m_pAttackobj->SetRange(fPoint(80.f, 64.f));
+		m_pAttackobj[0]->SetRange(fPoint(80.f, 64.f));
 		if (!Key('C'))
 		{
 			m_pPlayer->GetAnimator()->Play(L"InHale3");
@@ -80,7 +83,7 @@ void CPlayerAttack::Anim()
 		}
 		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale3")
 		{
-			m_pAttackobj->Exit();
+			m_pAttackobj[0]->Exit();
 			Exit(PLAYERSTATE::IDLE);
 		}
 	}
@@ -92,7 +95,7 @@ void CPlayerAttack::Enter()
 	m_pPlayer->GetAnimator()->Play(L"InHale0");
 	nomalanimtime = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
 	nomalanimKeeptime = nomalanimtime;
-	m_pAttackobj->Enter();
+	m_pAttackobj[0]->Enter();
 }
 
 void CPlayerAttack::Exit(PLAYERSTATE state)

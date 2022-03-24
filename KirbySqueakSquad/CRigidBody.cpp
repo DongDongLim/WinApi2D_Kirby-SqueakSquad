@@ -100,7 +100,8 @@ fPoint CRigidBody::GetMaxNegativeVelocity()
 
 fPoint CRigidBody::GetDir()
 {
-	return m_fVelocity.normalize();
+	fPoint Dir = m_fVelocity;
+	return Dir.normalize();
 }
 
 void CRigidBody::finalupdate()

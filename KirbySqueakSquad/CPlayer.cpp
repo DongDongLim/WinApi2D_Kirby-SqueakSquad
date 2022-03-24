@@ -382,6 +382,8 @@ void CPlayer::GroundCheck()
 	float fLengthX;
 	float fLengthY;
 	CCollider* m_pPlayerCollider = GetCollider();
+	float fDirX = GetRigidBody()->GetDir().x;
+	float fDirY = GetRigidBody()->GetDir().y;
 
 	// 지금 오브젝트 기준으로 생각했는데 플레이어 기준으로 생각해보자 굳이?
 	/* TODO:
@@ -418,7 +420,7 @@ void CPlayer::GroundCheck()
 
 				if (fPlayerDisPos.y <= fLeftUpPos.y)
 				{
-					if (GetRigidBody()->GetDir().y > 0)
+					if (fDirY > 0)
 					{
 						GetRigidBody()->SetVelocity(
 							fPoint(GetRigidBody()->GetVelocity().x, 0));
@@ -435,7 +437,7 @@ void CPlayer::GroundCheck()
 				}
 				else if (fPlayerDisPos.y >= fRightDownPos.y)
 				{
-					if (GetRigidBody()->GetDir().y < 0)
+					if (fDirY < 0)
 					{
 						GetRigidBody()->SetVelocity(
 							fPoint(GetRigidBody()->GetVelocity().x, 0));
@@ -452,7 +454,7 @@ void CPlayer::GroundCheck()
 				}
 				else if (fPlayerDisPos.x < fLeftUpPos.x)
 				{
-					if (GetRigidBody()->GetDir().x > 0)
+					if (fDirX > 0)
 					{
 						GetRigidBody()->SetVelocity(
 							fPoint(0, GetRigidBody()->GetVelocity().y));
@@ -471,7 +473,7 @@ void CPlayer::GroundCheck()
 				}
 				else if (fPlayerDisPos.x > fRightDownPos.x)
 				{
-					if (GetRigidBody()->GetDir().x < 0)
+					if (fDirX < 0)
 					{
 						GetRigidBody()->SetVelocity(
 							fPoint(0, GetRigidBody()->GetVelocity().y));
