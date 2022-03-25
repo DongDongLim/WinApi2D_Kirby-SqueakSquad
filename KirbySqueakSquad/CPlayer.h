@@ -61,7 +61,8 @@ struct PLAYERINFO
 enum class ATTACK_TYPE
 {
 	NORMAL,
-
+	CUTTER,
+	THROW,
 
 	SIZE,
 };

@@ -20,6 +20,8 @@ void CIdleState::update()
 	CMonster* pMonster = GetMonster();
 	if (pMonster->GetIsEaten())
 		ChangeAIState(GetOwnerAI(), STATE_MON::TRACE);
+	if(pMonster->isDead())
+		ChangeAIState(GetOwnerAI(), STATE_MON::DEAD);
 	//fPoint fptPlayerPos = pPlayer->GetPos();
 
 	//CMonster* pMonster = GetMonster();

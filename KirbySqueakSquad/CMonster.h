@@ -17,6 +17,7 @@ enum class MON_TYPE
 {
 	NORMAL,
 	CUTTER,
+	THROW,
 
 	SIZE,
 };

@@ -34,7 +34,7 @@ void CPlayerEat::update()
 		nomalanimtime -= fDT;
 		if (nomalanimtime <= 0)
 		{
-			//m_pPlayer->SetAttackType(m_pPlayer->GetMonType());
+			m_pPlayer->SetAttackType((ATTACK_TYPE)m_pPlayer->GetMonType());
 			Exit(PLAYERSTATE::IDLE);
 		}
 	}

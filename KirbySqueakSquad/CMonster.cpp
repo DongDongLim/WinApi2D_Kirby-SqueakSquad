@@ -84,6 +84,50 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 	}
 	break;
 	case MON_TYPE::CUTTER:
+	{
+		pMon = new CMonster;
+		pMon->SetPos(pos);
+		pMon->SetType(type);
+
+		tMonInfo info = {};
+		info.fAtt = 10.f;
+		info.fAttRange = 50.f;
+		info.fRecogRange = 300.f;
+		info.fHP = 100.f;
+		info.fSpeed = 150.f;
+
+		AI* pAI = new AI;
+		pAI->AddState(new CIdleState(STATE_MON::IDLE));
+		pAI->AddState(new CTraceState(STATE_MON::TRACE));
+		pAI->AddState(new CDeadState(STATE_MON::DEAD));
+		pAI->SetCurState(STATE_MON::IDLE);
+		pAI->SetStartPos(pMon->GetPos());
+		pMon->SetMonInfo(info);
+		pMon->SetAI(pAI);
+	}
+		break;
+	case MON_TYPE::THROW:
+	{
+		pMon = new CMonster;
+		pMon->SetPos(pos);
+		pMon->SetType(type);
+
+		tMonInfo info = {};
+		info.fAtt = 10.f;
+		info.fAttRange = 50.f;
+		info.fRecogRange = 300.f;
+		info.fHP = 100.f;
+		info.fSpeed = 150.f;
+
+		AI* pAI = new AI;
+		pAI->AddState(new CIdleState(STATE_MON::IDLE));
+		pAI->AddState(new CTraceState(STATE_MON::TRACE));
+		pAI->AddState(new CDeadState(STATE_MON::DEAD));
+		pAI->SetCurState(STATE_MON::IDLE);
+		pAI->SetStartPos(pMon->GetPos());
+		pMon->SetMonInfo(info);
+		pMon->SetAI(pAI);
+	}
 		break;
 	default:
 		break;

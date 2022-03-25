@@ -28,6 +28,41 @@ CPlayerAttack::CPlayerAttack()
 		GROUP_GAMEOBJ::MISSILE_PLAYER, GROUP_GAMEOBJ::TILE);
 }
 
+void CPlayerAttack::NomalAnim()
+{
+	if (0 >= nomalanimtime)
+	{
+		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"DownSlide")
+		{
+			m_pPlayer->GetAnimator()->Stop();
+		}
+		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale0")
+		{
+			m_pPlayer->GetAnimator()->Play(L"InHale1");
+			nomalanimKeeptime = 0.5f;
+			nomalanimtime = nomalanimKeeptime;
+		}
+		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale1")
+		{
+			m_pPlayer->GetAnimator()->Play(L"InHale2");
+			nomalanimKeeptime = 1.f;
+			nomalanimtime = nomalanimKeeptime;
+		}
+		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale2")
+		{
+			m_pPlayer->GetAnimator()->Play(L"InHale3");
+			nomalanimKeeptime = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
+			nomalanimtime = nomalanimKeeptime;
+		}
+		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale3")
+		{
+			if (nullptr != m_pAttackobj[0])
+				m_pAttackobj[0]->Exit();
+			Exit(PLAYERSTATE::IDLE);
+		}
+	}
+}
+
 CPlayerAttack::~CPlayerAttack()
 {
 	for (int i = 0; i < 4; ++i)
@@ -117,72 +152,82 @@ void CPlayerAttack::NomalAttack()
 
 void CPlayerAttack::update()
 {
-	NomalAttack();
+	switch (m_pPlayer->GetAttackType())
+	{
+	case ATTACK_TYPE::NORMAL:
+		NomalAttack();
+		break;
+	case ATTACK_TYPE::CUTTER:
+		break;
+	case ATTACK_TYPE::THROW:
+		break;
+	case ATTACK_TYPE::SIZE:
+		break;
+	default:
+		break;
+	}
 	
 }
+
+
 
 void CPlayerAttack::Anim()
 {
 	nomalanimtime -= fDT;
 	m_pPlayer->GetAnimator()->SetReverce(!m_startDir);
-	if (0 >= nomalanimtime)
+	switch (m_pPlayer->GetAttackType())
 	{
-		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"DownSlide")
-		{
-			m_pPlayer->GetAnimator()->Stop();
-		}
-		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale0")
-		{
-			m_pPlayer->GetAnimator()->Play(L"InHale1");
-			nomalanimKeeptime = 0.5f;
-			nomalanimtime = nomalanimKeeptime;
-		}
-		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale1")
-		{
-			m_pPlayer->GetAnimator()->Play(L"InHale2");
-			nomalanimKeeptime = 1.f;
-			nomalanimtime = nomalanimKeeptime;
-		}
-		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale2")
-		{
-			m_pPlayer->GetAnimator()->Play(L"InHale3");
-			nomalanimKeeptime = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
-			nomalanimtime = nomalanimKeeptime;
-		}
-		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale3")
-		{
-			if (nullptr != m_pAttackobj[0])
-				m_pAttackobj[0]->Exit();
-			Exit(PLAYERSTATE::IDLE);
-		}
+	case ATTACK_TYPE::NORMAL:
+		NomalAnim();
+		break;
+	case ATTACK_TYPE::CUTTER:
+		break;
+	case ATTACK_TYPE::THROW:
+		break;
+	case ATTACK_TYPE::SIZE:
+		break;
+	default:
+		break;
 	}
+	
 }
 
 void CPlayerAttack::Enter()
 {
 	m_bIsActive = true;
-	if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY))
+	if (m_pPlayer->GetAttackType() == ATTACK_TYPE::NORMAL)
 	{
-		m_pPlayer->GetAnimator()->ReversePlay(L"Up");
-		m_pAttackobj[0]->Enter();
-		CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY)->Exit(PLAYERSTATE::END);
+		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY))
+		{
+			m_pPlayer->GetAnimator()->ReversePlay(L"Up");
+			m_pAttackobj[0]->Enter();
+			CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY)->Exit(PLAYERSTATE::END);
+		}
+		else if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::DOWN))
+		{
+			m_pPlayer->GetAnimator()->Play(L"DownSlide");
+			m_pAttackobj[0]->Enter();
+			CStateManager::getInst()->FindPlayeState(PLAYERSTATE::DOWN)->Exit(PLAYERSTATE::END);
+		}
+		else if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::EAT))
+		{
+			m_pPlayer->GetAnimator()->ReversePlay(L"Up");
+			m_pAttackobj[0]->Enter();
+			CStateManager::getInst()->FindPlayeState(PLAYERSTATE::EAT)->Exit(PLAYERSTATE::END);
+		}
+		else
+		{
+			m_pPlayer->GetAnimator()->Play(L"InHale0");
+			m_pAttackobj[0]->Enter();
+		}
 	}
-	else if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::DOWN))
+	else if (m_pPlayer->GetAttackType() == ATTACK_TYPE::CUTTER)
 	{
-		m_pPlayer->GetAnimator()->Play(L"DownSlide");
-		m_pAttackobj[0]->Enter();
-		CStateManager::getInst()->FindPlayeState(PLAYERSTATE::DOWN)->Exit(PLAYERSTATE::END);
+
 	}
-	else if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::EAT))
+	else if (m_pPlayer->GetAttackType() == ATTACK_TYPE::THROW)
 	{
-		m_pPlayer->GetAnimator()->ReversePlay(L"Up");
-		m_pAttackobj[0]->Enter();
-		CStateManager::getInst()->FindPlayeState(PLAYERSTATE::EAT)->Exit(PLAYERSTATE::END);
-	}
-	else
-	{
-		m_pPlayer->GetAnimator()->Play(L"InHale0");
-		m_pAttackobj[0]->Enter();
+
 	}
 	nomalanimtime = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
 	nomalanimKeeptime = nomalanimtime;

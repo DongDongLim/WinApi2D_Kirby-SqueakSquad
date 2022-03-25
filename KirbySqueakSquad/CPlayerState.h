@@ -168,6 +168,7 @@ public:
 	~CPlayerAttack();
 
 	void NomalAttack();
+	void NomalAnim();
 
 	virtual void Anim();
 	virtual void update();
