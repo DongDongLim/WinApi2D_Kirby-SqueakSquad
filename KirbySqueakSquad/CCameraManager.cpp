@@ -11,6 +11,7 @@ CCameraManager::CCameraManager()
 	m_pTargetObj = nullptr;
 	m_fAccTime = m_fTime;
 	m_fSpeed = 0;
+	m_fZoom = 3.f;
 	m_fDisLimmit = fPoint(0, 0);
 }
 
@@ -123,6 +124,11 @@ fPoint CCameraManager::GetDisLimmit()
 	return m_fDisLimmit;
 }
 
+float CCameraManager::GetZoom()
+{
+	return m_fZoom;
+}
+
 void CCameraManager::FadeIn(float duration)
 {
 	tCamEffect ef = {};
@@ -159,7 +165,7 @@ void CCameraManager::Scroll(fVec2 vec, float velocity)
 	m_fptCurLookAt = m_fptCurLookAt + vec * velocity * fDT;
 
 	fPoint fptCenter = fPoint(WINSIZEX / 2.f, WINSIZEY / 2.f);
-	m_fptDiff = m_fptCurLookAt - fptCenter;
+	m_fptDiff = m_fptCurLookAt - fptCenter / m_fZoom;
 }
 
 void CCameraManager::CalDiff()
@@ -167,11 +173,10 @@ void CCameraManager::CalDiff()
 	// 커비는 카메라가 바로 따라옴
 	m_fptCurLookAt = m_fptLookAt;
 	fPoint fptCenter = fPoint(WINSIZEX / 2.f, WINSIZEY / 2.f);
-	fPoint fptLimitDis = m_fptCurLookAt - (fptCenter / g_winScale);
-	// 렌더링이 g_winScale배 늘어났기 때문에 카메라는 그만큼 줄여줌
+	fPoint fptLimitDis = m_fptCurLookAt - (fptCenter);
 	// 카메라 맵 밖으로 안나가도록하기
-	float fpointX = (m_fDisLimmit - (fptCenter / g_winScale) * 2).x;
-	float fpointY = (m_fDisLimmit - (fptCenter / g_winScale) * 2).y;
+	float fpointX = (m_fDisLimmit - (fptCenter ) * 2).x;
+	float fpointY = (m_fDisLimmit - (fptCenter ) * 2).y;
 	// limmit의 size가 windowsize보다 작을 경우 예외처리
 	if (fpointX < 0)
 		fpointX = 0; 

@@ -30,6 +30,7 @@ public:
 
 	void SetIdx(UINT idx);
 	void SetTileIdx();		// 마우스와 상호작용해서 타일을 바꿈.
+	void SetAnimIdx();
 	void SetGroup(GROUP_TILE group);
 	void SetTileGroup();
 

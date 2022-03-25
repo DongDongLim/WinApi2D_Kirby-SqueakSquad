@@ -79,7 +79,7 @@ void CRenderManager::init()
 
 void CRenderManager::RenderImage(CD2DImage* img, float dstX, float dstY, float dstW, float dstH, float alpha)
 {
-	D2D1_RECT_F imgRect = { dstX * g_winScale, dstY * g_winScale, dstW * g_winScale, dstH * g_winScale };
+	D2D1_RECT_F imgRect = { dstX * ZOOM , dstY* ZOOM, dstW* ZOOM, dstH* ZOOM };
 	if (nullptr != img)
 	{
 		m_pRenderTarget->DrawBitmap(img->GetImage(), imgRect, alpha, D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR);
@@ -88,7 +88,7 @@ void CRenderManager::RenderImage(CD2DImage* img, float dstX, float dstY, float d
 
 void CRenderManager::RenderFrame(CD2DImage* img, float dstX, float dstY, float dstW, float dstH, float srcX, float srcY, float srcW, float srcH)
 {
-	D2D1_RECT_F imgRect = { dstX * g_winScale, dstY * g_winScale, dstW * g_winScale, dstH * g_winScale };
+	D2D1_RECT_F imgRect = { dstX * ZOOM, dstY * ZOOM, dstW * ZOOM, dstH * ZOOM };
 	D2D1_RECT_F srcRect = { srcX, srcY, srcW, srcH };
 
 	if (nullptr != img)
@@ -99,11 +99,11 @@ void CRenderManager::RenderFrame(CD2DImage* img, float dstX, float dstY, float d
 
 void CRenderManager::RenderRevFrame(CD2DImage* img, float dstX, float dstY, float dstW, float dstH, float srcX, float srcY, float srcW, float srcH)
 {
-	D2D1_RECT_F imgRect = { dstX * g_winScale, dstY * g_winScale, dstW * g_winScale, dstH * g_winScale };
+	D2D1_RECT_F imgRect = { dstX * ZOOM, dstY * ZOOM, dstW * ZOOM, dstH * ZOOM };
 	D2D1_RECT_F srcRect = { srcX, srcY, srcW, srcH };
 
 	m_pRenderTarget->SetTransform(D2D1::Matrix3x2F::Scale(-1.f, 1.f,
-		D2D1_POINT_2F{ (dstX + dstW) * g_winScale / 2.f, (dstY + dstH) * g_winScale / 2.f }));
+		D2D1_POINT_2F{ (dstX + dstW) * ZOOM / 2.f, (dstY + dstH) * ZOOM / 2.f }));
 
 	if (nullptr != img)
 	{
@@ -111,7 +111,7 @@ void CRenderManager::RenderRevFrame(CD2DImage* img, float dstX, float dstY, floa
 	}
 
 	m_pRenderTarget->SetTransform(D2D1::Matrix3x2F::Scale(1.f, 1.f,
-		D2D1_POINT_2F{ (dstX + dstW) * g_winScale / 2.f, (dstY + dstH) * g_winScale / 2.f }));
+		D2D1_POINT_2F{ (dstX + dstW) * ZOOM / 2.f, (dstY + dstH) * ZOOM / 2.f }));
 }
 
 void CRenderManager::RenderText(wstring str, float dstX, float dstY, float dstW, float dstH, float fontSize, COLORREF color)
@@ -138,12 +138,12 @@ void CRenderManager::RenderText(wstring str, float dstX, float dstY, float dstW,
 
 	m_pBrush->SetColor(D2D1::ColorF(red / 255.f, green / 255.0f, blue / 255.0f, 1.f));
 	m_pRenderTarget->DrawTextW(str.c_str(), (UINT)str.size(), m_pTextFormat,
-		D2D1::RectF(dstX * g_winScale, dstY * g_winScale, dstW * g_winScale, dstH * g_winScale), m_pBrush);
+		D2D1::RectF(dstX * ZOOM, dstY * ZOOM, dstW * ZOOM, dstH * ZOOM), m_pBrush);
 }
 
 void CRenderManager::RenderRectangle(float dstX, float dstY, float dstW, float dstH, COLORREF color, float strokeWidth)
 {
-	D2D1_RECT_F m_imgRect = { dstX * g_winScale, dstY * g_winScale, dstW * g_winScale, dstH * g_winScale };
+	D2D1_RECT_F m_imgRect = { dstX * ZOOM, dstY * ZOOM, dstW * ZOOM, dstH * ZOOM };
 
 	int red = color & 0xFF;
 	int green = (color >> 8) & 0xFF;
@@ -155,7 +155,7 @@ void CRenderManager::RenderRectangle(float dstX, float dstY, float dstW, float d
 
 void CRenderManager::RenderFillRectangle(float dstX, float dstY, float dstW, float dstH, COLORREF color, float alpha)
 {
-	D2D1_RECT_F m_imgRect = { dstX * g_winScale, dstY * g_winScale, dstW * g_winScale, dstH * g_winScale };
+	D2D1_RECT_F m_imgRect = { dstX * ZOOM, dstY * ZOOM, dstW * ZOOM, dstH * ZOOM };
 
 	int red = color & 0xFF;
 	int green = (color >> 8) & 0xFF;
@@ -167,7 +167,7 @@ void CRenderManager::RenderFillRectangle(float dstX, float dstY, float dstW, flo
 
 void CRenderManager::RenderEllipse(float dstX, float dstY, float dstW, float dstH, COLORREF color, float strokeWidth)
 {
-	D2D1_ELLIPSE m_imgRect = { dstX * g_winScale, dstY * g_winScale, dstW * g_winScale, dstH * g_winScale };
+	D2D1_ELLIPSE m_imgRect = { dstX * ZOOM, dstY * ZOOM, dstW * ZOOM, dstH * ZOOM };
 
 	int red = color & 0xFF;
 	int green = (color >> 8) & 0xFF;
@@ -179,7 +179,7 @@ void CRenderManager::RenderEllipse(float dstX, float dstY, float dstW, float dst
 
 void CRenderManager::RenderFillEllipse(float dstX, float dstY, float dstW, float dstH, COLORREF color)
 {
-	D2D1_ELLIPSE m_imgRect = { dstX * g_winScale, dstY * g_winScale, dstW * g_winScale, dstH * g_winScale };
+	D2D1_ELLIPSE m_imgRect = { dstX * ZOOM, dstY * ZOOM, dstW * ZOOM, dstH * ZOOM };
 
 	int red = color & 0xFF;
 	int green = (color >> 8) & 0xFF;
@@ -191,8 +191,8 @@ void CRenderManager::RenderFillEllipse(float dstX, float dstY, float dstW, float
 
 void CRenderManager::RenderLine(fPoint startPoint, fPoint endPoint, COLORREF color, float strokeWidth)
 {
-	D2D1_POINT_2F start = { startPoint.x * g_winScale, startPoint.y * g_winScale };
-	D2D1_POINT_2F end = { endPoint.x * g_winScale, endPoint.y * g_winScale };
+	D2D1_POINT_2F start = { startPoint.x * ZOOM, startPoint.y * ZOOM };
+	D2D1_POINT_2F end = { endPoint.x * ZOOM, endPoint.y * ZOOM };
 
 	int red = color & 0xFF;
 	int green = (color >> 8) & 0xFF;

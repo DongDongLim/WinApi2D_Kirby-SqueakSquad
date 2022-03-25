@@ -100,7 +100,7 @@ void CScene_Tool::Enter()
 	CreateTile(20, 20);
 	CreateTilePanel();
 
-	CCameraManager::getInst()->SetLookAt(fPoint(WINSIZEX / g_winScale / 2.f, WINSIZEY / g_winScale / 2.f));
+	CCameraManager::getInst()->SetLookAt(fPoint(WINSIZEX / 2.f, WINSIZEY / 2.f));
 
 
 }
@@ -418,8 +418,8 @@ void CScene_Tool::CreateTilePanel()
 {
 	CPanelUI* panelTile = new CPanelUI;
 	panelTile->SetName(L"panelTile");
-	panelTile->SetScale(fPoint(400.f, 600.f) / g_winScale);
-	panelTile->SetPos(fPoint(WINSIZEX * 2.f - 450.f, 50.f) / g_winScale);
+	panelTile->SetScale(fPoint(400.f, 600.f));
+	panelTile->SetPos(fPoint(WINSIZEX * 2.f - 450.f, 50.f));
 
 	CD2DImage* pImg = CResourceManager::getInst()->LoadD2DImage(L"Tile", L"texture\\tile\\tilemap.bmp");
 	for (UINT y = 0; y < 12; y++)
@@ -438,7 +438,7 @@ void CScene_Tool::CreateTilePanel()
 	}
 
 	CButtonUI* btnTileGroup = new CButtonUI;
-	btnTileGroup->SetScale(fPoint(50.f, 50.f) / g_winScale);
+	btnTileGroup->SetScale(fPoint(50.f, 50.f));
 	btnTileGroup->SetPos(fPoint(0, 0));
 	btnTileGroup->SetText(L"NONE");
 	btnTileGroup->SetClickedCallBack(ClickTileGroupButton, (DWORD_PTR)this, (DWORD_PTR)btnTileGroup);
@@ -467,14 +467,14 @@ void CScene_Tool::PrintMap()
 void CScene_Tool::PrintTileLine()
 {
 	fPoint pos = CCameraManager::getInst()->GetLookAt();
-	pos = pos - (fPoint(WINSIZEX / 2.f, WINSIZEY / 2.f)) / g_winScale;
+	pos = pos - (fPoint(WINSIZEX / 2.f, WINSIZEY / 2.f));
 
 	// 가로줄 출력
 	for (UINT y = 0; y <= m_iTileY; y++)
 	{
 		CRenderManager::getInst()->RenderLine(
-			fPoint(0 - pos.x, y * CTile::SIZE_TILE - pos.y) * g_winScale,
-			fPoint(CTile::SIZE_TILE * m_iTileX - pos.x, y * CTile::SIZE_TILE - pos.y) * g_winScale
+			fPoint(0 - pos.x, y * CTile::SIZE_TILE - pos.y),
+			fPoint(CTile::SIZE_TILE * m_iTileX - pos.x, y * CTile::SIZE_TILE - pos.y)
 		);
 	}
 
@@ -482,8 +482,8 @@ void CScene_Tool::PrintTileLine()
 	for (UINT x = 0; x <= m_iTileX; x++)
 	{
 		CRenderManager::getInst()->RenderLine(
-			fPoint(x * CTile::SIZE_TILE - pos.x, 0 - pos.y) * g_winScale,
-			fPoint(x * CTile::SIZE_TILE - pos.x, CTile::SIZE_TILE * m_iTileY - pos.y) * g_winScale
+			fPoint(x * CTile::SIZE_TILE - pos.x, 0 - pos.y),
+			fPoint(x * CTile::SIZE_TILE - pos.x, CTile::SIZE_TILE * m_iTileY - pos.y)
 		);
 	}
 }
@@ -491,7 +491,7 @@ void CScene_Tool::PrintTileLine()
 void CScene_Tool::PrintTileGroup()
 {
 	fPoint pos = CCameraManager::getInst()->GetLookAt();
-	pos = pos - fPoint(WINSIZEX / 2.f, WINSIZEY / 2.f) / g_winScale;
+	pos = pos - fPoint(WINSIZEX / 2.f, WINSIZEY / 2.f);
 
 	const vector<CGameObject*>& vecTile = GetGroupObject(GROUP_GAMEOBJ::TILE);
 	CTile* pTile;

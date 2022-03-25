@@ -154,8 +154,8 @@ enum class COMMANDKEY
 
 #define WINSTARTX   100
 #define WINSTARTY   100
-#define WINSIZEX	256 * g_winScale
-#define	WINSIZEY	192 * g_winScale
+#define WINSIZEX	256
+#define	WINSIZEY	192
 #define WINSTYLE	WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
 
 #define DT				CTimeManager::getInst()->GetDT()
@@ -171,6 +171,7 @@ enum class COMMANDKEY
 #define DeleteObj(pObj)			CEventManager::getInst()->EventDeleteObject(pObj)
 #define ChangeScn(scene)		CEventManager::getInst()->EventChangeScene(scene)
 #define ChangeAIState(ai, state)	CEventManager::getInst()->EventChangeAIState(ai, state)
+#define ZOOM				CCameraManager::getInst()->GetZoom()
 
 //========================================
 //## 전역변수(인스턴스, 윈도우 핸들)	##
@@ -180,4 +181,3 @@ extern HINSTANCE hInst;
 extern HWND hWnd;
 
 // TODO : 윈도우 메뉴를 통해 사이즈 배율 조절
-const static int g_winScale = 3;

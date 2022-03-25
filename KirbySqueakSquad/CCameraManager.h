@@ -34,7 +34,7 @@ private:
 	float m_fTime = 0.1f;			// 타겟을 따라가는 총시간
 	float m_fAccTime;			// 타겟을 따라간 소요시간
 	float m_fSpeed;				// 타겟을 따라가는 속도
-	
+	float m_fZoom;
 
 	list<tCamEffect> m_listCamEffect;
 
@@ -51,6 +51,7 @@ public:
 	fPoint GetRenderPos(fPoint objPos);
 	fPoint GetRealPos(fPoint renderPos);
 	fPoint GetDisLimmit();
+	float GetZoom();
 
 	void FadeIn(float duration);
 	void FadeOut(float duration);
