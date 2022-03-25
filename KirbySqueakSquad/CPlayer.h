@@ -2,6 +2,7 @@
 #include "CGameObject.h"
 #include "CStateManager.h"
 #include "CRigidBody.h"
+#include "CMonster.h"
 
 
 /*
@@ -73,6 +74,7 @@ class CPlayer : public CGameObject
 private:
 	PLAYERINFO info;
 	ATTACK_TYPE m_eAttackType;
+	MON_TYPE m_pEatingMon;
 	// 플레이어 애니메이션 재생을 위한 이미지들
 	vector<CD2DImage*> m_pImg;
 	// 플레이어 애니메이션 이미지의 키값
@@ -88,6 +90,7 @@ private:
 	DWORD_PTR m_colliderEnterState;
 	list<COLLIDER_FUNC> m_arrExitFunc;
 	DWORD_PTR m_colliderExitState;
+
 
 
 	// 땅과의 거리체크
@@ -109,6 +112,7 @@ public:
 	void GroundCheckRender();
 
 	ATTACK_TYPE GetAttackType();
+
 	PLAYERINFO& GetPlaeyrInfo();
 
 
@@ -116,7 +120,11 @@ public:
 	void AddGroundCollider(CCollider* ground);
 	void GroundCheck();
 
+	void SetAttackType(ATTACK_TYPE type);
+	void SetMonType(MON_TYPE type);
 	void SetDir(bool dir);
+
+	MON_TYPE GetMonType();
 	bool GetDir();
 
 	void SetCollisonCallBack(COLLIDER_FUNC pFunc, DWORD_PTR state);

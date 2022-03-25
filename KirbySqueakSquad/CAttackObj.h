@@ -4,15 +4,25 @@
 
 class CPlayerAttack;
 
+enum class MOVETYPE
+{
+	FIX,
+	VARIANCE,
+	
+	END,
+};
 
 class CAttackObj : public CGameObject
 {
 private:
+	MOVETYPE m_eMoveType;
 	CPlayer* m_pPlayer;
 	CPlayerAttack* m_pOwner;
-	bool m_bIsActivity;
 	fPoint m_fDir;
 	fPoint m_fRange;
+	fPoint m_fStartPos;
+	float m_fVelocity;
+	float m_fReverceVelocity;
 
 public:
 	CAttackObj();
@@ -20,8 +30,12 @@ public:
 	virtual CAttackObj* Clone();
 
 	void SetRange(fPoint range);
+	void SetStartPos(fPoint range);
+	void SetVelocity(float velocity);
+	void SetReverceVelocity(float velocity);
 
 	void NomalSetting();
+	void MoveUpdate();
 
 
 

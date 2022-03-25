@@ -7,6 +7,7 @@
 #include "CAttackObj.h"
 #include "CScene.h"
 #include "CRigidBody.h"
+#include "CGravity.h"
 
 CPlayerAttack::CPlayerAttack()
 {
@@ -23,11 +24,17 @@ CPlayerAttack::CPlayerAttack()
 	}
 	CCollisionManager::getInst()->CheckGroup(
 		GROUP_GAMEOBJ::MISSILE_PLAYER, GROUP_GAMEOBJ::MONSTER);
+	CCollisionManager::getInst()->CheckGroup(
+		GROUP_GAMEOBJ::MISSILE_PLAYER, GROUP_GAMEOBJ::TILE);
 }
 
 CPlayerAttack::~CPlayerAttack()
 {
-
+	for (int i = 0; i < 4; ++i)
+	{
+		if (nullptr != m_pAttackobj[i])
+			m_pAttackobj[i] = nullptr;
+	}
 }
 
 
@@ -37,7 +44,14 @@ void CPlayerAttack::NomalAttack()
 	{
 		if (0 >= nomalanimtime)
 		{
-			Exit(PLAYERSTATE::Fall);
+			if (m_pPlayer->GetGravity()->GetIsGround())
+			{
+				Exit(PLAYERSTATE::IDLE);
+			}
+			else
+			{
+				Exit(PLAYERSTATE::Fall);
+			}
 		}
 	}
 	else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"DownSlide")
@@ -150,12 +164,20 @@ void CPlayerAttack::Enter()
 	if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY))
 	{
 		m_pPlayer->GetAnimator()->ReversePlay(L"Up");
+		m_pAttackobj[0]->Enter();
 		CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY)->Exit(PLAYERSTATE::END);
 	}
 	else if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::DOWN))
 	{
-		m_pPlayer->GetAnimator()->ReversePlay(L"DownSlide");
+		m_pPlayer->GetAnimator()->Play(L"DownSlide");
+		m_pAttackobj[0]->Enter();
 		CStateManager::getInst()->FindPlayeState(PLAYERSTATE::DOWN)->Exit(PLAYERSTATE::END);
+	}
+	else if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::EAT))
+	{
+		m_pPlayer->GetAnimator()->ReversePlay(L"Up");
+		m_pAttackobj[0]->Enter();
+		CStateManager::getInst()->FindPlayeState(PLAYERSTATE::EAT)->Exit(PLAYERSTATE::END);
 	}
 	else
 	{

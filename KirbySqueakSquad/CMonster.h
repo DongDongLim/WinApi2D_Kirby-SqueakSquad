@@ -16,7 +16,7 @@ struct tMonInfo
 enum class MON_TYPE
 {
 	NORMAL,
-	RANGE,
+	CUTTER,
 
 	SIZE,
 };
@@ -24,10 +24,11 @@ enum class MON_TYPE
 class CMonster : public CGameObject
 {
 private:
+	MON_TYPE m_eType;
 	tMonInfo m_tInfo;
 	AI* m_pAI;
 	bool m_bIsEaten;
-	bool m_bIsLive;
+	float m_fRegenPosX;
 
 public:
 	CMonster();
@@ -36,6 +37,7 @@ public:
 
 	static CMonster* Create(MON_TYPE type, fPoint pos);
 
+
 	virtual void render();
 	virtual void update();
 	virtual void finalupdate();
@@ -43,12 +45,17 @@ public:
 	float GetSpeed();
 	const tMonInfo& GetMonInfo();
 
+	void SetIsEaten(bool isEaten);
 	void SetSpeed(float speed);
 	void SetAI(AI* ai);
 	void SetMonInfo(const tMonInfo& info);
-	void SetLive(bool isLive);
 	void SetEaten(bool isEaten);
+	void SetType(MON_TYPE type);
+	void SetRegenPosX(float posX);
+			
+	MON_TYPE GetType();
 	bool GetIsEaten();
+	float GetRegenPosX();
 
 	void OnCollisionEnter(CCollider* pOther);
 };

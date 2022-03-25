@@ -7,6 +7,7 @@
 #include "AI.h"
 #include "CIdleState.h"
 #include "CTraceState.h"
+#include "CDeadState.h"
 #include "CGravity.h"
 #include "CRigidBody.h"
 
@@ -16,7 +17,6 @@ CMonster::CMonster()
 
 	m_pAI = nullptr;
 	m_bIsEaten = false;
-	m_bIsLive = true;
 
 	SetName(L"Monster");
 	SetScale(fPoint(32.f, 32.f));
@@ -64,6 +64,7 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 	{
 		pMon = new CMonster;
 		pMon->SetPos(pos);
+		pMon->SetType(type);
 
 		tMonInfo info = {};
 		info.fAtt = 10.f;
@@ -75,12 +76,14 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 		AI* pAI = new AI;
 		pAI->AddState(new CIdleState(STATE_MON::IDLE));
 		pAI->AddState(new CTraceState(STATE_MON::TRACE));
+		pAI->AddState(new CDeadState(STATE_MON::DEAD));
 		pAI->SetCurState(STATE_MON::IDLE);
+		pAI->SetStartPos(pMon->GetPos());
 		pMon->SetMonInfo(info);
 		pMon->SetAI(pAI);
 	}
 	break;
-	case MON_TYPE::RANGE:
+	case MON_TYPE::CUTTER:
 		break;
 	default:
 		break;
@@ -91,43 +94,34 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 
 void CMonster::render()
 {
-	if (m_bIsLive)
-	{
-		fPoint pos = GetPos();
-		fPoint scale = GetScale();
-		pos = CCameraManager::getInst()->GetRenderPos(pos);
+	fPoint pos = GetPos();
+	fPoint scale = GetScale();
+	pos = CCameraManager::getInst()->GetRenderPos(pos);
 
-		component_render();
-	}
+	component_render();
 }
 
 void CMonster::update()
 {
-	if (m_bIsLive)
-	{
-		if (nullptr != GetAnimator())
-			GetAnimator()->update();
-	}
-	if (nullptr != m_pAI)
-		m_pAI->update();
+	if (nullptr != GetAnimator())
+		GetAnimator()->update();
 }
 
 void CMonster::finalupdate()
 {
-	if (m_bIsLive)
+	if (nullptr != m_pAI)
+		m_pAI->update();
+	if (nullptr != GetGravity())
 	{
-		if (nullptr != GetGravity())
-		{
-			GetGravity()->finalupdate();
-		}
-		if (nullptr != GetRigidBody())
-		{
-			GetRigidBody()->finalupdate();
-		}
-		if (nullptr != GetCollider())
-		{
-			GetCollider()->finalupdate();
-		}
+		GetGravity()->finalupdate();
+	}
+	if (nullptr != GetRigidBody())
+	{
+		GetRigidBody()->finalupdate();
+	}
+	if (nullptr != GetCollider())
+	{
+		GetCollider()->finalupdate();
 	}
 }
 
@@ -139,6 +133,11 @@ float CMonster::GetSpeed()
 const tMonInfo& CMonster::GetMonInfo()
 {
 	return m_tInfo;
+}
+
+void CMonster::SetIsEaten(bool isEaten)
+{
+	m_bIsEaten = isEaten;
 }
 
 void CMonster::SetSpeed(float speed)
@@ -156,20 +155,34 @@ void CMonster::SetMonInfo(const tMonInfo& info)
 {
 	m_tInfo = info;
 }
-
-void CMonster::SetLive(bool isLive)
-{
-	m_bIsLive = isLive;
-}
-
 void CMonster::SetEaten(bool isEaten)
 {
 	m_bIsEaten = isEaten;
 }
 
+void CMonster::SetType(MON_TYPE type)
+{
+	m_eType = type;
+}
+
+void CMonster::SetRegenPosX(float posX)
+{
+	m_fRegenPosX = posX;
+}
+
+MON_TYPE CMonster::GetType()
+{
+	return MON_TYPE();
+}
+
 bool CMonster::GetIsEaten()
 {
 	return m_bIsEaten;
+}
+
+float CMonster::GetRegenPosX()
+{
+	return m_fRegenPosX;
 }
 
 void CMonster::OnCollisionEnter(CCollider* pOther)

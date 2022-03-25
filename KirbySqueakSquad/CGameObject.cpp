@@ -140,6 +140,11 @@ void CGameObject::SetDead()
 	m_bAlive = false;
 }
 
+void CGameObject::SetLive()
+{
+	m_bAlive = true;
+}
+
 void CGameObject::finalupdate()
 {
 	if (nullptr != m_pGravity)

@@ -177,11 +177,15 @@ public:
 
 class CPlayerEat : public CPlayerState
 {
+private:
+	float nomalanimtime;
+	float nomalanimKeeptime;
 
 public:
 	CPlayerEat();
 	~CPlayerEat();
 
+	virtual void Anim();
 	virtual void update();
 	virtual void Enter();
 	virtual void Exit(PLAYERSTATE state);

@@ -1,6 +1,7 @@
 #include "framework.h"
 #include "AI.h"
 #include "CState.h"
+#include "CMonster.h"
 
 AI::AI()
 {
@@ -33,6 +34,11 @@ CState* AI::GetState(STATE_MON state)
 	return iter->second;
 }
 
+fPoint AI::GetStartPos()
+{
+	return m_fStartPos;
+}
+
 CMonster* AI::GetOwnerAI()
 {
 	return m_pOwner;
@@ -42,6 +48,11 @@ void AI::SetCurState(STATE_MON state)
 {
 	m_pCurState = GetState(state);
 	assert(m_pCurState);
+}
+
+void AI::SetStartPos(fPoint pos)
+{
+	m_fStartPos = pos;
 }
 
 void AI::AddState(CState* state)

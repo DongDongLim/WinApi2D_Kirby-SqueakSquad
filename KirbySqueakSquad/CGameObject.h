@@ -10,6 +10,7 @@ class CGameObject
 	friend class CEventManager;
 
 private:
+
 	float m_fAccel;
 
 	wstring m_strName;
@@ -26,7 +27,6 @@ private:
 
 	
 	bool m_bAlive;
-	void SetDead();
 
 public:
 	CGameObject();
@@ -34,6 +34,9 @@ public:
 	virtual ~CGameObject();
 	virtual CGameObject* Clone() = 0;
 
+
+	void SetDead();
+	void SetLive();
 	void SetPos(fPoint pos);
 	void SetScale(fPoint scale);
 	void SetName(wstring name);

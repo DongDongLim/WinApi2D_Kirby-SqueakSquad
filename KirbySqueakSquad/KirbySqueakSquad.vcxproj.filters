@@ -240,6 +240,9 @@
     <ClInclude Include="CAttackObj.h">
       <Filter>Object\Character\Player\Attack</Filter>
     </ClInclude>
+    <ClInclude Include="CDeadState.h">
+      <Filter>Engin\Component\AI\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KirbySqueakSquad.cpp">
@@ -397,6 +400,9 @@
     </ClCompile>
     <ClCompile Include="CPlayerDown.cpp">
       <Filter>Object\Character\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CDeadState.cpp">
+      <Filter>Engin\Component\AI\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

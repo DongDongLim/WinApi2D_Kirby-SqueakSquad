@@ -16,6 +16,7 @@ CPlayer::CPlayer()
 	//m_bIsGroundCount = 0;
 	CStateManager::getInst()->SetPlayer(this);
 	m_eAttackType = ATTACK_TYPE::NORMAL;
+	m_pEatingMon = MON_TYPE::SIZE;
 	m_colliderState = 0;
 	m_colliderEnterState = 0;
 	m_colliderExitState = 0;
@@ -43,6 +44,7 @@ CPlayer::CPlayer()
 	m_wImgKey.push_back(L"PlayerImg6");
 	m_wImgKey.push_back(L"PlayerImg7");
 	m_wImgKey.push_back(L"PlayerImg8");
+	m_wImgKey.push_back(L"PlayerImg9");
 
 
 	m_pImg.push_back(CResourceManager::getInst()->
@@ -63,6 +65,8 @@ CPlayer::CPlayer()
 		LoadD2DImage(m_wImgKey[7], L"texture\\Animation\\sprite7.png"));
 	m_pImg.push_back(CResourceManager::getInst()->
 		LoadD2DImage(m_wImgKey[8], L"texture\\Animation\\sprite8.png"));
+	m_pImg.push_back(CResourceManager::getInst()->
+		LoadD2DImage(m_wImgKey[9], L"texture\\Animation\\sprite9.png"));
 
 	for (int i = 0; i < m_pImg.size(); ++i)
 	{
@@ -90,6 +94,7 @@ CPlayer::CPlayer()
 	m_wAnimKey[8]->push_back(L"InHale1");
 	m_wAnimKey[8]->push_back(L"InHale2");
 	m_wAnimKey[8]->push_back(L"InHale3");
+	m_wAnimKey[9]->push_back(L"Eating");
 
 	CreateAnimator();
 	float pixelSize = 32.f;
@@ -524,9 +529,24 @@ void CPlayer::GroundCheck()
 }
 
 
+MON_TYPE CPlayer::GetMonType()
+{
+	return m_pEatingMon;
+}
+
 bool CPlayer::GetDir()
 {
 	return m_bIsRight;
+}
+
+void CPlayer::SetAttackType(ATTACK_TYPE type)
+{
+	m_eAttackType = type;
+}
+
+void CPlayer::SetMonType(MON_TYPE type)
+{
+	m_pEatingMon = type;
 }
 
 void CPlayer::SetDir(bool dir)
@@ -585,6 +605,7 @@ void CPlayer::OnCollisionEnter(CCollider* other)
 		CMonster* mon = (CMonster*)other->GetObj();
 		if (mon->GetIsEaten())
 		{
+			SetMonType(mon->GetType());
 			CStateManager::getInst()->LoadState(PLAYERSTATE::EAT);
 		}
 	}

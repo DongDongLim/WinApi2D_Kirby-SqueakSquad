@@ -57,17 +57,17 @@ void CScene::render()
             continue;
         }
         for (vector<CGameObject*>::iterator iter = m_arrObj[i].begin();
-            iter != m_arrObj[i].end(); )
+            iter != m_arrObj[i].end(); ++iter)
         {
             if (!(*iter)->isDead())
             {
                 (*iter)->render();
-                iter++;
             }
+            /*
             else
             {
                 iter = m_arrObj[i].erase(iter);
-            }
+            }*/
         }
     }
 }

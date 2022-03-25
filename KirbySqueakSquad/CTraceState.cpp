@@ -27,7 +27,7 @@ void CTraceState::update()
 	float fLen = fvDiff.Length();
 	if (fLen >= pMonster->GetMonInfo().fRecogRange)
 	{
-		ChangeAIState(GetOwnerAI(), STATE_MON::IDLE);
+		//ChangeAIState(GetOwnerAI(), STATE_MON::IDLE);
 	}
 
 	fPoint pos = pMonster->GetPos();
@@ -35,7 +35,8 @@ void CTraceState::update()
 	pMonster->SetPos(pos);
 	if (fLen < 8.f)
 	{
-		pMonster->SetLive(false);
+		pMonster->SetDead();
+		ChangeAIState(GetOwnerAI(), STATE_MON::DEAD);
 	}
 }
 

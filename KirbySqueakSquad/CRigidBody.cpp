@@ -6,7 +6,7 @@
 CRigidBody::CRigidBody()
 {
 	m_pOwner = nullptr;
-	m_fFricCoeff = 1.f;
+	m_fFricCoeff = 50.f;
 	m_fMass = 0.f;
 	m_fPositiveMaxVelocity = fPoint(75.f, 200.f);
 	m_fNegativeMaxVelocity = fPoint(-75.f, -200.f);
@@ -16,7 +16,7 @@ CRigidBody::CRigidBody()
 CRigidBody::CRigidBody(const CRigidBody& other)
 {
 	m_pOwner = nullptr;
-	m_fFricCoeff = 1.f;
+	m_fFricCoeff = 50.f;
 	m_fMass = 0.f;
 	m_fPositiveMaxVelocity = fPoint(75.f, 200.f);
 	m_fNegativeMaxVelocity = fPoint(-75.f, -200.f);
