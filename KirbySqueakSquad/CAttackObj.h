@@ -21,6 +21,9 @@ public:
 
 	void SetRange(fPoint range);
 
+	void NomalSetting();
+
+
 
 	void Enter();
 	void Exit();

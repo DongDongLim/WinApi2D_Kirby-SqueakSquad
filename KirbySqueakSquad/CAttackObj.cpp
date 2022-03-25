@@ -35,6 +35,11 @@ void CAttackObj::SetRange(fPoint range)
 	m_fRange = range;
 }
 
+void CAttackObj::NomalSetting()
+{
+
+}
+
 void CAttackObj::Enter()
 {
 	m_bIsActivity = true;
