@@ -15,6 +15,7 @@ class CAnimation
 {
 	friend class CAnimator;
 
+
 private:
 	wstring			m_strName;		// 애니메이션 이름
 	CAnimator* m_pAnimator;	// 애니메이터
@@ -27,6 +28,7 @@ private:
 	bool			m_bReverseRenderRenderPlay;
 
 public:
+
 	CAnimation();
 	CAnimation(const CAnimation& pOther);
 	~CAnimation();

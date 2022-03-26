@@ -11,6 +11,8 @@
 #include "Map_Start.h"
 #include "CTileButton.h"
 #include "CD2DImage.h"
+#include "CAnimation.h"
+#include "CAnimObj.h"
 
 INT_PTR CALLBACK TileWinProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -21,9 +23,12 @@ CScene_Tool::CScene_Tool()
 	m_hWnd = 0;
 	m_iIdx = 0;
 	m_gTile = GROUP_TILE::NONE;
+	m_gAnim = GROUP_ANIM::CHECK;
 	m_velocity = 500;
 	m_iTileX = 0;
 	m_iTileY = 0;
+	m_iAnimX = 0;
+	m_iAnimY = 0;
 }
 
 CScene_Tool::~CScene_Tool()
@@ -56,19 +61,10 @@ void CScene_Tool::update()
 		CCameraManager::getInst()->Scroll(fVec2(0, 1), m_velocity);
 	}
 
+	SetAnimGroup();
 
-	SetTileIdx();
-	SetTileGroup();
-}
-
-void ChangeScene(DWORD_PTR, DWORD_PTR)
-{
-	//ChangeScn(GROUP_SCENE::START);
-}
-
-void ButtonClicked(DWORD_PTR, DWORD_PTR)
-{
-	int a = 0;
+	//SetTileIdx();
+	//SetTileGroup();
 }
 
 void CScene_Tool::render()
@@ -80,8 +76,10 @@ void CScene_Tool::render()
 	}
 
 	PrintMap();
-	PrintTileLine();
-	PrintTileGroup();
+	PrintAnimLine();
+	PrintAnimGroup();
+	//PrintTileLine();
+	//PrintTileGroup();
 
 	const vector<CGameObject*>& vecUI = GetGroupObject(GROUP_GAMEOBJ::UI);
 	for (UINT i = 0; i < vecUI.size(); i++)
@@ -97,8 +95,9 @@ void CScene_Tool::Enter()
 	m_hWnd = CreateDialog(hInst, MAKEINTRESOURCE(IDD_TILEBOX), hWnd, TileWinProc);
 	ShowWindow(m_hWnd, SW_SHOW);
 
-	CreateTile(20, 20);
-	CreateTilePanel();
+	//CreateTile(20, 20);
+	//CreateTilePanel();
+	CreateAnim(16, 10);
 
 	CCameraManager::getInst()->SetLookAt(fPoint(WINSIZEX / 2.f, WINSIZEY / 2.f));
 
@@ -150,6 +149,11 @@ void CScene_Tool::SetGroup(GROUP_TILE group)
 	m_gTile = group;
 }
 
+void CScene_Tool::SetGroupAnim(GROUP_ANIM group)
+{
+	m_gAnim = group;
+}
+
 void CScene_Tool::SetTileGroup()
 {
 	if (Key(VK_LBUTTON) || Key(VK_RBUTTON))
@@ -178,6 +182,62 @@ void CScene_Tool::SetTileGroup()
 	}
 }
 
+void CScene_Tool::SetAnimGroup()
+{
+	if (Key(VK_LBUTTON) || Key(VK_RBUTTON))
+	{
+		fPoint fptMousePos = MousePos();
+		fptMousePos = CCameraManager::getInst()->GetRealPos(fptMousePos);
+
+		int iAnimX = m_iAnimX;
+		int iAnimY = m_iAnimY;
+
+		int iCol = (int)fptMousePos.x / CAnimObj::SIZE_ANIM;
+		int iRow = (int)fptMousePos.y / CAnimObj::SIZE_ANIM;
+
+		if (fptMousePos.x < 0.f || iAnimX <= iCol ||
+			fptMousePos.y < 0.f || iAnimY <= iRow)
+		{
+			return;		// 타일이 없는 위치 무시
+		}
+
+		UINT iIdx = iRow * iAnimX + iCol;
+		const vector<CGameObject*>& vecTile = GetGroupObject(GROUP_GAMEOBJ::ANIMOBJ);
+		if (Key(VK_LBUTTON))
+			((CAnimObj*)vecTile[iIdx])->SetGroupAnim(m_gAnim);
+		else if (Key(VK_RBUTTON))
+			((CAnimObj*)vecTile[iIdx])->SetGroupAnim(GROUP_ANIM::NONE);
+	}
+}
+
+void CScene_Tool::SetAnimOffSet(fPoint offset)
+{
+	const vector<CGameObject*>& vecAnim = GetGroupObject(GROUP_GAMEOBJ::ANIMOBJ);
+	for (UINT i = vecAnim.size() - 1; i >= 0; --i)
+	{
+		CAnimObj* pAnim = (CAnimObj*)vecAnim[i];
+		if (GROUP_ANIM::NONE != pAnim->GetGroupAnim())
+		{
+			pAnim->SetOffSet(offset);
+			break;
+		}
+	}
+}
+
+void CScene_Tool::SetAnimTime(float time)
+{
+	const vector<CGameObject*>& vecAnim = GetGroupObject(GROUP_GAMEOBJ::ANIMOBJ);
+	for (UINT i = vecAnim.size() - 1; i >= 0; --i)
+	{
+		CAnimObj* pAnim = (CAnimObj*)vecAnim[i];
+		if (GROUP_ANIM::NONE != pAnim->GetGroupAnim())
+		{
+			pAnim->SetAccTime(time);
+			break;
+		}
+	}
+}
+
 void CScene_Tool::CreateTile(UINT xSize, UINT ySize)
 {
 	DeleteGroup(GROUP_GAMEOBJ::TILE);
@@ -197,6 +257,27 @@ void CScene_Tool::CreateTile(UINT xSize, UINT ySize)
 			pTile->SetY(y);
 			pTile->SetD2DImage(pImg);
 			AddObject(pTile, GROUP_GAMEOBJ::TILE);
+		}
+	}
+}
+
+void CScene_Tool::CreateAnim(UINT xSize, UINT ySize)
+{
+	DeleteGroup(GROUP_GAMEOBJ::ANIMOBJ);
+
+	m_iAnimX = xSize;
+	m_iAnimY = ySize;
+
+
+	for (UINT y = 0; y < ySize; y++)
+	{
+		for (UINT x = 0; x < xSize; x++)
+		{
+			CAnimObj* pAnim = new CAnimObj();
+			pAnim->SetPos(fPoint((float)(x * CAnimObj::SIZE_ANIM), (float)(y * CAnimObj::SIZE_ANIM)));
+			pAnim->SetX(x);
+			pAnim->SetY(y);
+			AddObject(pAnim, GROUP_GAMEOBJ::ANIMOBJ);
 		}
 	}
 }
@@ -230,6 +311,40 @@ void CScene_Tool::SaveTile(const wstring& strPath)
 		CTile* pTile = (CTile*)vecTile[i];
 		if (0 != pTile->GetIdx() || GROUP_TILE::NONE != pTile->GetGroup())
 			((CTile*)vecTile[i])->Save(pFile);
+	}
+
+	fclose(pFile);
+}
+
+void CScene_Tool::SaveAnim(const wstring& strPath)
+{
+	FILE* pFile = nullptr;
+
+	_wfopen_s(&pFile, strPath.c_str(), L"wb");		// w : write, b : binary
+	assert(pFile);
+
+	UINT xCount = m_iAnimX;
+	UINT yCount = m_iAnimY;
+	UINT animCount = 0;
+
+	const vector<CGameObject*>& vecAnim = GetGroupObject(GROUP_GAMEOBJ::ANIMOBJ);
+
+	for (UINT i = 0; i < vecAnim.size(); i++)
+	{
+		CAnimObj* pAnim = (CAnimObj*)vecAnim[i];
+		if (GROUP_ANIM::NONE != pAnim->GetGroupAnim())
+			animCount++;
+	}
+
+	fwrite(&xCount, sizeof(UINT), 1, pFile);
+	fwrite(&yCount, sizeof(UINT), 1, pFile);
+	fwrite(&animCount, sizeof(UINT), 1, pFile);
+
+	for (UINT i = 0; i < vecAnim.size(); i++)
+	{
+		CAnimObj* pAnim = (CAnimObj*)vecAnim[i];
+		if (GROUP_ANIM::NONE != pAnim->GetGroupAnim())
+			pAnim->Save(pFile);
 	}
 
 	fclose(pFile);
@@ -271,6 +386,40 @@ void CScene_Tool::LoadTile(const wstring& strPath)
 	fclose(pFile);
 }
 
+void CScene_Tool::LoadAnim(const wstring& strPath)
+{
+	DeleteGroup(GROUP_GAMEOBJ::ANIMOBJ);
+
+	FILE* pFile = nullptr;
+
+	_wfopen_s(&pFile, strPath.c_str(), L"rb");      // w : write, b : binary
+	assert(pFile);
+
+	UINT xCount = 0;
+	UINT yCount = 0;
+	UINT animCount = 0;
+
+	fread(&xCount, sizeof(UINT), 1, pFile);
+	fread(&yCount, sizeof(UINT), 1, pFile);
+	fread(&animCount, sizeof(UINT), 1, pFile);
+
+	CreateTile(xCount, yCount);
+
+	const vector<CGameObject*>& vecAnim = GetGroupObject(GROUP_GAMEOBJ::ANIMOBJ);
+	CAnimObj* pAnim = new CAnimObj;
+
+	for (UINT i = 0; i < animCount; i++)
+	{
+		pAnim->Load(pFile);
+		UINT iIdx = pAnim->GetY() * xCount + pAnim->GetX();
+		((CAnimObj*)vecAnim[iIdx])->SetX(pAnim->GetX());
+		((CAnimObj*)vecAnim[iIdx])->SetY(pAnim->GetY());
+		((CAnimObj*)vecAnim[iIdx])->SetGroup(pAnim->GetGroup());
+	}
+
+	fclose(pFile);
+}
+
 void CScene_Tool::SaveTileData()
 {
 	OPENFILENAME ofn = {};
@@ -295,6 +444,30 @@ void CScene_Tool::SaveTileData()
 	}
 }
 
+void CScene_Tool::SaveAnimData()
+{
+	OPENFILENAME ofn = {};
+
+	ofn.lStructSize = sizeof(OPENFILENAME);  // 구조체 사이즈.
+	ofn.hwndOwner = hWnd;					// 부모 윈도우 지정.
+	wchar_t szName[256] = {};
+	ofn.lpstrFile = szName; // 나중에 완성된 경로가 채워질 버퍼 지정.
+	ofn.nMaxFile = sizeof(szName); // lpstrFile에 지정된 버퍼의 문자 수.
+	ofn.lpstrFilter = L"ALL\0*.*\0Anim\0*.Anim"; // 필터 설정
+	ofn.nFilterIndex = 0; // 기본 필터 세팅. 0는 all로 초기 세팅됨. 처음꺼.
+	ofn.lpstrFileTitle = nullptr; // 타이틀 바
+	ofn.nMaxFileTitle = 0; // 타이틀 바 문자열 크기. nullptr이면 0.
+	wstring strAnimFolder = CPathManager::getInst()->GetContentPath();
+	strAnimFolder += L"Anim";
+	ofn.lpstrInitialDir = strAnimFolder.c_str(); // 초기경로. 우리는 타일 저장할거기 때문에, content->tile 경로로 해두자.
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST; // 스타일
+
+	if (GetSaveFileName(&ofn))
+	{
+		SaveAnim(szName);
+	}
+}
+
 void CScene_Tool::LoadTileData()
 {
 	OPENFILENAME ofn = {};
@@ -316,6 +489,30 @@ void CScene_Tool::LoadTileData()
 	if (GetOpenFileName(&ofn))
 	{
 		LoadTile(szName);
+	}
+}
+
+void CScene_Tool::LoadAnimData()
+{
+	OPENFILENAME ofn = {};
+
+	ofn.lStructSize = sizeof(OPENFILENAME);  // 구조체 사이즈.
+	ofn.hwndOwner = hWnd; // 부모 윈도우 지정.
+	wchar_t szName[256] = {};
+	ofn.lpstrFile = szName; // 나중에 완성된 경로가 채워질 버퍼 지정.
+	ofn.nMaxFile = sizeof(szName); // lpstrFile에 지정된 버퍼의 문자 수.
+	ofn.lpstrFilter = L"ALL\0*.*\0Anim\0*.Anim"; // 필터 설정
+	ofn.nFilterIndex = 0; // 기본 필터 세팅. 0는 all로 초기 세팅됨. 처음꺼.
+	ofn.lpstrFileTitle = nullptr; // 타이틀 바
+	ofn.nMaxFileTitle = 0; // 타이틀 바 문자열 크기. nullptr이면 0.
+	wstring strAnimFolder = CPathManager::getInst()->GetContentPath();
+	strAnimFolder += L"Anim";
+	ofn.lpstrInitialDir = strAnimFolder.c_str(); // 초기경로. 우리는 타일 저장할거기 때문에, content->tile 경로로 해두자.
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST; // 스타일
+
+	if (GetOpenFileName(&ofn))
+	{
+		LoadAnim(szName);
 	}
 }
 
@@ -488,6 +685,30 @@ void CScene_Tool::PrintTileLine()
 	}
 }
 
+void CScene_Tool::PrintAnimLine()
+{
+	fPoint pos = CCameraManager::getInst()->GetLookAt();
+	pos = pos - (fPoint(WINSIZEX / 2.f, WINSIZEY / 2.f));
+
+	// 가로줄 출력
+	for (UINT y = 0; y <= m_iAnimY; y++)
+	{
+		CRenderManager::getInst()->RenderLine(
+			fPoint(0 - pos.x, y * CAnimObj::SIZE_ANIM - pos.y),
+			fPoint(CAnimObj::SIZE_ANIM * m_iAnimX - pos.x, y * CAnimObj::SIZE_ANIM - pos.y)
+		);
+	}
+
+	// 세로줄 출력
+	for (UINT x = 0; x <= m_iAnimX; x++)
+	{
+		CRenderManager::getInst()->RenderLine(
+			fPoint(x * CAnimObj::SIZE_ANIM - pos.x, 0 - pos.y),
+			fPoint(x * CAnimObj::SIZE_ANIM - pos.x, CAnimObj::SIZE_ANIM * m_iAnimY - pos.y)
+		);
+	}
+}
+
 void CScene_Tool::PrintTileGroup()
 {
 	fPoint pos = CCameraManager::getInst()->GetLookAt();
@@ -590,6 +811,31 @@ void CScene_Tool::PrintTileGroup()
 	}
 }
 
+void CScene_Tool::PrintAnimGroup()
+{
+	fPoint pos = CCameraManager::getInst()->GetLookAt();
+	pos = pos - fPoint(WINSIZEX / 2.f, WINSIZEY / 2.f);
+
+	const vector<CGameObject*>& vecAnim = GetGroupObject(GROUP_GAMEOBJ::ANIMOBJ);
+	CAnimObj* pAnim;
+
+	for (UINT i = 0; i < vecAnim.size(); i++)
+	{
+		pAnim = (CAnimObj*)vecAnim[i];
+		if (GROUP_ANIM::CHECK == pAnim->GetGroupAnim())
+		{
+			CRenderManager::getInst()->RenderEllipse(
+				pAnim->GetPos().x + CAnimObj::SIZE_ANIM / 2.f - pos.x,
+				pAnim->GetPos().y + CAnimObj::SIZE_ANIM / 2.f - pos.y,
+				CAnimObj::SIZE_ANIM / 2.f,
+				CAnimObj::SIZE_ANIM / 2.f,
+				RGB(255, 0, 0),
+				3.f
+			);
+		}
+	}
+}
+
 // 정보 대화 상자의 메시지 처리기입니다.
 INT_PTR CALLBACK TileWinProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -607,7 +853,8 @@ INT_PTR CALLBACK TileWinProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			CScene_Tool* pToolScene = dynamic_cast<CScene_Tool*>(pCurScene);
 			assert(pToolScene);
 
-			pToolScene->SaveTileData();
+			//pToolScene->SaveTileData();
+			pToolScene->SaveAnimData();
 
 			return (INT_PTR)TRUE;
 		}
@@ -618,7 +865,8 @@ INT_PTR CALLBACK TileWinProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			CScene_Tool* pToolScene = dynamic_cast<CScene_Tool*>(pCurScene);
 			assert(pToolScene);
 
-			pToolScene->LoadTileData();
+			//pToolScene->LoadTileData();
+			pToolScene->LoadAnimData();
 
 			return (INT_PTR)TRUE;
 		}
@@ -646,6 +894,32 @@ INT_PTR CALLBACK TileWinProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			pToolScene->DeleteGroup(GROUP_GAMEOBJ::TILE);
 			pToolScene->CreateTile(x, y);
 		}
+		else if (LOWORD(wParam) == IDC_BUTTON_OFFSET)
+		{
+			int x = GetDlgItemInt(hDlg, IDC_EDIT_OFFSETX, nullptr, false);
+			int y = GetDlgItemInt(hDlg, IDC_EDIT_OFFSETY, nullptr, false);
+
+			CScene* pCurScene = CSceneManager::getInst()->GetCurScene();
+
+			CScene_Tool* pToolScene = dynamic_cast<CScene_Tool*>(pCurScene);
+			assert(pToolScene);
+
+			pToolScene->SetAnimOffSet(fPoint(x, y));
+		}
+		else if (LOWORD(wParam) == IDC_BUTTON_TIME)
+		{
+			int iTime = GetDlgItemInt(hDlg, IDC_EDIT_ACCTIME, nullptr, false);
+			float time = (float)iTime / 100.f;
+			
+
+			CScene* pCurScene = CSceneManager::getInst()->GetCurScene();
+
+			CScene_Tool* pToolScene = dynamic_cast<CScene_Tool*>(pCurScene);
+			assert(pToolScene);
+
+			pToolScene->SetAnimTime(time);
+		}
+
 		break;
 	}
 	return (INT_PTR)FALSE;

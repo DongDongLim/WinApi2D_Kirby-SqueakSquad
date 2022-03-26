@@ -182,9 +182,9 @@ void CCameraManager::CalDiff()
 		fpointX = 0; 
 	if (fpointY < 0)
 		fpointY = 0;
-	if (0 <= fptLimitDis.x && fptLimitDis.x <= fpointX)
+	//if (0 <= fptLimitDis.x && fptLimitDis.x <= fpointX)
 		m_fptDiff.x = fptLimitDis.x;
-	if (0 <= fptLimitDis.y && fptLimitDis.y <= fpointY)
+	//if (0 <= fptLimitDis.y && fptLimitDis.y <= fpointY)
 		m_fptDiff.y = fptLimitDis.y;
 
 	/*

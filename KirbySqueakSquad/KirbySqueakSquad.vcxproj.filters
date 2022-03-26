@@ -243,6 +243,12 @@
     <ClInclude Include="CDeadState.h">
       <Filter>Engin\Component\AI\State</Filter>
     </ClInclude>
+    <ClInclude Include="CAnimButton.h">
+      <Filter>Object\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CAnimObj.h">
+      <Filter>Object\Tile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KirbySqueakSquad.cpp">
@@ -403,6 +409,12 @@
     </ClCompile>
     <ClCompile Include="CDeadState.cpp">
       <Filter>Engin\Component\AI\State</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimButton.cpp">
+      <Filter>Object\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimObj.cpp">
+      <Filter>Object\Tile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

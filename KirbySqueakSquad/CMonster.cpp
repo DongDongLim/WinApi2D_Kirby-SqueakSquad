@@ -10,6 +10,7 @@
 #include "CDeadState.h"
 #include "CGravity.h"
 #include "CRigidBody.h"
+#include "CScene.h"
 
 CMonster::CMonster()
 {
@@ -26,14 +27,13 @@ CMonster::CMonster()
 	GetCollider()->SetOffsetPos(fPoint(0.f, 7.f));
 
 	CreateAnimator();
-	GetAnimator()->CreateAnimation(L"MonsterStand", m_pImg, fPoint(0.f, 0.f),
-		fPoint(32.f, 32.f),
-		fPoint(0.f, 0.f), 0.5f, 1);
-	GetAnimator()->Play(L"MonsterStand");
-
-	CAnimation* pAni;
-	pAni = GetAnimator()->FindAnimation(L"MonsterStand");
-	pAni->GetFrame(0).fptOffset = fPoint(0.f, 5.f);
+	CD2DImage* pImg = CResourceManager::getInst()->
+		LoadD2DImage(L"Nomal", L"texture\\Animation\\NomalSprite.png");
+	wstring path = CPathManager::getInst()->GetContentPath();
+	path += L"anim\\NIdle.Anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	GetAnimator()->Play(L"NIdle");
+	
 }
 
 CMonster::~CMonster()

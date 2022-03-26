@@ -10,6 +10,7 @@ class CAnimator
 
 private:
 	map<wstring, CAnimation*>	m_mapAni;
+	CAnimation* m_pCreatenAni;
 	CAnimation* m_pCurAni;
 	CGameObject* m_pOwner;
 	bool m_bIsStop;
@@ -35,5 +36,6 @@ public:
 	int GetAnimSize();
 	float GetFrameSpeed();
 	CAnimation* GetCurAnim();
+	CAnimation* GetCreatenAnim();
 };
 

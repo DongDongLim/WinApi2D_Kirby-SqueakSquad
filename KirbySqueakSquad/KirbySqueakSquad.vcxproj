@@ -150,6 +150,8 @@
     <ClInclude Include="AI.h" />
     <ClInclude Include="CAnimation.h" />
     <ClInclude Include="CAnimator.h" />
+    <ClInclude Include="CAnimButton.h" />
+    <ClInclude Include="CAnimObj.h" />
     <ClInclude Include="CAttackObj.h" />
     <ClInclude Include="CBackGround.h" />
     <ClInclude Include="CButtonUI.h" />
@@ -202,6 +204,8 @@
     <ClCompile Include="AI.cpp" />
     <ClCompile Include="CAnimation.cpp" />
     <ClCompile Include="CAnimator.cpp" />
+    <ClCompile Include="CAnimButton.cpp" />
+    <ClCompile Include="CAnimObj.cpp" />
     <ClCompile Include="CAttackObj.cpp" />
     <ClCompile Include="CBackGround.cpp" />
     <ClCompile Include="CButtonUI.cpp" />

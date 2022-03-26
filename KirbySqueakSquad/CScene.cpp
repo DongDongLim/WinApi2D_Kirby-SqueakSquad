@@ -3,6 +3,9 @@
 #include "CGameObject.h"
 #include "CTile.h"
 #include "CCollider.h"
+#include "CAnimation.h"
+#include "CAnimator.h"
+#include "CAnimObj.h"
 
 CScene::CScene()
 {
@@ -162,6 +165,79 @@ void CScene::LoadTile(const wstring& strPath)
         }
 
         AddObject(newTile, GROUP_GAMEOBJ::TILE);
+    }
+
+    fclose(pFile);
+}
+
+    wstring wSecond;
+void CScene::LoadAnim(const wstring& strPath, CGameObject* obj, CD2DImage* pImg)
+{
+    DeleteGroup(GROUP_GAMEOBJ::ANIMOBJ);
+
+    FILE* pFile = nullptr;
+
+    _wfopen_s(&pFile, strPath.c_str(), L"rb");      // w : write, b : binary
+    assert(pFile);
+
+    int iLen = (int)wcslen(strPath.c_str());
+    wstring wFirst;
+
+    for (int i = iLen - 1; i >= 0; i--)
+    {
+        if ('\\' == strPath.c_str()[i])
+        {
+            break;
+        }
+        wFirst += strPath.c_str()[i];
+    }
+
+    iLen = (int)wcslen(wFirst.c_str());
+
+    for (int i = iLen - 1; i >= 0; i--)
+    {
+        if ('.' == wFirst.c_str()[i])
+        {
+            break;
+        }
+        wSecond += wFirst.c_str()[i];
+    }
+
+    UINT xCount = 0;
+    UINT yCount = 0;
+    UINT animCount = 0;
+
+    fread(&xCount, sizeof(UINT), 1, pFile);
+    fread(&yCount, sizeof(UINT), 1, pFile);
+    fread(&animCount, sizeof(UINT), 1, pFile);
+
+    CAnimator* animator = obj->GetAnimator();
+    int nextSize = 0;
+    1 == animCount ? nextSize = 0 : nextSize = CAnimObj::SIZE_ANIM;
+    vector<CAnimObj*> vecAnim;
+    for (UINT i = 0; i < animCount; ++i)
+    {
+        CAnimObj* newAnim = new CAnimObj;
+        vecAnim.push_back(newAnim);
+    }
+    for (UINT i = 0; i < vecAnim.size(); ++i)
+    {
+        vecAnim[i]->Load(pFile);
+    }
+
+    animator->CreateAnimation(wSecond, pImg,
+        fPoint((vecAnim[0]->GetX() * CAnimObj::SIZE_ANIM)
+            , (vecAnim[0]->GetY() * CAnimObj::SIZE_ANIM))
+        , fPoint(CAnimObj::SIZE_ANIM, CAnimObj::SIZE_ANIM)
+        , fPoint(nextSize, 0.f)
+        , vecAnim[0]->GetAccTime()
+        , vecAnim.size());
+
+    CAnimation* pAni = animator->GetCreatenAnim();
+    for (UINT i = 0; i < vecAnim.size(); ++i)
+    {
+        pAni->GetFrame(i).fptOffset = vecAnim[i]->GetOffSet();
+        delete vecAnim[i];
     }
 
     fclose(pFile);

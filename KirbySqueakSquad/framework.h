@@ -47,6 +47,7 @@ enum class GROUP_GAMEOBJ
 	MONSTER,
 	MISSILE_PLAYER,
 	MISSILE_MONSTER,
+	ANIMOBJ,
 
 	UI,		// UI는 모든 게임오브젝트 중 최상단 Layer에 위치
 	SIZE,
@@ -75,6 +76,13 @@ enum class GROUP_TILE
 	LADDER,
 
 	SIZE,
+};
+
+enum class GROUP_ANIM
+{
+	CHECK,
+
+	NONE,
 };
 
 enum class STATE_MON

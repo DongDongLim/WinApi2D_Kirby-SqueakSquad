@@ -78,6 +78,7 @@ void CAnimator::CreateAnimation(const wstring& strName, CD2DImage* tex, fPoint l
 	pAni->m_bReverseRender = reverse;
 
 	m_mapAni.insert(make_pair(strName, pAni));
+	m_pCreatenAni = pAni;
 }
 
 CAnimation* CAnimator::FindAnimation(const wstring& strName)
@@ -118,4 +119,9 @@ float CAnimator::GetFrameSpeed()
 CAnimation* CAnimator::GetCurAnim()
 {
 	return m_pCurAni;
+}
+
+CAnimation* CAnimator::GetCreatenAnim()
+{
+	return m_pCreatenAni;
 }
