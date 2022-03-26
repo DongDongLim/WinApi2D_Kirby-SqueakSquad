@@ -12,8 +12,7 @@
 CPlayerAttack::CPlayerAttack()
 {
 	m_eState = PLAYERSTATE::ATTACK;
-	m_pPlayer->GetAnimator()->Play(L"InHale0");
-	nomalanimtime = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
+	nomalanimtime = 0;
 	nomalanimKeeptime = nomalanimtime;
 	m_fAttRange = fPoint(0, 0);
 	for (int i = 0; i < 4; ++i)
@@ -32,7 +31,7 @@ void CPlayerAttack::NomalAnim()
 {
 	if (0 >= nomalanimtime)
 	{
-		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"DownSlide")
+		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == m_pPlayer->GetAnimString().g_wDOWNSLIDE)
 		{
 			m_pPlayer->GetAnimator()->Stop();
 		}
@@ -75,7 +74,7 @@ CPlayerAttack::~CPlayerAttack()
 
 void CPlayerAttack::NomalAttack()
 {
-	if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"Up")
+	if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == m_pPlayer->GetAnimString().g_wUP)
 	{
 		if (0 >= nomalanimtime)
 		{
@@ -89,7 +88,7 @@ void CPlayerAttack::NomalAttack()
 			}
 		}
 	}
-	else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"DownSlide")
+	else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == m_pPlayer->GetAnimString().g_wDOWNSLIDE)
 	{
 		int dir = 0;
 		int prev = 0;
@@ -199,19 +198,19 @@ void CPlayerAttack::Enter()
 	{
 		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY))
 		{
-			m_pPlayer->GetAnimator()->ReversePlay(L"Up");
+			m_pPlayer->GetAnimator()->ReversePlay(m_pPlayer->GetAnimString().g_wUP);
 			m_pAttackobj[0]->Enter();
 			CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY)->Exit(PLAYERSTATE::END);
 		}
 		else if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::DOWN))
 		{
-			m_pPlayer->GetAnimator()->Play(L"DownSlide");
+			m_pPlayer->GetAnimator()->Play(m_pPlayer->GetAnimString().g_wDOWNSLIDE);
 			m_pAttackobj[0]->Enter();
 			CStateManager::getInst()->FindPlayeState(PLAYERSTATE::DOWN)->Exit(PLAYERSTATE::END);
 		}
 		else if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::EAT))
 		{
-			m_pPlayer->GetAnimator()->ReversePlay(L"Up");
+			m_pPlayer->GetAnimator()->ReversePlay(m_pPlayer->GetAnimString().g_wUP);
 			m_pAttackobj[0]->Enter();
 			CStateManager::getInst()->FindPlayeState(PLAYERSTATE::EAT)->Exit(PLAYERSTATE::END);
 		}

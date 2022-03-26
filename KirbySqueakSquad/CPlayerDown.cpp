@@ -21,7 +21,7 @@ void CPlayerDown::Anim()
 {
 	if (Key(VK_DOWN))
 	{
-		m_pPlayer->GetAnimator()->Play(L"Down");
+		m_pPlayer->GetAnimator()->Play(m_pPlayer->GetAnimString().g_wDOWN);
 	}
 }
 

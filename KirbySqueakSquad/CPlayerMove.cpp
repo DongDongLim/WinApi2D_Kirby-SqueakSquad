@@ -190,19 +190,19 @@ void CPlayerMove::Anim()
 	switch (m_eCurCommand)
 	{
 	case CPlayerMove::COMMANDMOVE::NONE:
-		m_pPlayer->GetAnimator()->Play(L"Move");
+		m_pPlayer->GetAnimator()->Play(m_pPlayer->GetAnimString().g_wMOVE);
 		break;
 	case CPlayerMove::COMMANDMOVE::DASH:
-		m_pPlayer->GetAnimator()->Play(L"Dash");	
+		m_pPlayer->GetAnimator()->Play(m_pPlayer->GetAnimString().g_wDASH);
 		break;
 	case CPlayerMove::COMMANDMOVE::CHANGEDIR:
 		m_pPlayer->GetAnimator()->SetReverce(m_pPlayer->GetDir());
-		m_pPlayer->GetAnimator()->Play(L"QuickStop");
+		m_pPlayer->GetAnimator()->Play(m_pPlayer->GetAnimString().g_wQUICKSTOP);
 		break;
 	case CPlayerMove::COMMANDMOVE::TURNOFF:
 		break;
 	case CPlayerMove::COMMANDMOVE::IMPACT:
-		m_pPlayer->GetAnimator()->Play(L"WallImpact");
+		m_pPlayer->GetAnimator()->Play(m_pPlayer->GetAnimString().g_wWALLIMPACT);
 		break;
 	case CPlayerMove::COMMANDMOVE::END:
 		break;

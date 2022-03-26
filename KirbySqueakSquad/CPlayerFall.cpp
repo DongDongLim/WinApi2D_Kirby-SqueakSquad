@@ -56,7 +56,7 @@ void CPlayerFall::KeyUpdate()
 
 void CPlayerFall::Anim()
 {
-	m_pPlayer->GetAnimator()->Play(L"Fall0");
+	m_pPlayer->GetAnimator()->Play(m_pPlayer->GetAnimString().g_wFALL0);
 }
 
 void CPlayerFall::Enter()

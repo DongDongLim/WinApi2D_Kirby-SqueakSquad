@@ -6,6 +6,7 @@
 #include "CAnimation.h"
 #include "CAnimator.h"
 #include "CAnimObj.h"
+#include "CMonster.h"
 
 CScene::CScene()
 {
@@ -170,7 +171,6 @@ void CScene::LoadTile(const wstring& strPath)
     fclose(pFile);
 }
 
-    wstring wSecond;
 void CScene::LoadAnim(const wstring& strPath, CGameObject* obj, CD2DImage* pImg)
 {
     DeleteGroup(GROUP_GAMEOBJ::ANIMOBJ);
@@ -182,6 +182,8 @@ void CScene::LoadAnim(const wstring& strPath, CGameObject* obj, CD2DImage* pImg)
 
     int iLen = (int)wcslen(strPath.c_str());
     wstring wFirst;
+
+    wstring wSecond;
 
     for (int i = iLen - 1; i >= 0; i--)
     {
@@ -224,21 +226,48 @@ void CScene::LoadAnim(const wstring& strPath, CGameObject* obj, CD2DImage* pImg)
     {
         vecAnim[i]->Load(pFile);
     }
+    if (obj->GetGroup() == GROUP_GAMEOBJ::MONSTER)
+    {
+        CMonster* mon = (CMonster*)obj;
+        if (MON_TYPE::THROW == mon->GetType())
+        {
+            if (0 != nextSize)
+                nextSize = (CAnimObj::SIZE_ANIM + 22);
+            animator->CreateAnimation(wSecond, pImg,
+                fPoint((vecAnim[0]->GetX() * (CAnimObj::SIZE_ANIM + 22))
+                    , (vecAnim[0]->GetY() * (CAnimObj::SIZE_ANIM + 22)))
+                , fPoint((CAnimObj::SIZE_ANIM + 22), (CAnimObj::SIZE_ANIM + 22))
+                , fPoint(nextSize, 0.f)
+                , vecAnim[0]->GetAccTime()
+                , vecAnim.size());
 
-    animator->CreateAnimation(wSecond, pImg,
-        fPoint((vecAnim[0]->GetX() * CAnimObj::SIZE_ANIM)
-            , (vecAnim[0]->GetY() * CAnimObj::SIZE_ANIM))
-        , fPoint(CAnimObj::SIZE_ANIM, CAnimObj::SIZE_ANIM)
-        , fPoint(nextSize, 0.f)
-        , vecAnim[0]->GetAccTime()
-        , vecAnim.size());
-
+        }
+        else
+        {
+            animator->CreateAnimation(wSecond, pImg,
+                fPoint((vecAnim[0]->GetX() * CAnimObj::SIZE_ANIM)
+                    , (vecAnim[0]->GetY() * CAnimObj::SIZE_ANIM))
+                , fPoint(CAnimObj::SIZE_ANIM, CAnimObj::SIZE_ANIM)
+                , fPoint(nextSize, 0.f)
+                , vecAnim[0]->GetAccTime()
+                , vecAnim.size());
+        }
+    }
+    else
+    {
+        animator->CreateAnimation(wSecond, pImg,
+            fPoint((vecAnim[0]->GetX() * CAnimObj::SIZE_ANIM)
+                , (vecAnim[0]->GetY() * CAnimObj::SIZE_ANIM))
+            , fPoint(CAnimObj::SIZE_ANIM, CAnimObj::SIZE_ANIM)
+            , fPoint(nextSize, 0.f)
+            , vecAnim[0]->GetAccTime()
+            , vecAnim.size());
+    }
     CAnimation* pAni = animator->GetCreatenAnim();
     for (UINT i = 0; i < vecAnim.size(); ++i)
     {
         pAni->GetFrame(i).fptOffset = vecAnim[i]->GetOffSet();
         delete vecAnim[i];
     }
-
     fclose(pFile);
 }

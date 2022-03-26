@@ -891,8 +891,10 @@ INT_PTR CALLBACK TileWinProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			CScene_Tool* pToolScene = dynamic_cast<CScene_Tool*>(pCurScene);
 			assert(pToolScene);
 
-			pToolScene->DeleteGroup(GROUP_GAMEOBJ::TILE);
-			pToolScene->CreateTile(x, y);
+			/*pToolScene->DeleteGroup(GROUP_GAMEOBJ::TILE);
+			pToolScene->CreateTile(x, y);*/
+			pToolScene->DeleteGroup(GROUP_GAMEOBJ::ANIMOBJ);
+			pToolScene->CreateAnim(x, y);
 		}
 		else if (LOWORD(wParam) == IDC_BUTTON_OFFSET)
 		{

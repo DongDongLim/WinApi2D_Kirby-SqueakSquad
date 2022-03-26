@@ -67,6 +67,26 @@ enum class ATTACK_TYPE
 	SIZE,
 };
 
+struct PLAYERANIM
+{
+	wstring g_wIDLE = L"Idle";
+	wstring g_wMOVE = L"Move";
+	wstring g_wDASH = L"Dash";
+	wstring g_wDOWN = L"Down";
+	wstring g_wQUICKSTOP = L"QuickStop";
+	wstring g_wWALLIMPACT = L"WallImpact";
+	wstring g_wDOWNSLIDE = L"DownSlide";
+	wstring g_wJUMP = L"Jump";
+	wstring g_wTURN = L"Turn";
+	wstring g_wFALL0 = L"Fall0";
+	wstring g_wFALL_DOWN = L"Fall0_Down";
+	wstring g_wFALL_TURN = L"Fall_Turn";
+	wstring g_wFALL1 = L"Fall1";
+	wstring g_wFALL1_DOWN = L"Fall1_Down";
+	wstring g_wUP = L"Up";
+	wstring g_wUPIDLE = L"UpIdle";
+	wstring g_wUPMOVE = L"UpMove";
+};
 
 
 class CPlayer : public CGameObject
@@ -74,6 +94,7 @@ class CPlayer : public CGameObject
 	friend class CStateManager;
 private:
 	PLAYERINFO info;
+	PLAYERANIM anim;
 	ATTACK_TYPE m_eAttackType;
 	MON_TYPE m_pEatingMon;
 	// 플레이어 애니메이션 재생을 위한 이미지들
@@ -92,8 +113,6 @@ private:
 	list<COLLIDER_FUNC> m_arrExitFunc;
 	DWORD_PTR m_colliderExitState;
 
-
-
 	// 땅과의 거리체크
 	float m_fGroundLength;
 	// 벽과의 거리체크
@@ -101,6 +120,8 @@ private:
 
 	//한번에 만나는 벽은 최대 8개임;
 	CCollider* m_pGroundCollider[8];
+
+	void SetAnim();
 
 public:
 
@@ -116,6 +137,8 @@ public:
 
 	PLAYERINFO& GetPlaeyrInfo();
 
+	const PLAYERANIM& GetAnimString();
+
 
 	CCollider* GetGround();
 	void AddGroundCollider(CCollider* ground);
@@ -124,9 +147,11 @@ public:
 	void SetAttackType(ATTACK_TYPE type);
 	void SetMonType(MON_TYPE type);
 	void SetDir(bool dir);
+	void SetAnimString();
 
 	MON_TYPE GetMonType();
 	bool GetDir();
+
 
 	void SetCollisonCallBack(COLLIDER_FUNC pFunc, DWORD_PTR state);
 	//void DeleteColliderCallBack(COLLIDER_FUNC pFunc);

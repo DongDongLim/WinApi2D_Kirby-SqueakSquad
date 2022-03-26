@@ -14,26 +14,13 @@
 
 CMonster::CMonster()
 {
-	CD2DImage* m_pImg = CResourceManager::getInst()->LoadD2DImage(L"MonsterTex", L"texture\\Animation\\sprite0.png");
-
 	m_pAI = nullptr;
 	m_bIsEaten = false;
 
 	SetName(L"Monster");
-	SetScale(fPoint(32.f, 32.f));
 
 	CreateCollider();
-	GetCollider()->SetScale(fPoint(17.f, 17.f));
-	GetCollider()->SetOffsetPos(fPoint(0.f, 7.f));
-
-	CreateAnimator();
-	CD2DImage* pImg = CResourceManager::getInst()->
-		LoadD2DImage(L"Nomal", L"texture\\Animation\\NomalSprite.png");
-	wstring path = CPathManager::getInst()->GetContentPath();
-	path += L"anim\\NIdle.Anim";
-	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
-	GetAnimator()->Play(L"NIdle");
-	
+	CreateAnimator();	
 }
 
 CMonster::~CMonster()
@@ -63,8 +50,11 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 	case MON_TYPE::NORMAL:
 	{
 		pMon = new CMonster;
+		pMon->SetGroup(GROUP_GAMEOBJ::MONSTER);
 		pMon->SetPos(pos);
 		pMon->SetType(type);
+		pMon->SetScale(fPoint(32.f, 32.f));
+		pMon->GetCollider()->SetScale(fPoint(17.f, 17.f));
 
 		tMonInfo info = {};
 		info.fAtt = 10.f;
@@ -86,8 +76,11 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 	case MON_TYPE::CUTTER:
 	{
 		pMon = new CMonster;
+		pMon->SetGroup(GROUP_GAMEOBJ::MONSTER);
 		pMon->SetPos(pos);
 		pMon->SetType(type);
+		pMon->SetScale(fPoint(32.f, 32.f));
+		pMon->GetCollider()->SetScale(fPoint(17.f, 17.f));
 
 		tMonInfo info = {};
 		info.fAtt = 10.f;
@@ -104,14 +97,39 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 		pAI->SetStartPos(pMon->GetPos());
 		pMon->SetMonInfo(info);
 		pMon->SetAI(pAI);
+
+		CD2DImage* pImg = CResourceManager::getInst()->
+			LoadD2DImage(L"CutterM", L"texture\\Animation\\CutterMonSprite.png");
+		wstring keepPath = CPathManager::getInst()->GetContentPath();
+		wstring path = keepPath;
+		path += L"anim\\CMonIdle.Anim";
+		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg); 
+		path = keepPath;
+		path += L"anim\\CMonMove.Anim";
+		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg);
+		path = keepPath;
+		path += L"anim\\CMonAttack0.Anim";
+		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg);
+		path = keepPath;
+		path += L"anim\\CMonAttack1.Anim";
+		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg);
+		path = keepPath;
+		path += L"anim\\CMonDamage.Anim";
+		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg);
+		path = keepPath;
+		path += L"anim\\CMonAttackEffect.Anim";
+		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg);
+		pMon->GetAnimator()->Play(L"CMonIdle");
 	}
 		break;
 	case MON_TYPE::THROW:
 	{
 		pMon = new CMonster;
+		pMon->SetGroup(GROUP_GAMEOBJ::MONSTER);
 		pMon->SetPos(pos);
 		pMon->SetType(type);
-
+		pMon->SetScale(fPoint(54.f, 54.f));
+		pMon->GetCollider()->SetScale(fPoint(39.f, 39.f));
 		tMonInfo info = {};
 		info.fAtt = 10.f;
 		info.fAttRange = 50.f;
@@ -127,6 +145,36 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 		pAI->SetStartPos(pMon->GetPos());
 		pMon->SetMonInfo(info);
 		pMon->SetAI(pAI);
+		CD2DImage* pImg = CResourceManager::getInst()->
+			LoadD2DImage(L"ThrowM", L"texture\\Animation\\ThrowMonSprite.png");
+		wstring path = CPathManager::getInst()->GetContentPath();
+		path += L"anim\\TMonIdle.Anim";
+		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg);
+		path = CPathManager::getInst()->GetContentPath();
+		path += L"anim\\TMonHold.Anim";
+		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg);
+		path = CPathManager::getInst()->GetContentPath();
+		path += L"anim\\TMonDamage.Anim";
+		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg);
+		path = CPathManager::getInst()->GetContentPath();
+		path += L"anim\\TMonAttack2.Anim";
+		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg);
+		path = CPathManager::getInst()->GetContentPath();
+		path += L"anim\\TMonAttackEffect.Anim";
+		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg);
+		path = CPathManager::getInst()->GetContentPath();
+		path += L"anim\\TMonAttack1.Anim";
+		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg);
+		path = CPathManager::getInst()->GetContentPath();
+		path += L"anim\\TMonAttack0.Anim";
+		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg);
+		path = CPathManager::getInst()->GetContentPath();
+		path += L"anim\\TMonCatch.Anim";
+		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg);
+		path = CPathManager::getInst()->GetContentPath();
+		path += L"anim\\TMonMove.Anim";
+		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg);
+		pMon->GetAnimator()->Play(L"TMonIdle");
 	}
 		break;
 	default:
@@ -216,7 +264,7 @@ void CMonster::SetRegenPosX(float posX)
 
 MON_TYPE CMonster::GetType()
 {
-	return MON_TYPE();
+	return m_eType;
 }
 
 bool CMonster::GetIsEaten()

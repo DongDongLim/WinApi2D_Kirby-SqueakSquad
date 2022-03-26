@@ -43,11 +43,11 @@ void CScene_Stage1::Enter()
 	CMonster* pMon = CMonster::Create(MON_TYPE::NORMAL, fPoint(150.f, 128.5f));
 	AddObject(pMon, GROUP_GAMEOBJ::MONSTER);
 
-	//CMonster* pMon1 = CMonster::Create(MON_TYPE::CUTTER, fPoint(300.f, 128.5f));
-	//AddObject(pMon1, GROUP_GAMEOBJ::MONSTER);
+	CMonster* pMon1 = CMonster::Create(MON_TYPE::CUTTER, fPoint(300.f, 128.5f));
+	AddObject(pMon1, GROUP_GAMEOBJ::MONSTER);
 
-	//CMonster* pMon2 = CMonster::Create(MON_TYPE::THROW, fPoint(230.f, 63.5f));
-	//AddObject(pMon2, GROUP_GAMEOBJ::MONSTER);
+	CMonster* pMon2 = CMonster::Create(MON_TYPE::THROW, fPoint(230.f, 63.5f));
+	AddObject(pMon2, GROUP_GAMEOBJ::MONSTER);
 
 	CCollisionManager::getInst()->CheckGroup(GROUP_GAMEOBJ::PLAYER, GROUP_GAMEOBJ::TILE);
 	CCollisionManager::getInst()->CheckGroup(GROUP_GAMEOBJ::PLAYER, GROUP_GAMEOBJ::MONSTER);

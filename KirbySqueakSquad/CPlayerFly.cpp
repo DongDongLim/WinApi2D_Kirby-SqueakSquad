@@ -27,12 +27,12 @@ void CPlayerFly::Anim()
 		{
 			if (Key(VK_UP) || Key('X') || Key('V') || KeyDown('X') || KeyDown('V'))
 			{
-				m_pPlayer->GetAnimator()->Play(L"UpMove");
+				m_pPlayer->GetAnimator()->Play(m_pPlayer->GetAnimString().g_wUPMOVE);
 				m_fKeepTimer = 0;
 			}
 			else
 			{
-				m_pPlayer->GetAnimator()->Play(L"UpIdle");
+				m_pPlayer->GetAnimator()->Play(m_pPlayer->GetAnimString().g_wUPIDLE);
 			}
 		}
 		else
@@ -40,7 +40,7 @@ void CPlayerFly::Anim()
 			if (m_fKeepTimer <= 0)
 			{
 				m_fAnimSpeed = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
-				m_pPlayer->GetAnimator()->Play(L"UpIdle");
+				m_pPlayer->GetAnimator()->Play(m_pPlayer->GetAnimString().g_wUPIDLE);
 			}
 		}
 	}
@@ -76,7 +76,7 @@ void CPlayerFly::update()
 void CPlayerFly::Enter()
 {
 	m_bIsActive = true;
-	m_pPlayer->GetAnimator()->Play(L"Up");
+	m_pPlayer->GetAnimator()->Play(m_pPlayer->GetAnimString().g_wUP);
 	m_fAnimSpeed = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
 	m_fKeepTimer = m_fAnimSpeed;
 }

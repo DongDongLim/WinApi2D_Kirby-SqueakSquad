@@ -65,10 +65,10 @@ void CPlayerJump::Jump()
 void CPlayerJump::Anim()
 {
 	if (!isTurn)
-		m_pPlayer->GetAnimator()->Play(L"Jump");
+		m_pPlayer->GetAnimator()->Play(m_pPlayer->GetAnimString().g_wJUMP);
 	else
 	{
-		m_pPlayer->GetAnimator()->Play(L"Turn");
+		m_pPlayer->GetAnimator()->Play(m_pPlayer->GetAnimString().g_wTURN);
 		if (m_fTurnKeepSpeed == 0)
 		{
 			m_fTurnSpeed = m_pPlayer->GetAnimator()->GetFrameSpeed() * (m_pPlayer->GetAnimator()->GetAnimSize()-1);

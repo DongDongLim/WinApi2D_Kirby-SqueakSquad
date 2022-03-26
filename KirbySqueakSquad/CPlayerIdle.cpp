@@ -105,7 +105,7 @@ void CPlayerIdle::update()
 
 void CPlayerIdle::Anim()
 {
-	m_pPlayer->GetAnimator()->Play(L"Idle");
+	m_pPlayer->GetAnimator()->Play(m_pPlayer->GetAnimString().g_wIDLE);
 }
 
 

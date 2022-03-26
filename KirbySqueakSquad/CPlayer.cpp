@@ -9,6 +9,145 @@
 #include "CTile.h"
 #include "CGravity.h"
 #include "CMonster.h"
+#include "CScene.h"
+
+
+void CPlayer::SetAnim()
+{
+	CD2DImage* pImg = CResourceManager::getInst()->
+		LoadD2DImage(L"NomalP", L"texture\\Animation\\NomalSprite.png");
+	wstring keepPath = CPathManager::getInst()->GetContentPath();
+	wstring path = keepPath;
+	path += L"anim\\Idle.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\Move.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\Dash.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\Down.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\QuickStop.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\WallImpact.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\DownSlide.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\Jump.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\Turn.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\Fall0.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\Fall0_Down.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\Fall_Turn.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\Fall1.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\Fall1_Down.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\Eat.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\Up.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\UpIdle.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\UpMove.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\InHale0.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\InHale1.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\InHale2.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\InHale3.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\Eating.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	pImg = CResourceManager::getInst()->
+		LoadD2DImage(L"CutterP", L"texture\\Animation\\cutterSprite.png");
+	path = keepPath;
+	path += L"anim\\CIdle.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CMove.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CDash.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CDown.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CQuickStop.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CWallImpact.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CDownSlide.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CJump.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CTurn.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CFall0.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CFall0_Down.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CFall_Turn.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CFall1.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CFall1_Down.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CUp.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CUpIdle.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CUpMove.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CAttack0.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\CAttack1.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+}
+
+
 
 
 CPlayer::CPlayer()
@@ -35,209 +174,11 @@ CPlayer::CPlayer()
 	GetCollider()->SetOffsetPos(fPoint(0.f, 7.f));
 
 	// 애니메이션
-	m_wImgKey.push_back(L"PlayerImg0");
-	m_wImgKey.push_back(L"PlayerImg1");
-	m_wImgKey.push_back(L"PlayerImg2");
-	m_wImgKey.push_back(L"PlayerImg3");
-	m_wImgKey.push_back(L"PlayerImg4");
-	m_wImgKey.push_back(L"PlayerImg5");
-	m_wImgKey.push_back(L"PlayerImg6");
-	m_wImgKey.push_back(L"PlayerImg7");
-	m_wImgKey.push_back(L"PlayerImg8");
-	m_wImgKey.push_back(L"PlayerImg9");
-
-
-	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[0], L"texture\\Animation\\sprite0.png"));
-	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[1], L"texture\\Animation\\sprite1.png"));
-	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[2], L"texture\\Animation\\sprite2.png"));
-	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[3], L"texture\\Animation\\sprite3.png"));
-	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[4], L"texture\\Animation\\sprite4.png"));
-	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[5], L"texture\\Animation\\sprite5.png"));
-	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[6], L"texture\\Animation\\sprite6.png"));
-	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[7], L"texture\\Animation\\sprite7.png"));
-	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[8], L"texture\\Animation\\sprite8.png"));
-	m_pImg.push_back(CResourceManager::getInst()->
-		LoadD2DImage(m_wImgKey[9], L"texture\\Animation\\sprite9.png"));
-
-	for (int i = 0; i < m_pImg.size(); ++i)
-	{
-		m_wAnimKey.push_back(new vector<wstring>);
-	}
-
-	m_wAnimKey[0]->push_back(L"Idle");
-	m_wAnimKey[0]->push_back(L"Down");
-	m_wAnimKey[1]->push_back(L"Move");
-	m_wAnimKey[2]->push_back(L"Dash");
-	m_wAnimKey[2]->push_back(L"QuickStop");
-	m_wAnimKey[2]->push_back(L"WallImpact");
-	m_wAnimKey[3]->push_back(L"DownSlide");
-	m_wAnimKey[4]->push_back(L"Jump");
-	m_wAnimKey[4]->push_back(L"Turn");
-	m_wAnimKey[4]->push_back(L"Fall0");
-	m_wAnimKey[4]->push_back(L"Fall0_Down");
-	m_wAnimKey[4]->push_back(L"Fall1");
-	m_wAnimKey[4]->push_back(L"Fall1_Down");
-	m_wAnimKey[5]->push_back(L"Eat");
-	m_wAnimKey[6]->push_back(L"Up");
-	m_wAnimKey[7]->push_back(L"UpIdle");
-	m_wAnimKey[7]->push_back(L"UpMove");
-	m_wAnimKey[8]->push_back(L"InHale0");
-	m_wAnimKey[8]->push_back(L"InHale1");
-	m_wAnimKey[8]->push_back(L"InHale2");
-	m_wAnimKey[8]->push_back(L"InHale3");
-	m_wAnimKey[9]->push_back(L"Eating");
 
 	CreateAnimator();
-	float pixelSize = 32.f;
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[0]->at(0),
-		m_pImg[0],
-		fPoint(0.f, 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(0.f, 0.f), 0.5f, 1);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[0]->at(1),
-		m_pImg[0],
-		fPoint(pixelSize, 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(0.f, 0.f), 0.5f, 1);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[2]->at(0),
-		m_pImg[2],
-		fPoint(0.f, 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.1f, 8);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[2]->at(1),
-		m_pImg[2],
-		fPoint((float)(pixelSize * 8), 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.5f, 1);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[2]->at(2),
-		m_pImg[2],
-		fPoint((float)(pixelSize * 9), 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.5f, 1);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[4]->at(0),
-		m_pImg[4],
-		fPoint(0.f, 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(0.f, 0.f), 0.5f, 1);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[4]->at(1),
-		m_pImg[4],
-		fPoint((float)(pixelSize * 1), 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.05f, 4);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[4]->at(2),
-		m_pImg[4],
-		fPoint((float)(pixelSize * 5), 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.1f, 2);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[4]->at(3),
-		m_pImg[4],
-		fPoint((float)(pixelSize * 7), 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.1f, 3);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[4]->at(4),
-		m_pImg[4],
-		fPoint(0.f, 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.1f, 6);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[7]->at(0),
-		m_pImg[7],
-		fPoint(0.f, 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.1f, 2);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[7]->at(1),
-		m_pImg[7],
-		fPoint((float)(pixelSize), 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.05f, 4);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[8]->at(0),
-		m_pImg[8],
-		fPoint(0, 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.1f, 2);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[8]->at(1),
-		m_pImg[8],
-		fPoint((float)(pixelSize * 2), 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.07f, 2);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[8]->at(2),
-		m_pImg[8],
-		fPoint((float)(pixelSize * 4), 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.05f, 2);
-
-	GetAnimator()->CreateAnimation(
-		m_wAnimKey[8]->at(3),
-		m_pImg[8],
-		fPoint((float)(pixelSize * 6), 0.f),
-		fPoint(pixelSize, pixelSize),
-		fPoint(pixelSize, 0.f), 0.1f, 6);
-
-	for (int i = 0; i < m_wAnimKey.size(); ++i)
-	{
-		if (1 == m_wAnimKey[i]->size())
-		{
-			float time = 0.1f;
-			if (i == 3)
-				time = 0.01f;
-			else if (i == 6)
-				time = 0.05f;
-			UINT frameCount = (UINT)CResourceManager::getInst()->
-				FindD2DImage(m_wImgKey[i])->GetWidth() / (UINT)pixelSize;
-			GetAnimator()->CreateAnimation(
-				m_wAnimKey[i]->at(0),
-				m_pImg[i],
-				fPoint(0.f, 0.f),
-				fPoint(pixelSize, pixelSize),
-				fPoint(pixelSize, 0.f), time, frameCount);
-		}
-	}
-	GetAnimator()->Play(L"Fall0");
-
-	CAnimation* pAni;
-	pAni = GetAnimator()->FindAnimation(L"Idle");
-	pAni->GetFrame(0).fptOffset = fPoint(0.f, 5.f);
-	pAni = GetAnimator()->FindAnimation(L"Down");
-	pAni->GetFrame(0).fptOffset = fPoint(0.f, 5.f);
-
+	SetAnimString();
+	SetAnim();
+	GetAnimator()->Play(GetAnimString().g_wIDLE);
 	// 중력
 	CreateGravity();
 
@@ -534,6 +475,62 @@ MON_TYPE CPlayer::GetMonType()
 	return m_pEatingMon;
 }
 
+const PLAYERANIM& CPlayer::GetAnimString()
+{
+	return anim;
+}
+
+void CPlayer::SetAnimString()
+{
+	switch (m_eAttackType)
+	{
+	case ATTACK_TYPE::NORMAL:
+		anim.g_wIDLE = L"Idle";
+		anim.g_wMOVE = L"Move";
+		anim.g_wDASH = L"Dash";
+		anim.g_wDOWN = L"Down";
+		anim.g_wQUICKSTOP = L"QuickStop";
+		anim.g_wWALLIMPACT = L"WallImpact";
+		anim.g_wDOWNSLIDE = L"DownSlide";
+		anim.g_wJUMP = L"Jump";
+		anim.g_wTURN = L"Turn";
+		anim.g_wFALL0 = L"Fall0";
+		anim.g_wFALL_DOWN = L"Fall0_Down";
+		anim.g_wFALL_TURN = L"Fall_Turn";
+		anim.g_wFALL1 = L"Fall1";
+		anim.g_wFALL1_DOWN = L"Fall1_Down";
+		anim.g_wUP = L"Up";
+		anim.g_wUPIDLE = L"UpIdle";
+		anim.g_wUPMOVE = L"UpMove";
+		break;
+	case ATTACK_TYPE::CUTTER:
+		anim.g_wIDLE = L"CIdle";
+		anim.g_wMOVE = L"CMove";
+		anim.g_wDASH = L"CDash";
+		anim.g_wDOWN = L"CDown";
+		anim.g_wQUICKSTOP = L"CQuickStop";
+		anim.g_wWALLIMPACT = L"CWallImpact";
+		anim.g_wDOWNSLIDE = L"CDownSlide";
+		anim.g_wJUMP = L"CJump";
+		anim.g_wTURN = L"CTurn";
+		anim.g_wFALL0 = L"CFall0";
+		anim.g_wFALL_DOWN = L"CFall0_Down";
+		anim.g_wFALL_TURN = L"CFall_Turn";
+		anim.g_wFALL1 = L"CFall1";
+		anim.g_wFALL1_DOWN = L"CFall1_Down";
+		anim.g_wUP = L"CUp";
+		anim.g_wUPIDLE = L"CUpIdle";
+		anim.g_wUPMOVE = L"CUpMove";
+		break;
+	case ATTACK_TYPE::THROW:
+		break;
+	case ATTACK_TYPE::SIZE:
+		break;
+	default:
+		break;
+	}
+}
+
 bool CPlayer::GetDir()
 {
 	return m_bIsRight;
@@ -542,6 +539,7 @@ bool CPlayer::GetDir()
 void CPlayer::SetAttackType(ATTACK_TYPE type)
 {
 	m_eAttackType = type;
+	SetAnimString();
 }
 
 void CPlayer::SetMonType(MON_TYPE type)
@@ -553,8 +551,6 @@ void CPlayer::SetDir(bool dir)
 {
 	m_bIsRight = dir;
 }
-
-
 
 
 void CPlayer::SetCollisonCallBack(COLLIDER_FUNC pFunc, DWORD_PTR state)
