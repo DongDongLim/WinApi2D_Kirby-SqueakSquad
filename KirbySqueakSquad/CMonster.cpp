@@ -81,6 +81,7 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 		pMon->SetType(type);
 		pMon->SetScale(fPoint(32.f, 32.f));
 		pMon->GetCollider()->SetScale(fPoint(17.f, 17.f));
+		pMon->GetCollider()->SetOffsetPos(fPoint(0.f, 7.f));
 
 		tMonInfo info = {};
 		info.fAtt = 10.f;
@@ -129,7 +130,7 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 		pMon->SetPos(pos);
 		pMon->SetType(type);
 		pMon->SetScale(fPoint(54.f, 54.f));
-		pMon->GetCollider()->SetScale(fPoint(39.f, 39.f));
+		pMon->GetCollider()->SetScale(fPoint(33.f, 33.f));
 		tMonInfo info = {};
 		info.fAtt = 10.f;
 		info.fAttRange = 50.f;

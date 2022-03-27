@@ -21,6 +21,7 @@ private:
 	fPoint m_fDir;
 	fPoint m_fRange;
 	fPoint m_fStartPos;
+	float m_fDelateRange;
 	float m_fVelocity;
 	float m_fReverceVelocity;
 
@@ -30,11 +31,13 @@ public:
 	virtual CAttackObj* Clone();
 
 	void SetRange(fPoint range);
+	void SetDelateRange(float range);
 	void SetStartPos(fPoint range);
 	void SetVelocity(float velocity);
 	void SetReverceVelocity(float velocity);
 
 	void NomalSetting();
+	void CutterSetting();
 	void MoveUpdate();
 
 
@@ -46,6 +49,7 @@ public:
 
 	virtual void update();
 	virtual void render();
+	void CutterRender();
 
 
 

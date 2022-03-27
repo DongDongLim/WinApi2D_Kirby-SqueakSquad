@@ -157,6 +157,9 @@ void CScene::LoadTile(const wstring& strPath)
         if (GROUP_TILE::SLOPE == newTile->GetGroup())
         {
             // TODO : OBB 충돌체 추가
+            newTile->CreateCollider();
+            newTile->GetCollider()->SetScale(fPoint(CTile::SIZE_TILE, CTile::SIZE_TILE));
+            newTile->GetCollider()->SetOffsetPos(fPoint(CTile::SIZE_TILE / 2.f, CTile::SIZE_TILE / 2.f));
         }
         else if (GROUP_TILE::NONE != newTile->GetGroup())
         {

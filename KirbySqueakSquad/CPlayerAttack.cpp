@@ -15,7 +15,7 @@ CPlayerAttack::CPlayerAttack()
 	nomalanimtime = 0;
 	nomalanimKeeptime = nomalanimtime;
 	m_fAttRange = fPoint(0, 0);
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 8; ++i)
 	{
 		m_pAttackobj[i] = new CAttackObj();
 		CSceneManager::getInst()->GetCurScene()->
@@ -31,11 +31,7 @@ void CPlayerAttack::NomalAnim()
 {
 	if (0 >= nomalanimtime)
 	{
-		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == m_pPlayer->GetAnimString().g_wDOWNSLIDE)
-		{
-			m_pPlayer->GetAnimator()->Stop();
-		}
-		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale0")
+		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale0")
 		{
 			m_pPlayer->GetAnimator()->Play(L"InHale1");
 			nomalanimKeeptime = 0.5f;
@@ -60,6 +56,14 @@ void CPlayerAttack::NomalAnim()
 			Exit(PLAYERSTATE::IDLE);
 		}
 	}
+	else
+	{
+		if (!Key('C'))
+		{
+			m_pPlayer->GetAnimator()->Play(L"InHale3");
+			nomalanimtime = 0;
+		}
+	}
 }
 
 CPlayerAttack::~CPlayerAttack()
@@ -71,21 +75,57 @@ CPlayerAttack::~CPlayerAttack()
 	}
 }
 
+void CPlayerAttack::CutterAttack()
+{
+	if (!Key('C'))
+	{
+		Exit(PLAYERSTATE::IDLE);
+	}
+
+}
+
+void CPlayerAttack::CutterAnim()
+{
+	if (0 >= nomalanimtime)
+	{
+		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"CAttack0")
+		{
+			m_pPlayer->GetAnimator()->Play(L"CAttack1");
+			nomalanimKeeptime = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
+			nomalanimtime = nomalanimKeeptime;
+		}
+		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"CAttack1")
+		{
+			m_pPlayer->GetAnimator()->Stop();
+		}
+	}
+}
+
 
 void CPlayerAttack::NomalAttack()
+{
+	if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale0")
+	{
+		m_pAttackobj[0]->SetRange(fPoint(64.f, 48.f));
+	}
+	else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale1")
+	{
+		m_pAttackobj[0]->SetRange(fPoint(64.f, 48.f));
+	}
+	else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale2")
+	{
+		m_pAttackobj[0]->SetRange(fPoint(80.f, 64.f));
+	}
+}
+
+
+void CPlayerAttack::update()
 {
 	if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == m_pPlayer->GetAnimString().g_wUP)
 	{
 		if (0 >= nomalanimtime)
 		{
-			if (m_pPlayer->GetGravity()->GetIsGround())
-			{
-				Exit(PLAYERSTATE::IDLE);
-			}
-			else
-			{
-				Exit(PLAYERSTATE::Fall);
-			}
+			Exit(PLAYERSTATE::IDLE);
 		}
 	}
 	else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == m_pPlayer->GetAnimString().g_wDOWNSLIDE)
@@ -97,13 +137,13 @@ void CPlayerAttack::NomalAttack()
 		m_startDir ? prev = 1 : prev = -1;
 		if (nomalanimtime < 0 && -0.5 <= nomalanimtime)
 			m_pPlayer->GetRigidBody()->AddVelocity(fPoint(dir * -nomalanimtime, 0));
-		else if(-0.5 > nomalanimtime)
+		else if (-0.5 > nomalanimtime)
 		{
 			m_pPlayer->GetRigidBody()->AddVelocity(fPoint(dir * nomalanimtime, 0));
 		}
 		if (m_pPlayer->GetRigidBody()->GetDir().x != 0)
 			m_pPlayer->GetRigidBody()->GetDir().x > 0 ? cur = 1 : cur = -1;
-		
+
 		if ((cur != 0) && (prev != cur))
 		{
 			m_pPlayer->GetRigidBody()->SetVelocity(fPoint(0, 0));
@@ -115,57 +155,22 @@ void CPlayerAttack::NomalAttack()
 	}
 	else
 	{
-		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale0")
+		switch (m_pPlayer->GetAttackType())
 		{
-			m_pAttackobj[0]->SetRange(fPoint(64.f, 48.f));
-			if (!Key('C'))
-			{
-				if (nullptr != m_pAttackobj[0])
-					m_pAttackobj[0]->Exit();
-				m_pPlayer->GetAnimator()->Play(L"InHale1");
-			}
-		}
-		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale1")
-		{
-			m_pAttackobj[0]->SetRange(fPoint(64.f, 48.f));
-			if (!Key('C'))
-			{
-				m_pPlayer->GetAnimator()->Play(L"InHale3");
-				nomalanimKeeptime = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
-				nomalanimtime = nomalanimKeeptime;
-			}
-		}
-		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"InHale2")
-		{
-			m_pAttackobj[0]->SetRange(fPoint(80.f, 64.f));
-			if (!Key('C'))
-			{
-				m_pPlayer->GetAnimator()->Play(L"InHale3");
-				nomalanimKeeptime = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
-				nomalanimtime = nomalanimKeeptime;
-			}
+		case ATTACK_TYPE::NORMAL:
+			NomalAttack();
+			break;
+		case ATTACK_TYPE::CUTTER:
+			CutterAttack();
+			break;
+		case ATTACK_TYPE::THROW:
+			break;
+		case ATTACK_TYPE::SIZE:
+			break;
+		default:
+			break;
 		}
 	}
-}
-
-
-void CPlayerAttack::update()
-{
-	switch (m_pPlayer->GetAttackType())
-	{
-	case ATTACK_TYPE::NORMAL:
-		NomalAttack();
-		break;
-	case ATTACK_TYPE::CUTTER:
-		break;
-	case ATTACK_TYPE::THROW:
-		break;
-	case ATTACK_TYPE::SIZE:
-		break;
-	default:
-		break;
-	}
-	
 }
 
 
@@ -174,19 +179,34 @@ void CPlayerAttack::Anim()
 {
 	nomalanimtime -= fDT;
 	m_pPlayer->GetAnimator()->SetReverce(!m_startDir);
-	switch (m_pPlayer->GetAttackType())
+	if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == m_pPlayer->GetAnimString().g_wUP)
 	{
-	case ATTACK_TYPE::NORMAL:
-		NomalAnim();
-		break;
-	case ATTACK_TYPE::CUTTER:
-		break;
-	case ATTACK_TYPE::THROW:
-		break;
-	case ATTACK_TYPE::SIZE:
-		break;
-	default:
-		break;
+
+	}
+	else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == m_pPlayer->GetAnimString().g_wDOWNSLIDE)
+	{
+		if (0 >= nomalanimtime)
+		{
+			m_pPlayer->GetAnimator()->Stop();
+		}
+	}
+	else
+	{
+		switch (m_pPlayer->GetAttackType())
+		{
+		case ATTACK_TYPE::NORMAL:
+			NomalAnim();
+			break;
+		case ATTACK_TYPE::CUTTER:
+			CutterAnim();
+			break;
+		case ATTACK_TYPE::THROW:
+			break;
+		case ATTACK_TYPE::SIZE:
+			break;
+		default:
+			break;
+		}
 	}
 	
 }
@@ -194,21 +214,21 @@ void CPlayerAttack::Anim()
 void CPlayerAttack::Enter()
 {
 	m_bIsActive = true;
-	if (m_pPlayer->GetAttackType() == ATTACK_TYPE::NORMAL)
+	if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY))
 	{
-		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY))
-		{
-			m_pPlayer->GetAnimator()->ReversePlay(m_pPlayer->GetAnimString().g_wUP);
-			m_pAttackobj[0]->Enter();
-			CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY)->Exit(PLAYERSTATE::END);
-		}
-		else if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::DOWN))
-		{
-			m_pPlayer->GetAnimator()->Play(m_pPlayer->GetAnimString().g_wDOWNSLIDE);
-			m_pAttackobj[0]->Enter();
-			CStateManager::getInst()->FindPlayeState(PLAYERSTATE::DOWN)->Exit(PLAYERSTATE::END);
-		}
-		else if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::EAT))
+		m_pPlayer->GetAnimator()->ReversePlay(m_pPlayer->GetAnimString().g_wUP);
+		m_pAttackobj[0]->Enter();
+		CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY)->Exit(PLAYERSTATE::END);
+	}
+	else if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::DOWN))
+	{
+		m_pPlayer->GetAnimator()->Play(m_pPlayer->GetAnimString().g_wDOWNSLIDE);
+		m_pAttackobj[0]->Enter();
+		CStateManager::getInst()->FindPlayeState(PLAYERSTATE::DOWN)->Exit(PLAYERSTATE::END);
+	}
+	else if (m_pPlayer->GetAttackType() == ATTACK_TYPE::NORMAL)
+	{
+		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::EAT))
 		{
 			m_pPlayer->GetAnimator()->ReversePlay(m_pPlayer->GetAnimString().g_wUP);
 			m_pAttackobj[0]->Enter();
@@ -222,7 +242,16 @@ void CPlayerAttack::Enter()
 	}
 	else if (m_pPlayer->GetAttackType() == ATTACK_TYPE::CUTTER)
 	{
+		m_pPlayer->GetAnimator()->Play(L"CAttack0");
+		for (int i = 0; i < 8; ++i)
+		{
+			if (m_pAttackobj[i]->isDead())
+			{
+				m_pAttackobj[i]->Enter();
+				break;
+			}
 
+		}
 	}
 	else if (m_pPlayer->GetAttackType() == ATTACK_TYPE::THROW)
 	{

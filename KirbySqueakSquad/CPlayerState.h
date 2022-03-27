@@ -161,14 +161,16 @@ private:
 	bool m_startDir;
 	fPoint m_fAttRange;
 
-	CAttackObj* m_pAttackobj[4];
+	CAttackObj* m_pAttackobj[8];
 
 public:
 	CPlayerAttack();
 	~CPlayerAttack();
 
 	void NomalAttack();
+	void CutterAttack();
 	void NomalAnim();
+	void CutterAnim();
 
 	virtual void Anim();
 	virtual void update();

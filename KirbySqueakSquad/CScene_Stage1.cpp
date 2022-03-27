@@ -25,11 +25,11 @@ void CScene_Stage1::Enter()
 {
 	// 타일 로딩
 	wstring path = CPathManager::getInst()->GetContentPath();
-	path += L"tile\\stage1Map.tile";
+	path += L"tile\\stage2Map.tile";
 	LoadTile(path);
 
 	CMap* map = new CMap;
-	map->Load(L"Map_Start", L"texture\\map\\stage1.png");
+	map->Load(L"Map_Start", L"texture\\map\\stage2.png");
 	AddObject(map, GROUP_GAMEOBJ::MAP);
 	
 	CBackGround* backGround = new CBackGround;
@@ -39,9 +39,6 @@ void CScene_Stage1::Enter()
 	CPlayer* pPlayer = new CPlayer();
 	pPlayer->SetPos(fPoint(50, 96));
 	AddObject(pPlayer, GROUP_GAMEOBJ::PLAYER);
-
-	CMonster* pMon = CMonster::Create(MON_TYPE::NORMAL, fPoint(150.f, 128.5f));
-	AddObject(pMon, GROUP_GAMEOBJ::MONSTER);
 
 	CMonster* pMon1 = CMonster::Create(MON_TYPE::CUTTER, fPoint(300.f, 128.5f));
 	AddObject(pMon1, GROUP_GAMEOBJ::MONSTER);

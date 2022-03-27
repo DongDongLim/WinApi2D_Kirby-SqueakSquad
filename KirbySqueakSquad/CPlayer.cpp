@@ -145,6 +145,86 @@ void CPlayer::SetAnim()
 	path = keepPath;
 	path += L"anim\\CAttack1.anim";
 	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	pImg = CResourceManager::getInst()->
+		LoadD2DImage(L"ThrowP", L"texture\\Animation\\ThrowSprite.png");
+	path = keepPath;
+	path += L"anim\\TIdle.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TMove.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TDash.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TDown.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TQuickStop.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TWallImpact.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TDownSlide.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TJump.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TTurn.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TFall0.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TFall0_Down.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TFall_Turn.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TFall1.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TFall1_Down.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TUp.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TUpIdle.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TUpMove.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TAttackD.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TAttackN.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TAttackU.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TAttackSetD.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TAttackSetN.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TAttackSetU.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TAttackSet.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TAttackSet0.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	path = keepPath;
+	path += L"anim\\TAttackSet1.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
 }
 
 
@@ -239,6 +319,15 @@ void CPlayer::update()
 	{
 		KeyDown(VK_LEFT) ? SetDir(false) : SetDir(true);
 	}
+	else if (KeyDown('Z'))
+	{
+		if (ATTACK_TYPE::NORMAL != m_eAttackType)
+		{
+			m_eAttackType = ATTACK_TYPE::NORMAL;
+			SetAnimString();
+		}
+	}
+
 	GroundCheck();
 	CStateManager::getInst()->update();
 	GetAnimator()->update();
@@ -523,6 +612,23 @@ void CPlayer::SetAnimString()
 		anim.g_wUPMOVE = L"CUpMove";
 		break;
 	case ATTACK_TYPE::THROW:
+		anim.g_wIDLE = L"TIdle";
+		anim.g_wMOVE = L"TMove";
+		anim.g_wDASH = L"TDash";
+		anim.g_wDOWN = L"TDown";
+		anim.g_wQUICKSTOP = L"TQuickStop";
+		anim.g_wWALLIMPACT = L"TWallImpact";
+		anim.g_wDOWNSLIDE = L"TDownSlide";
+		anim.g_wJUMP = L"TJump";
+		anim.g_wTURN = L"TTurn";
+		anim.g_wFALL0 = L"TFall0";
+		anim.g_wFALL_DOWN = L"TFall0_Down";
+		anim.g_wFALL_TURN = L"Tall_Turn";
+		anim.g_wFALL1 = L"TFall1";
+		anim.g_wFALL1_DOWN = L"TFall1_Down";
+		anim.g_wUP = L"TUp";
+		anim.g_wUPIDLE = L"TUpIdle";
+		anim.g_wUPMOVE = L"TUpMove";
 		break;
 	case ATTACK_TYPE::SIZE:
 		break;
