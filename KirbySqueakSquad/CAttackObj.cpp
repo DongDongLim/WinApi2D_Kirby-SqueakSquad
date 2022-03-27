@@ -142,7 +142,7 @@ void CAttackObj::MoveUpdate()
 				else
 					GetRigidBody()->AddVelocity(fPoint(m_fDir.x * m_fVelocity, 0));
 
-				if (!KeyUp('C'))
+				if (Key('C'))
 				{
 					if (realDis <= 5 * range)
 					{
