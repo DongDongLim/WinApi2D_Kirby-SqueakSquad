@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "CPlayerState.h"
 #include "CAnimator.h"
+#include "CAnimation.h"
 #include "CPlayer.h"
 
 
@@ -29,18 +30,23 @@ void CPlayerEat::Anim()
 
 void CPlayerEat::update()
 {
-	if (0 != nomalanimKeeptime)
+	if(m_pPlayer->GetAttackType() == ATTACK_TYPE::THROW)
+		Exit(PLAYERSTATE::ATTACK);
+	else
 	{
-		nomalanimtime -= fDT;
-		if (nomalanimtime <= 0)
+		if (0 != nomalanimKeeptime)
 		{
-			m_pPlayer->SetAttackType((ATTACK_TYPE)m_pPlayer->GetMonType());
-			Exit(PLAYERSTATE::IDLE);
+			nomalanimtime -= fDT;
+			if (nomalanimtime <= 0)
+			{
+				m_pPlayer->SetAttackType((ATTACK_TYPE)m_pPlayer->GetMonType());
+				Exit(PLAYERSTATE::IDLE);
+			}
 		}
-	}
-	if (KeyDown('C'))
-	{
-		CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::ATTACK);
+		if (KeyDown('C'))
+		{
+			CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::ATTACK);
+		}
 	}
 }
 
@@ -49,11 +55,36 @@ void CPlayerEat::update()
 void CPlayerEat::Enter()
 {
 	m_bIsActive = true;
-	m_pPlayer->GetAnimator()->Play(L"Eating");
+	switch (m_pPlayer->GetAttackType())
+	{
+	case ATTACK_TYPE::NORMAL:
+	{
+		m_pPlayer->GetAnimator()->Play(L"Eating");
+		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::ATTACK))
+			CStateManager::getInst()->FindPlayeState(PLAYERSTATE::ATTACK)->Exit(PLAYERSTATE::IDLE);
+	}
+		break;
+	case ATTACK_TYPE::CUTTER:
+	{
+
+	}
+		break;
+	case ATTACK_TYPE::THROW:
+	{
+		m_pPlayer->GetAnimator()->Play(L"TAttackSet1");
+		m_pPlayer->GetRigidBody()->
+			SetVelocity(fPoint(0, m_pPlayer->GetRigidBody()->GetVelocity().y));
+		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::ATTACK))
+			CStateManager::getInst()->FindPlayeState(PLAYERSTATE::ATTACK)->Exit(PLAYERSTATE::END);
+	}
+		break;
+	case ATTACK_TYPE::SIZE:
+		break;
+	default:
+		break;
+	}
 	nomalanimtime = 0;
 	nomalanimKeeptime = nomalanimtime;
-	if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::ATTACK))
-		CStateManager::getInst()->FindPlayeState(PLAYERSTATE::ATTACK)->Exit(PLAYERSTATE::IDLE);
 }
 
 void CPlayerEat::Exit(PLAYERSTATE state)

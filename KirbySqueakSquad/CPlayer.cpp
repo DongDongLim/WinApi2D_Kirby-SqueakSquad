@@ -146,7 +146,7 @@ void CPlayer::SetAnim()
 	path += L"anim\\CAttack1.anim";
 	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
 	pImg = CResourceManager::getInst()->
-		LoadD2DImage(L"ThrowP", L"texture\\Animation\\ThrowSprite.png");
+		LoadD2DImage(L"ThrowP", L"anim\\ThrowSprite.png");
 	path = keepPath;
 	path += L"anim\\TIdle.anim";
 	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);

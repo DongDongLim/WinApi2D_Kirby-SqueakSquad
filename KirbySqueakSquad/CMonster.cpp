@@ -95,7 +95,7 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 		tMonInfo info = {};
 		info.fAtt = 10.f;
 		info.fAttRange = 50.f;
-		info.fRecogRange = 300.f;
+		info.fRecogRange = 100.f;
 		info.fHP = 100.f;
 		info.fSpeed = 5.f;
 
@@ -144,8 +144,8 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 
 		tMonInfo info = {};
 		info.fAtt = 10.f;
-		info.fAttRange = 50.f;
-		info.fRecogRange = 300.f;
+		info.fAttRange = 20.f;
+		info.fRecogRange = 50.f;
 		info.fHP = 100.f;
 		info.fSpeed = 25.f;
 

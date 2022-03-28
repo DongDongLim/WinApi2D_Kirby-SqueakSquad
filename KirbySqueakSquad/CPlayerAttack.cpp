@@ -27,6 +27,28 @@ CPlayerAttack::CPlayerAttack()
 		GROUP_GAMEOBJ::MISSILE_PLAYER, GROUP_GAMEOBJ::TILE);
 }
 
+CPlayerAttack::~CPlayerAttack()
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		if (nullptr != m_pAttackobj[i])
+			m_pAttackobj[i] = nullptr;
+	}
+}
+
+void CPlayerAttack::CutterAttack()
+{
+	if (!Key('C'))
+	{
+		Exit(PLAYERSTATE::IDLE);
+	}
+
+}
+
+void CPlayerAttack::ThrowAttack()
+{
+}
+
 void CPlayerAttack::NomalAnim()
 {
 	if (0 >= nomalanimtime)
@@ -66,24 +88,6 @@ void CPlayerAttack::NomalAnim()
 	}
 }
 
-CPlayerAttack::~CPlayerAttack()
-{
-	for (int i = 0; i < 4; ++i)
-	{
-		if (nullptr != m_pAttackobj[i])
-			m_pAttackobj[i] = nullptr;
-	}
-}
-
-void CPlayerAttack::CutterAttack()
-{
-	if (!Key('C'))
-	{
-		Exit(PLAYERSTATE::IDLE);
-	}
-
-}
-
 void CPlayerAttack::CutterAnim()
 {
 	if (0 >= nomalanimtime)
@@ -101,6 +105,20 @@ void CPlayerAttack::CutterAnim()
 	}
 }
 
+void  CPlayerAttack::ThrowAnim()
+{
+	if (0 >= nomalanimtime)
+	{
+		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackSet")
+		{
+			m_pPlayer->GetAnimator()->Play(L"TAttackSet0");
+		}
+	}
+	if (!Key('C'))
+	{
+		Exit(PLAYERSTATE::IDLE);
+	}
+}
 
 void CPlayerAttack::NomalAttack()
 {
@@ -164,6 +182,7 @@ void CPlayerAttack::update()
 			CutterAttack();
 			break;
 		case ATTACK_TYPE::THROW:
+			ThrowAttack();
 			break;
 		case ATTACK_TYPE::SIZE:
 			break;
@@ -172,7 +191,6 @@ void CPlayerAttack::update()
 		}
 	}
 }
-
 
 
 void CPlayerAttack::Anim()
@@ -201,6 +219,7 @@ void CPlayerAttack::Anim()
 			CutterAnim();
 			break;
 		case ATTACK_TYPE::THROW:
+			ThrowAnim();
 			break;
 		case ATTACK_TYPE::SIZE:
 			break;
@@ -255,7 +274,18 @@ void CPlayerAttack::Enter()
 	}
 	else if (m_pPlayer->GetAttackType() == ATTACK_TYPE::THROW)
 	{
-
+		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() != L"TAttackSet1")
+		{
+			m_pPlayer->GetAnimator()->Play(L"TAttackSet");
+		}
+		for (int i = 0; i < 8; ++i)
+		{
+			if (m_pAttackobj[i]->isDead())
+			{
+				m_pAttackobj[i]->Enter();
+				break;
+			}
+		}
 	}
 	nomalanimtime = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
 	nomalanimKeeptime = nomalanimtime;
@@ -265,6 +295,17 @@ void CPlayerAttack::Enter()
 
 void CPlayerAttack::Exit(PLAYERSTATE state)
 {
+	for (int i = 0; i < 8; ++i)
+	{
+		if (!m_pAttackobj[i]->isDead())
+		{
+			if (MOVETYPE::FIX == m_pAttackobj[i]->GetMoveType())
+			{
+				m_pAttackobj[i]->Exit();
+				break;
+			}
+		}
+	}
 	m_bIsActive = false;
 	if (state != PLAYERSTATE::END)
 		CEventManager::getInst()->EventLoadPlayerState(state);

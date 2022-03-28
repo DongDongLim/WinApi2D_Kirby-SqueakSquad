@@ -169,8 +169,10 @@ public:
 
 	void NomalAttack();
 	void CutterAttack();
+	void ThrowAttack();
 	void NomalAnim();
 	void CutterAnim();
+	void ThrowAnim();
 
 	virtual void Anim();
 	virtual void update();

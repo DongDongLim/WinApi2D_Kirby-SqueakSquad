@@ -26,14 +26,30 @@ CAttackObj::CAttackObj()
 	wstring path = keepPath;
 	path += L"anim\\CWeapon.anim";
 	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	pImg = CResourceManager::getInst()->
+		LoadD2DImage(L"UpPAtk", L"anim\\UpAttack.png");
+	path = keepPath;
+	path += L"anim\\UpAttack.anim";
+	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+
 	CreateRigidBody();
 	CRigidBody* rigid = GetRigidBody();
 	rigid->SetMass(1);
+
+	m_pImgEffect[(int)EFFECT_TYPE::NINHALE0] = CResourceManager::getInst()->
+		LoadD2DImage(L"CutterPAtk", L"texture\\Effect\\0.png"); 
+	m_pImgEffect[(int)EFFECT_TYPE::NINHALE1] = CResourceManager::getInst()->
+		LoadD2DImage(L"CutterPAtk", L"texture\\Effect\\1.png");
+
+	// 나중에 애니메이션 시간 잴 일 있으면 쓰기
+	nomalanimtime = 0;
+	nomalanimKeeptime = nomalanimtime;
 	SetDead();
 }
 
 CAttackObj::~CAttackObj()
 {
+
 }
 
 CAttackObj* CAttackObj::Clone()
@@ -68,7 +84,7 @@ void CAttackObj::SetReverceVelocity(float velocity)
 
 void CAttackObj::NomalSetting()
 {
-	if (CStateManager::getInst()->FindPlayeState(PLAYERSTATE::EAT))
+	if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::EAT))
 	{
 		m_eMoveType = MOVETYPE::VARIANCE;
 		GetCollider()->SetScale(fPoint(16.f, 16.f));
@@ -85,6 +101,17 @@ void CAttackObj::NomalSetting()
 		m_eMoveType = MOVETYPE::FIX;
 		GetCollider()->SetScale(fPoint(80.f, 64.f));
 		GetCollider()->SetOffsetPos(fPoint(m_fDir.x * (40.f + (m_pPlayer->GetCollider()->GetScale() / 2).x), 0.f));
+		int a = 1;
+		int b = 1;
+		int c = 1;
+		// TODO : 이거 나중에하자 시간 너무 잡아먹겠다
+		for (int i = 1; i < GetCollider()->GetScale().x / 10; ++i)
+		{
+			c = a;
+			a += b;
+			b = c;
+			m_aEffect.push_back(a);
+		}
 	}
 }
 
@@ -104,6 +131,34 @@ void CAttackObj::CutterSetting()
 	SetVelocity(30.f);
 }
 
+void CAttackObj::ThrowSetting()
+{
+	if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackSet")
+	{
+		m_eMoveType = MOVETYPE::FIX;
+		GetCollider()->SetScale(fPoint(80.f, 64.f));
+		GetCollider()->SetOffsetPos(fPoint(m_fDir.x * (40.f + (m_pPlayer->GetCollider()->GetScale() / 2).x), 0.f));
+	}
+	else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackSet1")
+	{
+		m_eMoveType = MOVETYPE::FIX;
+		GetCollider()->SetScale(fPoint(32.f, 32.f));
+		m_pThrowMon->render();
+	}
+	else
+	{
+		m_eMoveType = MOVETYPE::VARIANCE;
+		GetCollider()->SetScale(fPoint(16.f, 16.f));
+		GetCollider()->SetOffsetPos(fPoint(m_fDir.x * (m_pPlayer->GetCollider()->GetScale() / 2).x, 0.f));
+		GetRigidBody()->SetMaxPositiveVelocity(fPoint(200.f, 75.f));
+		GetRigidBody()->SetMaxNegativeVelocity(fPoint(-200.f, -75.f));
+		SetReverceVelocity(50.f);
+		SetRange(fPoint(m_fDir.x * INF, 0.f));
+		SetStartPos(GetPos());
+		SetVelocity(30.f);
+	}
+}
+
 void CAttackObj::MoveUpdate()
 {
 	switch (m_eMoveType)
@@ -118,6 +173,9 @@ void CAttackObj::MoveUpdate()
 		{
 		}
 		case ATTACK_TYPE::CUTTER:
+		{
+		}
+		case ATTACK_TYPE::THROW:
 		{
 			int dir = 0;
 			if (GetRigidBody()->GetDir().x > 0)
@@ -167,6 +225,11 @@ void CAttackObj::MoveUpdate()
 	}
 }
 
+MOVETYPE CAttackObj::GetMoveType()
+{
+	return m_eMoveType;
+}
+
 void CAttackObj::Enter()
 {
 	SetLive();
@@ -180,12 +243,13 @@ void CAttackObj::Enter()
 	if (CStateManager::getInst()->FindPlayeState(PLAYERSTATE::FLY))
 	{
 		m_eMoveType = MOVETYPE::VARIANCE;
+		SetScale(fPoint(32.f, 32.f));
 		GetCollider()->SetScale(fPoint(16.f, 16.f));
-		GetCollider()->SetOffsetPos(fPoint(m_fDir.x * (m_pPlayer->GetCollider()->GetScale() / 2).x, 0.f));
+		GetCollider()->SetOffsetPos(fPoint( 0.f, 0.f));
 		GetRigidBody()->SetMaxPositiveVelocity(fPoint(200.f, 75.f));
 		GetRigidBody()->SetMaxNegativeVelocity(fPoint(-200.f, -75.f));
 		SetReverceVelocity(50.f);
-		SetRange(fPoint(m_fDir.x * 15.f, 0.f));
+		SetRange(fPoint(m_fDir.x * 60.f, 0.f));
 		SetDelateRange(0.f);
 		SetStartPos(GetPos());
 		SetVelocity(30.f);
@@ -210,6 +274,11 @@ void CAttackObj::Enter()
 			CutterSetting();
 		}
 		break;
+		case ATTACK_TYPE::THROW:
+		{
+			ThrowSetting();
+		}
+		break;
 		default:
 			break;
 		}
@@ -219,6 +288,8 @@ void CAttackObj::Enter()
 
 void CAttackObj::Exit()
 {
+	if (0 != m_aEffect.size())
+		m_aEffect.clear();
 	SetDead();
 }
 
@@ -235,45 +306,64 @@ void CAttackObj::update()
 
 void CAttackObj::render()
 {
-	switch (m_pPlayer->GetAttackType())
+	if (0 == m_fDelateRange && m_eMoveType == MOVETYPE::VARIANCE)
 	{
-	case ATTACK_TYPE::NORMAL:
-		if (m_pPlayer->GetAttackType() == ATTACK_TYPE::NORMAL)
+		GetAnimator()->Play(L"UpAttack");
+	}
+	else
+	{
+		switch (m_pPlayer->GetAttackType())
 		{
-			fPoint pos = GetCollider()->GetFinalPos();
-			fPoint scale = GetCollider()->GetScale();
-			pos = CCameraManager::getInst()->GetRenderPos(pos);
-
-			COLORREF rgb = RGB(0, 0, 0);
-
-			rgb = RGB(255, 255, 255);
-
-
-			CRenderManager::getInst()->RenderRectangle(
-				pos.x - scale.x / 2,
-				pos.y - m_fRange.y / 2.f,
-				pos.x + m_fRange.x / 2.f,
-				pos.y + m_fRange.y / 2.f,
-				rgb);
+		case ATTACK_TYPE::NORMAL:
+			NommalRender();
+			break;
+		case ATTACK_TYPE::CUTTER:
+			CutterRender();
+			break;
+		case ATTACK_TYPE::THROW:
+			ThrowRender();
+			break;
+		case ATTACK_TYPE::SIZE:
+			break;
+		default:
+			break;
 		}
-		break;
-	case ATTACK_TYPE::CUTTER:
-		CutterRender();
-		break;
-	case ATTACK_TYPE::THROW:
-		break;
-	case ATTACK_TYPE::SIZE:
-		break;
-	default:
-		break;
 	}
 
 	component_render();
 }
 
+void CAttackObj::NommalRender()
+{
+	if (0 != m_aEffect.size())
+	{
+		fPoint pos = GetCollider()->GetFinalPos();
+		fPoint scale = GetCollider()->GetScale();
+		pos = CCameraManager::getInst()->GetRenderPos(pos);
+
+		COLORREF rgb = RGB(0, 0, 0);
+
+		rgb = RGB(255, 255, 255);
+
+
+		CRenderManager::getInst()->RenderRectangle(
+			pos.x - scale.x / 2,
+			pos.y - m_fRange.y / 2.f,
+			pos.x + m_fRange.x / 2.f,
+			pos.y + m_fRange.y / 2.f,
+			rgb);
+	}
+}
+
 void CAttackObj::CutterRender()
 {
 	GetAnimator()->Play(L"CWeapon");
+}
+
+void CAttackObj::ThrowRender()
+{
+	if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackSet0")
+		GetAnimator()->Play(L"CWeapon");
 }
 
 void CAttackObj::finalupdate()
@@ -327,8 +417,24 @@ void CAttackObj::OnCollision(CCollider* _pOther)
 				break;
 			case ATTACK_TYPE::THROW:
 			{
-				monster->SetDead();
-				Exit();
+				if (GetCollider()->GetScale().x == 80.f)
+				{
+					float lengthX = abs(_pOther->GetFinalPos().x
+						- GetPos().x) - _pOther->GetScale().x;
+					float lengthY = abs(_pOther->GetFinalPos().y
+						- GetPos().y) - _pOther->GetScale().y;
+					if (m_fRange.x >= lengthX && m_fRange.y >= lengthY)
+					{
+						m_pThrowMon = monster->GetAnimator()->GetCurAnim();
+						monster->SetEaten(true);
+						Exit();
+					}
+				}
+				else
+				{
+					monster->SetDead();
+					Exit();
+				}
 			}
 			default:
 				break;

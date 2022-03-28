@@ -29,7 +29,7 @@ enum class MON_TYPE
 
 class CMonster : public CGameObject
 {
-private:
+private:	
 	MON_TYPE m_eType;
 	tMonInfo m_tInfo;
 	AI* m_pAI;
