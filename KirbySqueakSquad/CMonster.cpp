@@ -12,6 +12,7 @@
 #include "CRigidBody.h"
 #include "CGravity.h"
 #include "CScene.h"
+#include "CTile.h"
 #include "CInhaleState.h"
 
 CMonster::CMonster()
@@ -146,7 +147,7 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 		info.fAttRange = 50.f;
 		info.fRecogRange = 300.f;
 		info.fHP = 100.f;
-		info.fSpeed = 5.f;
+		info.fSpeed = 25.f;
 
 		AI* pAI = new AI;
 		pAI->AddState(new CIdleState(STATE_MON::IDLE));
@@ -203,12 +204,61 @@ void CMonster::render()
 	pos = CCameraManager::getInst()->GetRenderPos(pos);
 
 	component_render();
+	TileCheckRender();
 }
 
 void CMonster::update()
 {
+	TileCheck();
 	if (nullptr != GetAnimator())
 		GetAnimator()->update();
+}
+
+void CMonster::TileCheckRender()
+{
+	float fRealTimeLength;
+	float fLengthX;
+	float fLengthY;
+	CCollider* m_pPlayerCollider = GetCollider();
+	for (int i = 0; i < 8; ++i)
+	{
+		if (nullptr != m_pTileCollider[i])
+		{
+			fLengthX = (m_pPlayerCollider->GetFinalPos() - m_pTileCollider[i]->GetFinalPos()).x;
+			fLengthY = (m_pPlayerCollider->GetFinalPos() - m_pTileCollider[i]->GetFinalPos()).y;
+			fRealTimeLength = fPoint(abs(fLengthX), abs(fLengthY)).Length();
+			if (abs(fLengthX) > abs(fLengthY))
+			{
+				m_fTileLength = fPoint(
+					abs((m_pTileCollider[i]->GetScale() / 2).x
+						+ (m_pPlayerCollider->GetScale() / 2).x)
+					, abs(fLengthY)).Length();
+			}
+			else
+			{
+				m_fTileLength = fPoint(
+					abs(fLengthX)
+					, abs((m_pTileCollider[i]->GetScale() / 2).y
+						+ (m_pPlayerCollider->GetScale() / 2).y)).Length();
+			}
+			if (m_fTileLength >= fRealTimeLength)
+			{
+
+				COLORREF rgb = RGB(0, 0, 0);
+				rgb = RGB(255, 0, 255);
+
+				fPoint fptRenderStartPos = CCameraManager::getInst()->GetRenderPos(m_pTileCollider[i]->GetFinalPos());
+				fPoint fptRenderFinalPos = CCameraManager::getInst()->GetRenderPos(m_pPlayerCollider->GetFinalPos());
+
+				CRenderManager::getInst()->RenderLine(
+					fptRenderStartPos,
+					fptRenderFinalPos,
+					rgb,
+					2.f
+				);
+			}
+		}
+	}
 }
 
 void CMonster::finalupdate()
@@ -237,6 +287,167 @@ float CMonster::GetSpeed()
 const tMonInfo& CMonster::GetMonInfo()
 {
 	return m_tInfo;
+}
+
+void CMonster::AddTileCollider(CCollider* ground)
+{
+	bool istrue = false;
+	for (int i = 0; i < 8; ++i)
+	{
+		if (nullptr != m_pTileCollider[i])
+		{
+			if (m_pTileCollider[i] == ground)
+				istrue = true;
+			break;
+		}
+	}
+	if (!istrue)
+	{
+		for (int i = 0; i < 8; ++i)
+		{
+			if (nullptr == m_pTileCollider[i])
+			{
+				m_pTileCollider[i] = ground;
+				break;
+			}
+		}
+	}
+}
+
+void CMonster::TileCheck()
+{
+	m_tInfo.g_bIsDown = false;
+	m_tInfo.g_bIsUp = false;
+	m_tInfo.g_bIsRight = false;
+	m_tInfo.g_bIsLeft = false;
+
+	fPoint fLeftUpPos = fPoint(-1, -1).normalize();
+	fPoint fRightDownPos = fPoint(1, 1).normalize();
+	float fRealTimeLength;
+	float fLengthX;
+	float fLengthY;
+	CCollider* m_pPlayerCollider = GetCollider();
+	float fDirX = GetRigidBody()->GetDir().x;
+	float fDirY = GetRigidBody()->GetDir().y;
+
+	for (int i = 0; i < 8; ++i)
+	{
+		if (nullptr != m_pTileCollider[i])
+		{
+			fLengthX = (m_pPlayerCollider->GetFinalPos() - m_pTileCollider[i]->GetFinalPos()).x;
+			fLengthY = (m_pPlayerCollider->GetFinalPos() - m_pTileCollider[i]->GetFinalPos()).y;
+			fRealTimeLength = fPoint(abs(fLengthX), abs(fLengthY)).Length();
+			CTile* tile = (CTile*)m_pTileCollider[i]->GetObj();
+			if (abs(fLengthX) > abs(fLengthY))
+			{
+				m_fTileLength = fPoint(
+					abs((m_pTileCollider[i]->GetScale() / 2).x
+						+ (m_pPlayerCollider->GetScale() / 2).x)
+					, abs(fLengthY)).Length();
+			}
+			else
+			{
+				m_fTileLength = fPoint(
+					abs(fLengthX)
+					, abs((m_pTileCollider[i]->GetScale() / 2).y
+						+ (m_pPlayerCollider->GetScale() / 2).y)).Length();
+			}
+
+			if (m_fTileLength >= fRealTimeLength)
+			{
+				fPoint fPlayerDisPos = fPoint(fLengthX, fLengthY).normalize();
+
+				if (fPlayerDisPos.y <= fLeftUpPos.y)
+				{
+					if (fDirY >= 0)
+					{
+						GetRigidBody()->SetVelocity(
+							fPoint(GetRigidBody()->GetVelocity().x, 0));
+
+
+						SetPos(fPoint(GetPos().x
+							, (m_pTileCollider[i]->GetFinalPos().y)
+							- ((m_pPlayerCollider->GetOffsetPos().y)
+								+ (m_pPlayerCollider->GetScale() / 2).y
+								+ (m_pTileCollider[i]->GetScale() / 2).y)));
+						m_tInfo.g_bIsDown = true;
+						GetGravity()->SetIsGround(true);
+					}
+				}
+				else if (tile->GetGroup() == GROUP_TILE::GROUND)
+				{
+					/*if (fPlayerDisPos.y >= fRightDownPos.y)
+					{
+						if (fDirY < 0)
+						{
+							GetRigidBody()->SetVelocity(
+								fPoint(GetRigidBody()->GetVelocity().x, 0));
+
+
+							SetPos(fPoint(GetPos().x
+								, (m_pTileCollider[i]->GetFinalPos().y)
+								+ ((m_pPlayerCollider->GetOffsetPos().y)
+									+ (m_pPlayerCollider->GetScale() / 2).y
+									+ (m_pTileCollider[i]->GetScale() / 2).y)));
+						}
+
+						m_tInfo.g_bIsUp = true;
+					}
+					else */
+					if (fPlayerDisPos.x < fLeftUpPos.x)
+					{
+						if (fDirX > 0)
+						{
+							GetRigidBody()->SetVelocity(
+								fPoint(0, GetRigidBody()->GetVelocity().y));
+
+
+							SetPos(fPoint(
+								(m_pTileCollider[i]->GetFinalPos().x)
+								- ((m_pPlayerCollider->GetOffsetPos().x)
+									+ (m_pPlayerCollider->GetScale() / 2).x
+									+ (m_pTileCollider[i]->GetScale() / 2).x)
+								, GetPos().y));
+
+						}
+
+						m_tInfo.g_bIsRight = true;
+					}
+					else if (fPlayerDisPos.x > fRightDownPos.x)
+					{
+						if (fDirX < 0)
+						{
+							GetRigidBody()->SetVelocity(
+								fPoint(0, GetRigidBody()->GetVelocity().y));
+
+
+							SetPos(fPoint(
+								(m_pTileCollider[i]->GetFinalPos().x)
+								+ ((m_pPlayerCollider->GetOffsetPos().x)
+									+ (m_pPlayerCollider->GetScale() / 2).x
+									+ (m_pTileCollider[i]->GetScale() / 2).x)
+								, GetPos().y));
+
+						}
+
+						m_tInfo.g_bIsLeft = true;
+					}
+				}
+				else
+				{
+					m_pTileCollider[i] = nullptr;
+				}
+			}
+			else
+			{
+				m_pTileCollider[i] = nullptr;
+			}
+		}
+	}
+	if (!m_tInfo.g_bIsDown)
+	{
+		GetGravity()->SetIsGround(false);
+	}
 }
 
 void CMonster::SetIsEaten(bool isEaten)
@@ -300,5 +511,13 @@ void CMonster::OnCollisionEnter(CCollider* pOther)
 		m_tInfo.fHP -= 1;
 		if (m_tInfo.fHP <= 0)
 			DeleteObj(this);
+	}
+}
+
+void CMonster::OnCollision(CCollider* Other)
+{
+	if (Other->GetObj()->GetGroup() == GROUP_GAMEOBJ::TILE)
+	{
+		AddTileCollider((CCollider*)Other);
 	}
 }

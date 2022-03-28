@@ -25,11 +25,11 @@ void CScene_Stage1::Enter()
 {
 	// 타일 로딩
 	wstring path = CPathManager::getInst()->GetContentPath();
-	path += L"tile\\stage2Map.tile";
+	path += L"tile\\stage1Map.tile";
 	LoadTile(path);
 
 	CMap* map = new CMap;
-	map->Load(L"Map_Start", L"texture\\map\\stage2.png");
+	map->Load(L"Map_Start", L"texture\\map\\stage1.png");
 	AddObject(map, GROUP_GAMEOBJ::MAP);
 	
 	CBackGround* backGround = new CBackGround;
@@ -48,6 +48,7 @@ void CScene_Stage1::Enter()
 
 	CCollisionManager::getInst()->CheckGroup(GROUP_GAMEOBJ::PLAYER, GROUP_GAMEOBJ::TILE);
 	CCollisionManager::getInst()->CheckGroup(GROUP_GAMEOBJ::PLAYER, GROUP_GAMEOBJ::MONSTER);
+	CCollisionManager::getInst()->CheckGroup(GROUP_GAMEOBJ::MONSTER, GROUP_GAMEOBJ::TILE);
 	// Camera Look 지정
 	CCameraManager::getInst()->SetTargetObj(pPlayer);
 	//CCameraManager::getInst()->SetLookAt(fPoint(WINSIZEX / 2.f, WINSIZEY / 2.f));

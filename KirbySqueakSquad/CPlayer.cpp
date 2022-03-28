@@ -392,12 +392,6 @@ PLAYERINFO& CPlayer::GetPlaeyrInfo()
 }
 
 
-
-CCollider* CPlayer::GetGround()
-{
-	return *m_pTileCollider;
-}
-
 void CPlayer::AddTileCollider(CCollider* ground)
 {
 	bool istrue = false;
@@ -493,9 +487,9 @@ void CPlayer::TileCheck()
 							- ((m_pPlayerCollider->GetOffsetPos().y)
 								+ (m_pPlayerCollider->GetScale() / 2).y
 								+ (m_pTileCollider[i]->GetScale() / 2).y)));
+						info.g_bIsDown = true;
+						GetGravity()->SetIsGround(true);
 					}
-					info.g_bIsDown = true;
-					GetGravity()->SetIsGround(true);
 				}
 				else if (tile->GetGroup() == GROUP_TILE::GROUND)
 				{

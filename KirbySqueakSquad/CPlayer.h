@@ -138,7 +138,6 @@ public:
 	const PLAYERANIM& GetAnimString();
 
 
-	CCollider* GetGround();
 	void AddTileCollider(CCollider* ground);
 	void TileCheck();
 

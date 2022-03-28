@@ -26,6 +26,9 @@ void CTraceState::update()
 
 	fVec2 fvDiff = fptPlayerPos - fptMonsterPos;
 	float fLen = fvDiff.Length();
+
+	if (pMonster->GetIsEaten())
+		ChangeAIState(GetOwnerAI(), STATE_MON::INHALE);
 	if (fLen >= pMonster->GetMonInfo().fRecogRange)
 	{
 		ChangeAIState(GetOwnerAI(), STATE_MON::IDLE);
@@ -33,7 +36,7 @@ void CTraceState::update()
 
 	fPoint pos = pMonster->GetPos();
 	pos += fvDiff.normalize() * pMonster->GetSpeed() * fDT;
-	pMonster->GetRigidBody()->AddVelocity(fPoint((fvDiff.normalize() * pMonster->GetSpeed()).x, 0));
+	pMonster->GetRigidBody()->SetVelocity(fPoint((fvDiff.normalize() * pMonster->GetSpeed()).x, pMonster->GetRigidBody()->GetVelocity().y));
 }
 
 void CTraceState::Enter()

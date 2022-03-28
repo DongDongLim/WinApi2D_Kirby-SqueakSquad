@@ -11,6 +11,11 @@ struct tMonInfo
 	float fRecogRange;
 	float fAttRange;
 	float fAtt;
+
+	bool g_bIsRight = false;
+	bool g_bIsUp = false;
+	bool g_bIsDown = false;
+	bool g_bIsLeft = false;
 };
 
 enum class MON_TYPE
@@ -31,6 +36,11 @@ private:
 	bool m_bIsEaten;
 	float m_fRegenPosX;
 
+	// 타일과의 거리체크
+	float m_fTileLength;
+
+	//한번에 만나는 타일은 최대 8개임;
+	CCollider* m_pTileCollider[8];
 public:
 	CMonster();
 	virtual ~CMonster();
@@ -41,10 +51,15 @@ public:
 
 	virtual void render();
 	virtual void update();
+	void TileCheckRender();
 	virtual void finalupdate();
 
 	float GetSpeed();
 	const tMonInfo& GetMonInfo();
+
+	void AddTileCollider(CCollider* ground);
+	void TileCheck();
+
 
 	void SetIsEaten(bool isEaten);
 	void SetSpeed(float speed);
@@ -59,5 +74,6 @@ public:
 	float GetRegenPosX();
 
 	void OnCollisionEnter(CCollider* pOther);
+	virtual void OnCollision(CCollider* Other);
 };
 
