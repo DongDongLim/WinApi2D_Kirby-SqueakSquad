@@ -266,6 +266,7 @@ CPlayer::CPlayer()
 	CreateRigidBody();
 	CRigidBody* rigid = GetRigidBody();
 	rigid->SetMass(1);
+	rigid->SetFricCoeff(150.f);
 
 	// ป๓ลย
 	CPlayerState* pAnim = new CPlayerAnim();

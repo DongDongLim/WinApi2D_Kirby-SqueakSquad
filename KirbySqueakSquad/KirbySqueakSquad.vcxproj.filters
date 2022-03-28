@@ -249,6 +249,9 @@
     <ClInclude Include="CAnimObj.h">
       <Filter>Object\Tile</Filter>
     </ClInclude>
+    <ClInclude Include="CInhaleState.h">
+      <Filter>Engin\Component\AI\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KirbySqueakSquad.cpp">
@@ -416,6 +419,9 @@
     <ClCompile Include="CAnimObj.cpp">
       <Filter>Object\Tile</Filter>
     </ClCompile>
+    <ClCompile Include="CInhaleState.cpp">
+      <Filter>Engin\Component\AI\State</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="KirbySqueakSquad.rc">
@@ -431,6 +437,8 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram.cd">
+      <Filter>헤더 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>
