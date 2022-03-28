@@ -23,7 +23,7 @@ void CPlayerFly::Anim()
 {
 	if (m_bIsActive)
 	{
-		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() != L"Up")
+		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() != m_pPlayer->GetAnimString().g_wUP)
 		{
 			if (Key(VK_UP) || Key('X') || Key('V') || KeyDown('X') || KeyDown('V'))
 			{
@@ -55,7 +55,7 @@ void CPlayerFly::KeyUpdate()
 		{
 			m_pPlayer->GetRigidBody()->SetVelocity(fPoint(m_pPlayer->GetRigidBody()->GetVelocity().x, -150.f));
 		}
-		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() != L"Up")
+		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() != m_pPlayer->GetAnimString().g_wUP)
 		{
 			m_fKeepTimer = m_fAnimSpeed;
 		}

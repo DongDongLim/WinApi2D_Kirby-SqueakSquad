@@ -2,6 +2,7 @@
 #include "CTraceState.h"
 #include "CPlayer.h"
 #include "CMonster.h"
+#include "CRigidBody.h"
 
 CTraceState::CTraceState(STATE_MON state)
 	: CState(state)
@@ -27,17 +28,12 @@ void CTraceState::update()
 	float fLen = fvDiff.Length();
 	if (fLen >= pMonster->GetMonInfo().fRecogRange)
 	{
-		//ChangeAIState(GetOwnerAI(), STATE_MON::IDLE);
+		ChangeAIState(GetOwnerAI(), STATE_MON::IDLE);
 	}
 
 	fPoint pos = pMonster->GetPos();
-	pos += fvDiff.normalize() * 100 * fDT;
-	pMonster->SetPos(pos);
-	if (fLen < 8.f)
-	{
-		pMonster->SetDead();
-		ChangeAIState(GetOwnerAI(), STATE_MON::DEAD);
-	}
+	pos += fvDiff.normalize() * pMonster->GetSpeed() * fDT;
+	pMonster->GetRigidBody()->AddVelocity(fPoint((fvDiff.normalize() * pMonster->GetSpeed()).x, 0));
 }
 
 void CTraceState::Enter()

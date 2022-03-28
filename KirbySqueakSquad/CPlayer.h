@@ -113,13 +113,11 @@ private:
 	list<COLLIDER_FUNC> m_arrExitFunc;
 	DWORD_PTR m_colliderExitState;
 
-	// 땅과의 거리체크
-	float m_fGroundLength;
-	// 벽과의 거리체크
-	float m_fWallLength;
+	// 타일과의 거리체크
+	float m_fTileLength;
 
-	//한번에 만나는 벽은 최대 8개임;
-	CCollider* m_pGroundCollider[8];
+	//한번에 만나는 타일은 최대 8개임;
+	CCollider* m_pTileCollider[8];
 
 	void SetAnim();
 
@@ -131,7 +129,7 @@ public:
 	
 	virtual void update();
 	virtual void render();
-	void GroundCheckRender();
+	void TileCheckRender();
 
 	ATTACK_TYPE GetAttackType();
 
@@ -141,8 +139,8 @@ public:
 
 
 	CCollider* GetGround();
-	void AddGroundCollider(CCollider* ground);
-	void GroundCheck();
+	void AddTileCollider(CCollider* ground);
+	void TileCheck();
 
 	void SetAttackType(ATTACK_TYPE type);
 	void SetMonType(MON_TYPE type);

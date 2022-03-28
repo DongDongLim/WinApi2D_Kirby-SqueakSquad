@@ -10,7 +10,9 @@
 #include "CDeadState.h"
 #include "CGravity.h"
 #include "CRigidBody.h"
+#include "CGravity.h"
 #include "CScene.h"
+#include "CInhaleState.h"
 
 CMonster::CMonster()
 {
@@ -20,6 +22,11 @@ CMonster::CMonster()
 	SetName(L"Monster");
 
 	CreateCollider();
+	CreateGravity();
+	CreateRigidBody();
+	GetRigidBody()->SetMass(1);
+	GetRigidBody()->SetMaxPositiveVelocity(fPoint(50.f, 200.f));
+	GetRigidBody()->SetMaxNegativeVelocity(fPoint(-50.f, -200.f));
 	CreateAnimator();	
 }
 
@@ -67,6 +74,7 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 		pAI->AddState(new CIdleState(STATE_MON::IDLE));
 		pAI->AddState(new CTraceState(STATE_MON::TRACE));
 		pAI->AddState(new CDeadState(STATE_MON::DEAD));
+		pAI->AddState(new CInhaleState(STATE_MON::INHALE));
 		pAI->SetCurState(STATE_MON::IDLE);
 		pAI->SetStartPos(pMon->GetPos());
 		pMon->SetMonInfo(info);
@@ -88,12 +96,13 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 		info.fAttRange = 50.f;
 		info.fRecogRange = 300.f;
 		info.fHP = 100.f;
-		info.fSpeed = 150.f;
+		info.fSpeed = 5.f;
 
 		AI* pAI = new AI;
 		pAI->AddState(new CIdleState(STATE_MON::IDLE));
 		pAI->AddState(new CTraceState(STATE_MON::TRACE));
 		pAI->AddState(new CDeadState(STATE_MON::DEAD));
+		pAI->AddState(new CInhaleState(STATE_MON::INHALE));
 		pAI->SetCurState(STATE_MON::IDLE);
 		pAI->SetStartPos(pMon->GetPos());
 		pMon->SetMonInfo(info);
@@ -131,17 +140,19 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 		pMon->SetType(type);
 		pMon->SetScale(fPoint(54.f, 54.f));
 		pMon->GetCollider()->SetScale(fPoint(33.f, 33.f));
+
 		tMonInfo info = {};
 		info.fAtt = 10.f;
 		info.fAttRange = 50.f;
 		info.fRecogRange = 300.f;
 		info.fHP = 100.f;
-		info.fSpeed = 150.f;
+		info.fSpeed = 5.f;
 
 		AI* pAI = new AI;
 		pAI->AddState(new CIdleState(STATE_MON::IDLE));
 		pAI->AddState(new CTraceState(STATE_MON::TRACE));
 		pAI->AddState(new CDeadState(STATE_MON::DEAD));
+		pAI->AddState(new CInhaleState(STATE_MON::INHALE));
 		pAI->SetCurState(STATE_MON::IDLE);
 		pAI->SetStartPos(pMon->GetPos());
 		pMon->SetMonInfo(info);
@@ -263,6 +274,7 @@ void CMonster::SetRegenPosX(float posX)
 	m_fRegenPosX = posX;
 }
 
+
 MON_TYPE CMonster::GetType()
 {
 	return m_eType;
@@ -277,6 +289,7 @@ float CMonster::GetRegenPosX()
 {
 	return m_fRegenPosX;
 }
+
 
 void CMonster::OnCollisionEnter(CCollider* pOther)
 {

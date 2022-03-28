@@ -19,20 +19,19 @@ void CIdleState::update()
 		return;
 	CMonster* pMonster = GetMonster();
 	if (pMonster->GetIsEaten())
-		ChangeAIState(GetOwnerAI(), STATE_MON::TRACE);
+		ChangeAIState(GetOwnerAI(), STATE_MON::INHALE);
 	if(pMonster->isDead())
 		ChangeAIState(GetOwnerAI(), STATE_MON::DEAD);
-	//fPoint fptPlayerPos = pPlayer->GetPos();
+	fPoint fptPlayerPos = pPlayer->GetPos();
 
-	//CMonster* pMonster = GetMonster();
-	//fPoint fptMonsterPos = pMonster->GetPos();
+	fPoint fptMonsterPos = pMonster->GetPos();
 
-	//fVec2 fvDiff = fptPlayerPos - fptMonsterPos;
-	//float fLen = fvDiff.Length();
-	//if (fLen < pMonster->GetMonInfo().fRecogRange)
-	//{
-	//	//ChangeAIState(GetOwnerAI(), STATE_MON::TRACE);
-	//}
+	fVec2 fvDiff = fptPlayerPos - fptMonsterPos;
+	float fLen = fvDiff.Length();
+	if (fLen < pMonster->GetMonInfo().fRecogRange)
+	{
+		ChangeAIState(GetOwnerAI(), STATE_MON::TRACE);
+	}
 
 }
 

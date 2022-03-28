@@ -93,6 +93,7 @@ enum class STATE_MON
 	ATT,
 	RUN,
 	DEAD,
+	INHALE,
 
 	SIZE,
 };
