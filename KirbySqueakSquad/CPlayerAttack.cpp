@@ -80,7 +80,7 @@ void CPlayerAttack::NomalAnim()
 	}
 	else
 	{
-		if (!Key('C'))
+		if (!Key('C') && !m_pPlayer->GetIsInhale())
 		{
 			m_pPlayer->GetAnimator()->Play(L"InHale3");
 			nomalanimtime = 0;
@@ -107,16 +107,39 @@ void CPlayerAttack::CutterAnim()
 
 void  CPlayerAttack::ThrowAnim()
 {
-	if (0 >= nomalanimtime)
+	if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackSet"
+		|| m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackSet0")
 	{
-		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackSet")
+		if (0 >= nomalanimtime)
 		{
-			m_pPlayer->GetAnimator()->Play(L"TAttackSet0");
+			if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackSet")
+			{
+				m_pPlayer->GetAnimator()->Play(L"TAttackSet0");
+			}
+		}
+		if (!Key('C') && !m_pPlayer->GetIsInhale())
+		{
+			Exit(PLAYERSTATE::IDLE);
 		}
 	}
-	if (!Key('C'))
+	else
 	{
-		Exit(PLAYERSTATE::IDLE);
+		if (Key(VK_UP))
+		{
+			m_pPlayer->GetAnimator()->Play(L"TAttackSetU");
+		}
+		else if (Key(VK_DOWN))
+		{
+			m_pPlayer->GetAnimator()->Play(L"TAttackSetD");
+		}
+		else
+		{
+			m_pPlayer->GetAnimator()->Play(L"TAttackSet");
+		}
+		if (KeyDown('C'))
+		{
+			Exit(PLAYERSTATE::IDLE);
+		}
 	}
 }
 

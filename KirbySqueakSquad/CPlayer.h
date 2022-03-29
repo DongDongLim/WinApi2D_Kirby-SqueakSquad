@@ -106,6 +106,8 @@ private:
 	
 	//const float m_fCommandTime = 0.2f;
 	bool m_bIsRight;
+	bool m_bISInhaleObj;
+
 	list<COLLIDER_FUNC> m_arrFunc;
 	DWORD_PTR m_colliderState;
 	list<COLLIDER_FUNC> m_arrEnterFunc;
@@ -145,9 +147,11 @@ public:
 	void SetMonType(MON_TYPE type);
 	void SetDir(bool dir);
 	void SetAnimString();
+	void SetIsInhale(bool isInhale);
 
 	MON_TYPE GetMonType();
 	bool GetDir();
+	bool GetIsInhale();
 
 
 	void SetCollisonCallBack(COLLIDER_FUNC pFunc, DWORD_PTR state);

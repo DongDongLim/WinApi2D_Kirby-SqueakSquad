@@ -58,6 +58,7 @@ public:
 	void ThrowSetting();
 	void MoveUpdate();
 
+
 	MOVETYPE GetMoveType();
 
 	void Enter();

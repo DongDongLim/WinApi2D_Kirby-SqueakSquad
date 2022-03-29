@@ -151,7 +151,7 @@ void CAttackObj::ThrowSetting()
 		GetCollider()->SetOffsetPos(fPoint(m_fDir.x * (m_pPlayer->GetCollider()->GetScale() / 2).x, 0.f));
 		GetRigidBody()->SetMaxPositiveVelocity(fPoint(200.f, 100.f));
 		GetRigidBody()->SetMaxNegativeVelocity(fPoint(-200.f, -100.f));
-		SetReverceVelocity(30.f);
+		SetReverceVelocity(50.f);
 		SetRange(fPoint(m_fDir.x * INF, 0.f));
 		SetStartPos(GetPos());
 		SetVelocity(30.f);
@@ -397,6 +397,7 @@ void CAttackObj::OnCollision(CCollider* _pOther)
 						- GetPos().y) - _pOther->GetScale().y;
 					if (m_fRange.x >= lengthX && m_fRange.y >= lengthY)
 					{
+						m_pPlayer->SetIsInhale(true);
 						monster->SetEaten(true);
 						Exit();
 					}
@@ -424,6 +425,7 @@ void CAttackObj::OnCollision(CCollider* _pOther)
 						- GetPos().y) - _pOther->GetScale().y;
 					if (m_fRange.x >= lengthX && m_fRange.y >= lengthY)
 					{
+						m_pPlayer->SetIsInhale(true);
 						monster->SetEaten(true);
 						Exit();
 					}

@@ -228,8 +228,6 @@ void CPlayer::SetAnim()
 }
 
 
-
-
 CPlayer::CPlayer()
 {
 	//m_bIsGroundCount = 0;
@@ -240,6 +238,7 @@ CPlayer::CPlayer()
 	m_colliderEnterState = 0;
 	m_colliderExitState = 0;
 	m_bIsRight = true;
+	m_bISInhaleObj = false;
 	for (int i = 0; i < 8; ++i)
 	{
 		m_pTileCollider[i] = nullptr;
@@ -645,9 +644,19 @@ void CPlayer::SetAnimString()
 	}
 }
 
+void CPlayer::SetIsInhale(bool isInhale)
+{
+	m_bISInhaleObj = isInhale;
+}
+
 bool CPlayer::GetDir()
 {
 	return m_bIsRight;
+}
+
+bool CPlayer::GetIsInhale()
+{
+	return m_bISInhaleObj;
 }
 
 void CPlayer::SetAttackType(ATTACK_TYPE type)
@@ -711,7 +720,8 @@ void CPlayer::OnCollisionEnter(CCollider* other)
 		CMonster* mon = (CMonster*)other->GetObj();
 		if (mon->GetIsEaten())
 		{
-			SetMonType(mon->GetType());
+			if (m_eAttackType == ATTACK_TYPE::NORMAL)
+				SetMonType(mon->GetType());
 			CStateManager::getInst()->LoadState(PLAYERSTATE::EAT);
 		}
 	}

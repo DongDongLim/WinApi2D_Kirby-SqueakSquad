@@ -30,23 +30,18 @@ void CPlayerEat::Anim()
 
 void CPlayerEat::update()
 {
-	if(m_pPlayer->GetAttackType() == ATTACK_TYPE::THROW)
-		Exit(PLAYERSTATE::ATTACK);
-	else
+	if (0 != nomalanimKeeptime)
 	{
-		if (0 != nomalanimKeeptime)
+		nomalanimtime -= fDT;
+		if (nomalanimtime <= 0)
 		{
-			nomalanimtime -= fDT;
-			if (nomalanimtime <= 0)
-			{
-				m_pPlayer->SetAttackType((ATTACK_TYPE)m_pPlayer->GetMonType());
-				Exit(PLAYERSTATE::IDLE);
-			}
+			m_pPlayer->SetAttackType((ATTACK_TYPE)m_pPlayer->GetMonType());
+			Exit(PLAYERSTATE::IDLE);
 		}
-		if (KeyDown('C'))
-		{
-			CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::ATTACK);
-		}
+	}
+	if (KeyDown('C'))
+	{
+		CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::ATTACK);
 	}
 }
 
@@ -55,6 +50,7 @@ void CPlayerEat::update()
 void CPlayerEat::Enter()
 {
 	m_bIsActive = true;
+	m_pPlayer->SetIsInhale(false);
 	switch (m_pPlayer->GetAttackType())
 	{
 	case ATTACK_TYPE::NORMAL:
@@ -75,7 +71,12 @@ void CPlayerEat::Enter()
 		m_pPlayer->GetRigidBody()->
 			SetVelocity(fPoint(0, m_pPlayer->GetRigidBody()->GetVelocity().y));
 		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::ATTACK))
-			CStateManager::getInst()->FindPlayeState(PLAYERSTATE::ATTACK)->Exit(PLAYERSTATE::END);
+		{
+			CStateManager::getInst()->FindPlayeState(PLAYERSTATE::ATTACK)->Enter();
+			Exit(PLAYERSTATE::END);
+		}
+		else
+			Exit(PLAYERSTATE::ATTACK);
 	}
 		break;
 	case ATTACK_TYPE::SIZE:
