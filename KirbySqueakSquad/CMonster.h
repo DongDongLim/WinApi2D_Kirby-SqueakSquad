@@ -27,9 +27,20 @@ enum class MON_TYPE
 	SIZE,
 };
 
+struct MonAnimString
+{
+	wstring Idle;
+	wstring Move;
+	wstring Attack0;
+	wstring Attack1;
+	wstring Damaged;
+
+};
+
 class CMonster : public CGameObject
 {
 private:	
+	MonAnimString m_stringInfo;
 	MON_TYPE m_eType;
 	tMonInfo m_tInfo;
 	AI* m_pAI;
@@ -68,10 +79,13 @@ public:
 	void SetEaten(bool isEaten);
 	void SetType(MON_TYPE type);
 	void SetRegenPosX(float posX);
+	void SetStringInfo();
 			
+	AI* GetAI();
 	MON_TYPE GetType();
 	bool GetIsEaten();
 	float GetRegenPosX();
+	MonAnimString GetStringInfo();
 
 	void OnCollisionEnter(CCollider* pOther);
 	virtual void OnCollision(CCollider* Other);

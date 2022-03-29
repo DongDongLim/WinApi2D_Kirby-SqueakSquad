@@ -2,6 +2,7 @@
 
 class AI;
 class CMonster;
+class CPlayer;
 
 class CState
 {
@@ -10,6 +11,9 @@ class CState
 private:
 	AI* m_pOwnerAI;
 	STATE_MON m_eState;
+protected:
+	CPlayer* m_pPlayer;
+	CMonster* m_pMonster;
 
 public:
 	CState(STATE_MON state);

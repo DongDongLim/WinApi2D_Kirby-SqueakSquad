@@ -88,6 +88,7 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 		pMon->SetGroup(GROUP_GAMEOBJ::MONSTER);
 		pMon->SetPos(pos);
 		pMon->SetType(type);
+		pMon->SetStringInfo();
 		pMon->SetScale(fPoint(32.f, 32.f));
 		pMon->GetCollider()->SetScale(fPoint(17.f, 17.f));
 		pMon->GetCollider()->SetOffsetPos(fPoint(0.f, 7.f));
@@ -98,16 +99,6 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 		info.fRecogRange = 100.f;
 		info.fHP = 100.f;
 		info.fSpeed = 5.f;
-
-		AI* pAI = new AI;
-		pAI->AddState(new CIdleState(STATE_MON::IDLE));
-		pAI->AddState(new CTraceState(STATE_MON::TRACE));
-		pAI->AddState(new CDeadState(STATE_MON::DEAD));
-		pAI->AddState(new CInhaleState(STATE_MON::INHALE));
-		pAI->SetCurState(STATE_MON::IDLE);
-		pAI->SetStartPos(pMon->GetPos());
-		pMon->SetMonInfo(info);
-		pMon->SetAI(pAI);
 
 		CD2DImage* pImg = CResourceManager::getInst()->
 			LoadD2DImage(L"CutterM", L"texture\\Animation\\CutterMonSprite.png");
@@ -130,7 +121,19 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 		path = keepPath;
 		path += L"anim\\CMonAttackEffect.Anim";
 		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg);
-		pMon->GetAnimator()->Play(L"CMonIdle");
+
+		AI* pAI = new AI;
+		pAI->AddState(new CIdleState(STATE_MON::IDLE));
+		pAI->AddState(new CTraceState(STATE_MON::TRACE));
+		pAI->AddState(new CDeadState(STATE_MON::DEAD));
+		pAI->AddState(new CInhaleState(STATE_MON::INHALE));
+		pAI->SetStartPos(pMon->GetPos());
+		pMon->SetMonInfo(info);
+		pMon->SetAI(pAI);
+		pAI->SetCurState(STATE_MON::IDLE);
+
+
+
 	}
 		break;
 	case MON_TYPE::THROW:
@@ -139,6 +142,7 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 		pMon->SetGroup(GROUP_GAMEOBJ::MONSTER);
 		pMon->SetPos(pos);
 		pMon->SetType(type);
+		pMon->SetStringInfo();
 		pMon->SetScale(fPoint(54.f, 54.f));
 		pMon->GetCollider()->SetScale(fPoint(33.f, 33.f));
 
@@ -149,15 +153,6 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 		info.fHP = 100.f;
 		info.fSpeed = 25.f;
 
-		AI* pAI = new AI;
-		pAI->AddState(new CIdleState(STATE_MON::IDLE));
-		pAI->AddState(new CTraceState(STATE_MON::TRACE));
-		pAI->AddState(new CDeadState(STATE_MON::DEAD));
-		pAI->AddState(new CInhaleState(STATE_MON::INHALE));
-		pAI->SetCurState(STATE_MON::IDLE);
-		pAI->SetStartPos(pMon->GetPos());
-		pMon->SetMonInfo(info);
-		pMon->SetAI(pAI);
 		CD2DImage* pImg = CResourceManager::getInst()->
 			LoadD2DImage(L"ThrowM", L"texture\\Animation\\ThrowMonSprite.png");
 		wstring path = CPathManager::getInst()->GetContentPath();
@@ -187,7 +182,17 @@ CMonster* CMonster::Create(MON_TYPE type, fPoint pos)
 		path = CPathManager::getInst()->GetContentPath();
 		path += L"anim\\TMonMove.Anim";
 		CSceneManager::getInst()->GetCurScene()->LoadAnim(path, pMon, pImg);
-		pMon->GetAnimator()->Play(L"TMonIdle");
+
+		AI* pAI = new AI;
+		pAI->AddState(new CIdleState(STATE_MON::IDLE));
+		pAI->AddState(new CTraceState(STATE_MON::TRACE));
+		pAI->AddState(new CDeadState(STATE_MON::DEAD));
+		pAI->AddState(new CInhaleState(STATE_MON::INHALE));
+		pAI->SetStartPos(pMon->GetPos());
+		pMon->SetMonInfo(info);
+		pMon->SetAI(pAI);
+		pAI->SetCurState(STATE_MON::IDLE);
+
 	}
 		break;
 	default:
@@ -485,6 +490,38 @@ void CMonster::SetRegenPosX(float posX)
 	m_fRegenPosX = posX;
 }
 
+void CMonster::SetStringInfo()
+{
+	switch (m_eType)
+	{
+	case MON_TYPE::NORMAL:
+		break;
+	case MON_TYPE::CUTTER:
+		m_stringInfo.Idle = L"CMonIdle";
+		m_stringInfo.Move = L"CMonMove";
+		m_stringInfo.Attack0 = L"CMonAttack0";
+		m_stringInfo.Attack1 = L"CMonAttack1";
+		m_stringInfo.Damaged = L"CMonDamage";
+		break;
+	case MON_TYPE::THROW:
+		m_stringInfo.Idle = L"TMonIdle";
+		m_stringInfo.Move = L"TMonMove";
+		m_stringInfo.Attack0 = L"TMonAttack0";
+		m_stringInfo.Attack1 = L"TMonAttack1";
+		m_stringInfo.Damaged = L"TMonDamage";
+		break;
+	case MON_TYPE::SIZE:
+		break;
+	default:
+		break;
+	}
+}
+
+
+AI* CMonster::GetAI()
+{
+	return m_pAI;
+}
 
 MON_TYPE CMonster::GetType()
 {
@@ -501,6 +538,11 @@ float CMonster::GetRegenPosX()
 	return m_fRegenPosX;
 }
 
+MonAnimString CMonster::GetStringInfo()
+{
+	return m_stringInfo;
+}
+
 
 void CMonster::OnCollisionEnter(CCollider* pOther)
 {
@@ -508,9 +550,7 @@ void CMonster::OnCollisionEnter(CCollider* pOther)
 
 	if (pOtherObj->GetName() == L"Missile_Player")
 	{
-		m_tInfo.fHP -= 1;
-		if (m_tInfo.fHP <= 0)
-			DeleteObj(this);
+
 	}
 }
 

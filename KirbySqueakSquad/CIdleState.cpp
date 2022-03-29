@@ -1,6 +1,7 @@
 #include "framework.h"
 #include "CIdleState.h"
 #include "CPlayer.h"
+#include "CAnimator.h"
 #include "CMonster.h"
 
 CIdleState::CIdleState(STATE_MON state)
@@ -14,21 +15,19 @@ CIdleState::~CIdleState()
 
 void CIdleState::update()
 {
-	CPlayer* pPlayer = CStateManager::getInst()->GetPlayer();
-	if (nullptr == pPlayer)
+	if (nullptr == m_pPlayer)
 		return;
-	CMonster* pMonster = GetMonster();
-	if (pMonster->GetIsEaten())
+	if (m_pMonster->GetIsEaten())
 		ChangeAIState(GetOwnerAI(), STATE_MON::INHALE);
-	if(pMonster->isDead())
+	if(m_pMonster->isDead())
 		ChangeAIState(GetOwnerAI(), STATE_MON::DEAD);
-	fPoint fptPlayerPos = pPlayer->GetPos();
+	fPoint fptPlayerPos = m_pPlayer->GetPos();
 
-	fPoint fptMonsterPos = pMonster->GetPos();
+	fPoint fptMonsterPos = m_pMonster->GetPos();
 
 	fVec2 fvDiff = fptPlayerPos - fptMonsterPos;
 	float fLen = fvDiff.Length();
-	if (fLen < pMonster->GetMonInfo().fRecogRange)
+	if (fLen < m_pMonster->GetMonInfo().fRecogRange)
 	{
 		ChangeAIState(GetOwnerAI(), STATE_MON::TRACE);
 	}
@@ -37,6 +36,8 @@ void CIdleState::update()
 
 void CIdleState::Enter()
 {
+	m_pMonster = GetMonster();
+	m_pMonster->GetAnimator()->Play(m_pMonster->GetStringInfo().Idle);
 }
 
 void CIdleState::Exit()

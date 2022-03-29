@@ -46,7 +46,8 @@ CMonster* AI::GetOwnerAI()
 
 void AI::SetCurState(STATE_MON state)
 {
-	m_pCurState = GetState(state);
+	m_pCurState = GetState(state); 
+	m_pCurState->Enter();
 	assert(m_pCurState);
 }
 

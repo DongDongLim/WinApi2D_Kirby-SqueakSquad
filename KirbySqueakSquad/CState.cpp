@@ -7,6 +7,7 @@ CState::CState(STATE_MON state)
 {
 	m_pOwnerAI = nullptr;
 	m_eState = state;
+	m_pPlayer = CStateManager::getInst()->GetPlayer();
 }
 
 CState::~CState()

@@ -3,6 +3,7 @@
 #include "CPlayer.h"
 #include "CMonster.h"
 #include "AI.h"
+#include "CAnimator.h"
 
 CDeadState::CDeadState(STATE_MON state)
 	: CState(state)
@@ -15,11 +16,9 @@ CDeadState::~CDeadState()
 
 void CDeadState::update()
 {
-	CPlayer* pPlayer = CStateManager::getInst()->GetPlayer();
-	if (nullptr == pPlayer)
+	if (nullptr == m_pPlayer)
 		return;
-	CMonster* pMonster = GetMonster();
-	if ((pPlayer->GetPos().x < pMonster->GetRegenPosX() + 3.f) && (pPlayer->GetPos().x > pMonster->GetRegenPosX() - 3.f))
+	if ((m_pPlayer->GetPos().x < m_pMonster->GetRegenPosX() + 3.f) && (m_pPlayer->GetPos().x > m_pMonster->GetRegenPosX() - 3.f))
 	{
 		ChangeAIState(GetOwnerAI(), STATE_MON::IDLE);
 	}
@@ -27,13 +26,13 @@ void CDeadState::update()
 
 void CDeadState::Enter()
 {
+	m_pMonster = GetMonster();
+	m_pMonster->SetDead();
 }
 
 void CDeadState::Exit()
 {
-	CMonster* pMonster = GetMonster();
-
-	pMonster->SetLive();
-	pMonster->SetIsEaten(false);
-	pMonster->SetPos(GetOwnerAI()->GetStartPos());
+	m_pMonster->SetLive();
+	m_pMonster->SetIsEaten(false);
+	m_pMonster->SetPos(GetOwnerAI()->GetStartPos());
 }

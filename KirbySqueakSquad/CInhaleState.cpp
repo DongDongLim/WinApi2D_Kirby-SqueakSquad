@@ -2,6 +2,7 @@
 #include "CInhaleState.h"
 #include "CPlayer.h"
 #include "CMonster.h"
+#include "CAnimator.h"
 
 CInhaleState::CInhaleState(STATE_MON state)
 	: CState(state)
@@ -14,30 +15,36 @@ CInhaleState::~CInhaleState()
 
 void CInhaleState::update()
 {
-	CPlayer* pPlayer = CStateManager::getInst()->GetPlayer();
-	if (nullptr == pPlayer)
+	if (nullptr == m_pPlayer)
 		return;
 
-	fPoint fptPlayerPos = pPlayer->GetPos();
+	fPoint fptPlayerPos = m_pPlayer->GetPos();
 
-	CMonster* pMonster = GetMonster();
-	fPoint fptMonsterPos = pMonster->GetPos();
+	fPoint fptMonsterPos = m_pMonster->GetPos();
 
 	fVec2 fvDiff = fptPlayerPos - fptMonsterPos;
 	float fLen = fvDiff.Length();
 
-	fPoint pos = pMonster->GetPos();
+	fPoint pos = m_pMonster->GetPos();
 	pos += fvDiff.normalize() * 100 * fDT;
-	pMonster->SetPos(pos);
+	m_pMonster->SetPos(pos);
 	if (fLen < 8.f)
 	{
-		pMonster->SetDead();
-		ChangeAIState(GetOwnerAI(), STATE_MON::DEAD);
+		if (m_pPlayer->GetAttackType() == ATTACK_TYPE::THROW)
+		{
+
+		}
+		else
+		{
+			ChangeAIState(GetOwnerAI(), STATE_MON::DEAD);
+		}
 	}
 }
 
 void CInhaleState::Enter()
 {
+	m_pMonster = GetMonster();
+	m_pMonster->GetAnimator()->Play(m_pMonster->GetStringInfo().Damaged);
 }
 
 void CInhaleState::Exit()

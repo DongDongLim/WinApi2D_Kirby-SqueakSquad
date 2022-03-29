@@ -149,9 +149,9 @@ void CAttackObj::ThrowSetting()
 		m_eMoveType = MOVETYPE::VARIANCE;
 		GetCollider()->SetScale(fPoint(16.f, 16.f));
 		GetCollider()->SetOffsetPos(fPoint(m_fDir.x * (m_pPlayer->GetCollider()->GetScale() / 2).x, 0.f));
-		GetRigidBody()->SetMaxPositiveVelocity(fPoint(200.f, 75.f));
-		GetRigidBody()->SetMaxNegativeVelocity(fPoint(-200.f, -75.f));
-		SetReverceVelocity(50.f);
+		GetRigidBody()->SetMaxPositiveVelocity(fPoint(200.f, 100.f));
+		GetRigidBody()->SetMaxNegativeVelocity(fPoint(-200.f, -100.f));
+		SetReverceVelocity(30.f);
 		SetRange(fPoint(m_fDir.x * INF, 0.f));
 		SetStartPos(GetPos());
 		SetVelocity(30.f);
@@ -203,12 +203,12 @@ void CAttackObj::MoveUpdate()
 				{
 					if (realDis <= 5 * range)
 					{
-						GetRigidBody()->AddVelocity(fPoint(m_fDir.x * m_fVelocity, 0));
+						GetRigidBody()->AddVelocity(fPoint(m_fDir.x * m_fVelocity / 2, 0));
 					}
 					if (Key(VK_UP))
-						GetRigidBody()->AddForce(fPoint(0, -200.f));
+						GetRigidBody()->AddForce(fPoint(0, -300.f));
 					else if (Key(VK_DOWN))
-						GetRigidBody()->AddForce(fPoint(0, 200.f));
+						GetRigidBody()->AddForce(fPoint(0, 300.f));
 				}
 			}
 		}
@@ -403,14 +403,14 @@ void CAttackObj::OnCollision(CCollider* _pOther)
 				}
 				else
 				{
-					monster->SetDead();
+					ChangeAIState(monster->GetAI(), STATE_MON::DEAD);
 					Exit();
 				}
 			}
 			break;
 			case ATTACK_TYPE::CUTTER:
 			{
-				monster->SetDead();
+				ChangeAIState(monster->GetAI(), STATE_MON::DEAD);
 				Exit();
 			}
 				break;
@@ -430,7 +430,7 @@ void CAttackObj::OnCollision(CCollider* _pOther)
 				}
 				else
 				{
-					monster->SetDead();
+					ChangeAIState(monster->GetAI(), STATE_MON::DEAD);
 					Exit();
 				}
 			}
