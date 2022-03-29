@@ -470,7 +470,7 @@ void CPlayer::TileCheck()
 				{
 					if (tile->GetGroup() == GROUP_TILE::PLATFORM)
 					{
-						if ((m_fTileLength - fRealTimeLength) > 1.f)
+						if ((m_fTileLength - fRealTimeLength) > 1.f && fDirY <= 0.5f)
 						{
 							continue;
 						}

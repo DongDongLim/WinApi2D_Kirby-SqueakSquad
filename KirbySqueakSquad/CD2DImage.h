@@ -16,5 +16,6 @@ public:
 
 	int GetWidth();
 	int GetHeight();
+
 };
 

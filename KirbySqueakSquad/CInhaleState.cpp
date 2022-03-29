@@ -3,6 +3,7 @@
 #include "CPlayer.h"
 #include "CMonster.h"
 #include "CAnimator.h"
+#include "CGravity.h"
 
 CInhaleState::CInhaleState(STATE_MON state)
 	: CState(state)
@@ -45,6 +46,7 @@ void CInhaleState::Enter()
 {
 	m_pMonster = GetMonster();
 	m_pMonster->GetAnimator()->Play(m_pMonster->GetStringInfo().Damaged);
+	m_pMonster->SetGroundCheck(false);
 }
 
 void CInhaleState::Exit()

@@ -3,6 +3,7 @@
 #include "CPlayer.h"
 #include "CAnimator.h"
 #include "CMonster.h"
+#include "CGravity.h"
 
 CIdleState::CIdleState(STATE_MON state)
 	: CState(state)
@@ -38,6 +39,7 @@ void CIdleState::Enter()
 {
 	m_pMonster = GetMonster();
 	m_pMonster->GetAnimator()->Play(m_pMonster->GetStringInfo().Idle);
+	m_pMonster->SetGroundCheck(true);
 }
 
 void CIdleState::Exit()

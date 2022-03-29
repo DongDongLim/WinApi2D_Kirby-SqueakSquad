@@ -45,6 +45,7 @@ private:
 	tMonInfo m_tInfo;
 	AI* m_pAI;
 	bool m_bIsEaten;
+	bool m_bIsGroundCheck;
 	float m_fRegenPosX;
 
 	// 타일과의 거리체크
@@ -80,6 +81,7 @@ public:
 	void SetType(MON_TYPE type);
 	void SetRegenPosX(float posX);
 	void SetStringInfo();
+	void SetGroundCheck(bool isCheck);
 			
 	AI* GetAI();
 	MON_TYPE GetType();

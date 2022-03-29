@@ -124,21 +124,54 @@ void  CPlayerAttack::ThrowAnim()
 	}
 	else
 	{
-		if (Key(VK_UP))
+		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackU" ||
+			m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackD" ||
+			m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackN")
 		{
-			m_pPlayer->GetAnimator()->Play(L"TAttackSetU");
-		}
-		else if (Key(VK_DOWN))
-		{
-			m_pPlayer->GetAnimator()->Play(L"TAttackSetD");
+			if(nomalanimtime <= 0)
+				Exit(PLAYERSTATE::IDLE);
 		}
 		else
 		{
-			m_pPlayer->GetAnimator()->Play(L"TAttackSet");
-		}
-		if (KeyDown('C'))
-		{
-			Exit(PLAYERSTATE::IDLE);
+			if (Key(VK_UP))
+			{
+				if (KeyDown('C'))
+				{
+					m_pPlayer->GetAnimator()->Play(L"TAttackU");
+					nomalanimtime = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
+					nomalanimKeeptime = nomalanimtime;
+				}
+				else
+				{
+					m_pPlayer->GetAnimator()->Play(L"TAttackSetU");
+				}
+			}
+			else if (Key(VK_DOWN))
+			{
+				if (KeyDown('C'))
+				{
+					m_pPlayer->GetAnimator()->Play(L"TAttackD");
+					nomalanimtime = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
+					nomalanimKeeptime = nomalanimtime;
+				}
+				else
+				{
+					m_pPlayer->GetAnimator()->Play(L"TAttackSetD");
+				}
+			}
+			else
+			{
+				if (KeyDown('C'))
+				{
+					m_pPlayer->GetAnimator()->Play(L"TAttackN");
+					nomalanimtime = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
+					nomalanimKeeptime = nomalanimtime;
+				}
+				else
+				{
+					m_pPlayer->GetAnimator()->Play(L"TAttackSetN");
+				}
+			}
 		}
 	}
 }

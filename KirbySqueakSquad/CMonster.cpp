@@ -19,6 +19,7 @@ CMonster::CMonster()
 {
 	m_pAI = nullptr;
 	m_bIsEaten = false;
+	m_bIsGroundCheck = true;
 
 	SetName(L"Monster");
 
@@ -214,7 +215,8 @@ void CMonster::render()
 
 void CMonster::update()
 {
-	TileCheck();
+	if (m_bIsGroundCheck)
+		TileCheck();
 	if (nullptr != GetAnimator())
 		GetAnimator()->update();
 }
@@ -515,6 +517,11 @@ void CMonster::SetStringInfo()
 	default:
 		break;
 	}
+}
+
+void CMonster::SetGroundCheck(bool isCheck)
+{
+	m_bIsGroundCheck = isCheck;
 }
 
 

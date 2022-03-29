@@ -11,6 +11,8 @@ private:
 	int m_iX;
 	int m_iY;
 	int m_iIdx;			// 텍스쳐 인덱스
+	fPoint m_fLeftPos;
+	fPoint m_fRightPos;
 
 	GROUP_TILE m_group;
 
@@ -30,6 +32,7 @@ public:
 	void SetX(int x);
 	void SetY(int y);
 	void SetGroup(GROUP_TILE group);
+	void SetSlopePoint();
 
 	int GetIdx();
 	int GetX();

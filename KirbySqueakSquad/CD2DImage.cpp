@@ -29,3 +29,4 @@ int CD2DImage::GetHeight()
 {
 	return (int)m_pBitmap->GetSize().height;
 }
+

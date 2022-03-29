@@ -91,6 +91,11 @@ void CTile::SetGroup(GROUP_TILE group)
 	m_group = group;
 }
 
+void CTile::SetSlopePoint()
+{
+
+}
+
 int CTile::GetIdx()
 {
 	return m_iIdx;

@@ -26,6 +26,8 @@ void CPlayerEat::Anim()
 		nomalanimtime = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
 		nomalanimKeeptime = nomalanimtime;
 	}
+	if(m_pPlayer->GetAnimator()->GetCurAnim()->GetName() != L"Eat")
+		m_pPlayer->GetAnimator()->Play(L"Eating");
 }
 
 void CPlayerEat::update()
@@ -55,9 +57,9 @@ void CPlayerEat::Enter()
 	{
 	case ATTACK_TYPE::NORMAL:
 	{
-		m_pPlayer->GetAnimator()->Play(L"Eating");
 		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::ATTACK))
 			CStateManager::getInst()->FindPlayeState(PLAYERSTATE::ATTACK)->Exit(PLAYERSTATE::IDLE);
+		m_pPlayer->GetAnimator()->Play(L"Eating");
 	}
 		break;
 	case ATTACK_TYPE::CUTTER:
