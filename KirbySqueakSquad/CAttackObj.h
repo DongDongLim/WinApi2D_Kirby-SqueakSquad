@@ -26,7 +26,6 @@ class CAttackObj : public CGameObject
 {
 private:
 	CD2DImage* m_pImgEffect[(int)EFFECT_TYPE::SIZE];
-	CAnimation* m_pThrowMon;
 	MOVETYPE m_eMoveType;
 	CPlayer* m_pPlayer;
 	CPlayerAttack* m_pOwner;

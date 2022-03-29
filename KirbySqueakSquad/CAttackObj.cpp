@@ -143,7 +143,6 @@ void CAttackObj::ThrowSetting()
 	{
 		m_eMoveType = MOVETYPE::FIX;
 		GetCollider()->SetScale(fPoint(32.f, 32.f));
-		m_pThrowMon->render();
 	}
 	else
 	{
@@ -425,7 +424,6 @@ void CAttackObj::OnCollision(CCollider* _pOther)
 						- GetPos().y) - _pOther->GetScale().y;
 					if (m_fRange.x >= lengthX && m_fRange.y >= lengthY)
 					{
-						m_pThrowMon = monster->GetAnimator()->GetCurAnim();
 						monster->SetEaten(true);
 						Exit();
 					}
