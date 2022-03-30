@@ -20,6 +20,7 @@ CMonster::CMonster()
 	m_pAI = nullptr;
 	m_bIsEaten = false;
 	m_bIsGroundCheck = true;
+	m_pTargetObj = nullptr;
 
 	SetName(L"Monster");
 
@@ -524,6 +525,11 @@ void CMonster::SetGroundCheck(bool isCheck)
 	m_bIsGroundCheck = isCheck;
 }
 
+void CMonster::SetTarget(CGameObject* target)
+{
+	m_pTargetObj = target;
+}
+
 
 AI* CMonster::GetAI()
 {
@@ -548,6 +554,11 @@ float CMonster::GetRegenPosX()
 MonAnimString CMonster::GetStringInfo()
 {
 	return m_stringInfo;
+}
+
+CGameObject* CMonster::GetTarget()
+{
+	return m_pTargetObj;
 }
 
 

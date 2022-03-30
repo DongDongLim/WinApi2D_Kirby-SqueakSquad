@@ -22,6 +22,11 @@ void CInhaleState::update()
 	fPoint fptPlayerPos = m_pPlayer->GetPos();
 
 	fPoint fptMonsterPos = m_pMonster->GetPos();
+	
+	if (nullptr != m_pMonster->GetTarget())
+	{
+		fptPlayerPos = m_pMonster->GetTarget()->GetPos();
+	}
 
 	fVec2 fvDiff = fptPlayerPos - fptMonsterPos;
 	float fLen = fvDiff.Length();
@@ -33,7 +38,8 @@ void CInhaleState::update()
 	{
 		if (m_pPlayer->GetAttackType() == ATTACK_TYPE::THROW)
 		{
-
+			if(nullptr == m_pMonster->GetTarget())
+				ChangeAIState(GetOwnerAI(), STATE_MON::DEAD);
 		}
 		else
 		{

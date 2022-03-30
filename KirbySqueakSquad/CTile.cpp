@@ -108,6 +108,8 @@ void CTile::SetGroup(GROUP_TILE group)
 
 void CTile::SetSlopePoint()
 {
+	/* TODO : 씬이나 타일메니저 만들어서 하나에서 처리하도록 지금은 각 타일에서 타일을 모두 검사해 연산 낭비가 있음
+	*/
 	if (GROUP_TILE::SLOPE == m_group)
 	{
 		vector<CGameObject*> m_arrObj = CSceneManager::getInst()->GetCurScene()->GetGroupObject(GROUP_GAMEOBJ::TILE);

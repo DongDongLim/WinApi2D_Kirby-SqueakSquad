@@ -40,6 +40,7 @@ struct MonAnimString
 class CMonster : public CGameObject
 {
 private:	
+	CGameObject* m_pTargetObj;
 	MonAnimString m_stringInfo;
 	MON_TYPE m_eType;
 	tMonInfo m_tInfo;
@@ -82,12 +83,14 @@ public:
 	void SetRegenPosX(float posX);
 	void SetStringInfo();
 	void SetGroundCheck(bool isCheck);
+	void SetTarget(CGameObject* target);
 			
 	AI* GetAI();
 	MON_TYPE GetType();
 	bool GetIsEaten();
 	float GetRegenPosX();
 	MonAnimString GetStringInfo();
+	CGameObject* GetTarget();
 
 	void OnCollisionEnter(CCollider* pOther);
 	virtual void OnCollision(CCollider* Other);

@@ -47,7 +47,7 @@ void CScene_Stage1::Enter()
 	pPlayer->SetPos(fPoint(50, 96));
 	AddObject(pPlayer, GROUP_GAMEOBJ::PLAYER);
 
-	CMonster* pMon1 = CMonster::Create(MON_TYPE::CUTTER, fPoint(300.f, 128.5f));
+	CMonster* pMon1 = CMonster::Create(MON_TYPE::CUTTER, fPoint(200.f, 128.5f));
 	AddObject(pMon1, GROUP_GAMEOBJ::MONSTER);
 
 	CMonster* pMon2 = CMonster::Create(MON_TYPE::THROW, fPoint(230.f, 63.5f));

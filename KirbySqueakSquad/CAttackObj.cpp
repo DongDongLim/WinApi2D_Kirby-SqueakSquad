@@ -142,7 +142,9 @@ void CAttackObj::ThrowSetting()
 	else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackSet1")
 	{
 		m_eMoveType = MOVETYPE::FIX;
-		GetCollider()->SetScale(fPoint(32.f, 32.f));
+		GetCollider()->SetScale(fPoint(64.f, 64.f));
+		SetPos(fPoint(m_fDir.x * -(10.f + (m_pPlayer->GetCollider()->GetScale() / 2).x), 0.f));
+		GetCollider()->SetOffsetPos(fPoint(0.f, 0.f));
 	}
 	else
 	{
@@ -163,59 +165,96 @@ void CAttackObj::MoveUpdate()
 	switch (m_eMoveType)
 	{
 	case MOVETYPE::FIX:
-		SetPos(m_pPlayer->GetCollider()->GetFinalPos());
-		break;
-	case MOVETYPE::VARIANCE:
+		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackSetD")
+		{
+			SetPos(m_pPlayer->GetCollider()->GetFinalPos() - (fPoint(m_fDir.x * 1, 1) * 10.f));
+		}
+		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackSetU")
+		{
+			SetPos(m_pPlayer->GetCollider()->GetFinalPos() - (fPoint(m_fDir.x * 1, -1) * 10.f));
+		}
+		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackSetN")
+		{
+			SetPos(m_pPlayer->GetCollider()->GetFinalPos() - (fPoint(m_fDir.x * 1, 0) * 10.f));
+		}
+		else
+		{
+			SetPos(m_pPlayer->GetCollider()->GetFinalPos());
+		}
+
 		switch (m_pPlayer->GetAttackType())
 		{
 		case ATTACK_TYPE::NORMAL:
 		{
 		}
+		break;
 		case ATTACK_TYPE::CUTTER:
 		{
 		}
+		break;
 		case ATTACK_TYPE::THROW:
 		{
-			int dir = 0;
-			if (GetRigidBody()->GetDir().x > 0)
-				dir = 1;
-			else if (GetRigidBody()->GetDir().x < 0)
-				dir = -1;
-			float realDis = abs((GetPos() - m_fStartPos).Length());
-			float range = abs(m_fRange.Length());
-			if ((dir != 0) && (m_fDir.x != dir))
-			{
-				if (realDis >= abs(m_fDelateRange))
-					Exit();
-				else
-					GetRigidBody()->AddVelocity(fPoint(m_fDir.x * -m_fReverceVelocity, 0));
-			}
-			else
-			{
-				if (realDis >= range)
-				{
-					GetRigidBody()->AddVelocity(fPoint(m_fDir.x * -m_fReverceVelocity, 0));
-				}
-				else
-					GetRigidBody()->AddVelocity(fPoint(m_fDir.x * m_fVelocity, 0));
-
-				if (Key('C'))
-				{
-					if (realDis <= 5 * range)
-					{
-						GetRigidBody()->AddVelocity(fPoint(m_fDir.x * m_fVelocity / 2, 0));
-					}
-					if (Key(VK_UP))
-						GetRigidBody()->AddForce(fPoint(0, -300.f));
-					else if (Key(VK_DOWN))
-						GetRigidBody()->AddForce(fPoint(0, 300.f));
-				}
-			}
 		}
 		break;
 		default:
 			break;
 		}
+		break;
+	case MOVETYPE::VARIANCE:
+	{
+		int dir = 0;
+		if (GetRigidBody()->GetDir().x > 0)
+			dir = 1;
+		else if (GetRigidBody()->GetDir().x < 0)
+			dir = -1;
+		float realDis = abs((GetPos() - m_fStartPos).Length());
+		float range = abs(m_fRange.Length());
+		if ((dir != 0) && (m_fDir.x != dir))
+		{
+			if (realDis >= abs(m_fDelateRange))
+				Exit();
+			else
+				GetRigidBody()->AddVelocity(fPoint(m_fDir.x * -m_fReverceVelocity, 0));
+		}
+		else
+		{
+			if (realDis >= range)
+			{
+				GetRigidBody()->AddVelocity(fPoint(m_fDir.x * -m_fReverceVelocity, 0));
+			}
+			else
+				GetRigidBody()->AddVelocity(fPoint(m_fDir.x * m_fVelocity, 0));
+
+			if (Key('C'))
+			{
+				if (realDis <= 5 * range)
+				{
+					GetRigidBody()->AddVelocity(fPoint(m_fDir.x * m_fVelocity / 2, 0));
+				}
+				if (Key(VK_UP))
+					GetRigidBody()->AddForce(fPoint(0, -300.f));
+				else if (Key(VK_DOWN))
+					GetRigidBody()->AddForce(fPoint(0, 300.f));
+			}
+		}
+		switch (m_pPlayer->GetAttackType())
+		{
+		case ATTACK_TYPE::NORMAL:
+		{
+		}
+		break;
+		case ATTACK_TYPE::CUTTER:
+		{
+		}
+		break;
+		case ATTACK_TYPE::THROW:
+		{
+		}
+		break;
+		default:
+			break;
+		}
+	}
 		break;
 	case MOVETYPE::END:
 		break;
@@ -426,6 +465,7 @@ void CAttackObj::OnCollision(CCollider* _pOther)
 					if (m_fRange.x >= lengthX && m_fRange.y >= lengthY)
 					{
 						m_pPlayer->SetIsInhale(true);
+						monster->SetTarget(this);
 						monster->SetEaten(true);
 						Exit();
 					}

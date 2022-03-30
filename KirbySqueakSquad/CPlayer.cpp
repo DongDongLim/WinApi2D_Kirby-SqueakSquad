@@ -722,7 +722,7 @@ void CPlayer::OnCollisionEnter(CCollider* other)
 		{
 			if (m_eAttackType == ATTACK_TYPE::NORMAL)
 				SetMonType(mon->GetType());
-			CStateManager::getInst()->LoadState(PLAYERSTATE::EAT);
+			CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::EAT);
 		}
 	}
 

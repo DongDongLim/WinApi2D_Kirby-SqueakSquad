@@ -342,6 +342,10 @@ void CPlayerAttack::Enter()
 				break;
 			}
 		}
+		if (nullptr != CStateManager::getInst()->FindPlayeState(PLAYERSTATE::IDLE))
+		{
+			CStateManager::getInst()->FindPlayeState(PLAYERSTATE::IDLE)->Exit(PLAYERSTATE::END);
+		}
 	}
 	nomalanimtime = m_pPlayer->GetAnimator()->GetAnimSize() * m_pPlayer->GetAnimator()->GetFrameSpeed();
 	nomalanimKeeptime = nomalanimtime;

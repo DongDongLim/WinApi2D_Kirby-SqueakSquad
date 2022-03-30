@@ -94,6 +94,7 @@ enum class STATE_MON
 	RUN,
 	DEAD,
 	INHALE,
+	DAMAGED,
 
 	SIZE,
 };

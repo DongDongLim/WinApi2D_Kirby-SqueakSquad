@@ -252,9 +252,6 @@
     <ClInclude Include="CInhaleState.h">
       <Filter>Engin\Component\AI\State</Filter>
     </ClInclude>
-    <ClInclude Include="CDamagedState.h">
-      <Filter>Engin\Component\AI\State</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KirbySqueakSquad.cpp">
@@ -423,9 +420,6 @@
       <Filter>Object\Tile</Filter>
     </ClCompile>
     <ClCompile Include="CInhaleState.cpp">
-      <Filter>Engin\Component\AI\State</Filter>
-    </ClCompile>
-    <ClCompile Include="CDamagedState.cpp">
       <Filter>Engin\Component\AI\State</Filter>
     </ClCompile>
   </ItemGroup>
