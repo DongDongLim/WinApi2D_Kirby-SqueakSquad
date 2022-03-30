@@ -28,6 +28,13 @@ void CScene_Stage1::Enter()
 	path += L"tile\\stage2Map.tile";
 	LoadTile(path);
 
+	vector<CGameObject*> arrObj = GetGroupObject(GROUP_GAMEOBJ::TILE);
+	for (int i = 0; i < arrObj.size(); ++i)
+	{
+		CTile* tile = (CTile*)arrObj[i];
+		tile->SetSlopePoint();
+	}
+
 	CMap* map = new CMap;
 	map->Load(L"Map_Start", L"texture\\map\\stage2.png");
 	AddObject(map, GROUP_GAMEOBJ::MAP);

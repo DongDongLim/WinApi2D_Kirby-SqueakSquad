@@ -5,6 +5,7 @@
 #include "CCollider.h"
 #include "CGravity.h"
 #include "CPlayerState.h"
+#include "CScene.h"
 
 CTile::CTile()
 {
@@ -13,6 +14,8 @@ CTile::CTile()
 	m_iY = 0;
 	m_iIdx = 0;
 	m_group = GROUP_TILE::NONE;
+	m_fLeftPos = fPoint(0, 0);
+	m_fRightPos = fPoint(0, 0);
 	SetScale(fPoint(SIZE_TILE, SIZE_TILE));
 }
 
@@ -62,6 +65,18 @@ void CTile::render()
 			(iCurRow + 1) * fptScale.y
 		);
 	}
+	if (GROUP_TILE::SLOPE == m_group)
+	{
+		fPoint startPos = CCameraManager::getInst()->GetRenderPos(m_fLeftPos);
+		fPoint endPos = CCameraManager::getInst()->GetRenderPos(m_fRightPos);
+		CRenderManager::getInst()->RenderLine(
+			startPos,
+			endPos,
+			RGB(100, 255, 100),
+			2.f
+		);
+	}
+
 
 	component_render();
 }
@@ -93,7 +108,42 @@ void CTile::SetGroup(GROUP_TILE group)
 
 void CTile::SetSlopePoint()
 {
-
+	if (GROUP_TILE::SLOPE == m_group)
+	{
+		vector<CGameObject*> m_arrObj = CSceneManager::getInst()->GetCurScene()->GetGroupObject(GROUP_GAMEOBJ::TILE);
+		for (int i = m_arrObj.size() - 1; i >= 0; --i)
+		{
+			CTile* tile = (CTile*)m_arrObj[i];
+			if (((int)tile->GetPos().x == (int)GetPos().x - SIZE_TILE)
+				&& ((int)tile->GetPos().y == (int)GetPos().y + SIZE_TILE))
+			{
+				m_fLeftPos = fPoint(GetPos().x, GetPos().y + SIZE_TILE);
+				m_fRightPos = fPoint(GetPos().x + SIZE_TILE, GetPos().y + SIZE_TILE/2);
+				break;
+			}
+			else if (((int)tile->GetPos().x == ((int)GetPos().x - SIZE_TILE)
+				&& (int)tile->GetPos().y == (int)GetPos().y) && GROUP_TILE::SLOPE == tile->GetGroup())
+			{
+				m_fLeftPos = fPoint(GetPos().x, GetPos().y + SIZE_TILE / 2);
+				m_fRightPos = fPoint(GetPos().x + SIZE_TILE, GetPos().y);
+				break;
+			}
+			else if ((int)tile->GetPos().x == ((int)GetPos().x + SIZE_TILE)
+					&& (int)tile->GetPos().y == ((int)GetPos().y + SIZE_TILE))
+			{
+				m_fLeftPos = fPoint(GetPos().x, GetPos().y + SIZE_TILE / 2);
+				m_fRightPos = fPoint(GetPos().x + SIZE_TILE, GetPos().y + SIZE_TILE);
+				break;
+			}
+			else if (((int)tile->GetPos().x == ((int)GetPos().x + SIZE_TILE)
+				&& (int)tile->GetPos().y == (int)GetPos().y) && GROUP_TILE::SLOPE == tile->GetGroup())
+			{
+				m_fLeftPos = fPoint(GetPos().x, GetPos().y);
+				m_fRightPos = fPoint(GetPos().x + SIZE_TILE, GetPos().y + SIZE_TILE / 2);
+				break;
+			}
+		}
+	}
 }
 
 int CTile::GetIdx()
@@ -115,6 +165,7 @@ GROUP_TILE CTile::GetGroup()
 {
 	return m_group;
 }
+
 
 void CTile::Save(FILE* pFile)
 {

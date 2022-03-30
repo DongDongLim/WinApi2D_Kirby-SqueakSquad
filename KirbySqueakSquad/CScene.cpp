@@ -152,7 +152,7 @@ void CScene::LoadTile(const wstring& strPath)
         CTile* newTile = new CTile;
         newTile->Load(pFile);
         newTile->SetD2DImage(pImg);
-        newTile->SetPos(fPoint((float)(newTile->GetX() * CTile::SIZE_TILE), (float)(newTile->GetY() * CTile::SIZE_TILE)));
+        newTile->SetPos(fPoint((int)(newTile->GetX() * CTile::SIZE_TILE), (int)(newTile->GetY() * CTile::SIZE_TILE)));
 
         if (GROUP_TILE::SLOPE == newTile->GetGroup())
         {
@@ -170,7 +170,6 @@ void CScene::LoadTile(const wstring& strPath)
 
         AddObject(newTile, GROUP_GAMEOBJ::TILE);
     }
-
     fclose(pFile);
 }
 

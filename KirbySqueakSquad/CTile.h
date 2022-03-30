@@ -13,7 +13,6 @@ private:
 	int m_iIdx;			// 텍스쳐 인덱스
 	fPoint m_fLeftPos;
 	fPoint m_fRightPos;
-
 	GROUP_TILE m_group;
 
 public:
