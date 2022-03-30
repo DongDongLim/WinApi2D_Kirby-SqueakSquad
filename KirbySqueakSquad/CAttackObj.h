@@ -30,9 +30,11 @@ private:
 	CPlayer* m_pPlayer;
 	CPlayerAttack* m_pOwner;
 	fPoint m_fDir;
+	fPoint m_fDirToGo;
 	fPoint m_fRange;
 	fPoint m_fStartPos;
 	vector<float> m_aEffect;
+
 	float m_fDelateRange;
 	float m_fVelocity;
 	float m_fReverceVelocity;
@@ -52,6 +54,7 @@ public:
 	void SetStartPos(fPoint range);
 	void SetVelocity(float velocity);
 	void SetReverceVelocity(float velocity);
+	void SetDirToGo(fPoint dir);
 
 	void NomalSetting();
 	void CutterSetting();

@@ -283,7 +283,8 @@ void CMonster::finalupdate()
 	}
 	if (nullptr != GetCollider())
 	{
-		GetCollider()->finalupdate();
+		if (nullptr == m_pTargetObj || m_bIsEaten)
+			GetCollider()->finalupdate();
 	}
 }
 
@@ -456,11 +457,6 @@ void CMonster::TileCheck()
 	{
 		GetGravity()->SetIsGround(false);
 	}
-}
-
-void CMonster::SetIsEaten(bool isEaten)
-{
-	m_bIsEaten = isEaten;
 }
 
 void CMonster::SetSpeed(float speed)

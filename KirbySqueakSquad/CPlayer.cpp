@@ -243,6 +243,10 @@ CPlayer::CPlayer()
 	{
 		m_pTileCollider[i] = nullptr;
 	}
+	for (int i = 0; i < 4; ++i)
+	{
+		m_pTileColliderSlope[i] = nullptr;
+	}
 
 	SetName(L"Player");
 	SetScale(fPoint(32.f, 32.f));
@@ -416,6 +420,31 @@ void CPlayer::AddTileCollider(CCollider* ground)
 	}
 }
 
+void CPlayer::AddTileColliderSlope(CCollider* ground)
+{
+	bool istrue = false;
+	for (int i = 0; i < 4; ++i)
+	{
+		if (nullptr != m_pTileColliderSlope[i])
+		{
+			if (m_pTileColliderSlope[i] == ground)
+				istrue = true;
+			break;
+		}
+	}
+	if (!istrue)
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			if (nullptr == m_pTileColliderSlope[i])
+			{
+				m_pTileColliderSlope[i] = ground;
+				break;
+			}
+		}
+	}
+}
+
 void CPlayer::TileCheck()
 {
 	info.g_bIsDown = false;
@@ -431,6 +460,7 @@ void CPlayer::TileCheck()
 	CCollider* m_pPlayerCollider = GetCollider();
 	float fDirX = GetRigidBody()->GetDir().x;
 	float fDirY = GetRigidBody()->GetDir().y;
+	bool isCheck = false;
 
 	// 지금 오브젝트 기준으로 생각했는데 플레이어 기준으로 생각해보자 굳이?
 	/* TODO:
@@ -439,62 +469,87 @@ void CPlayer::TileCheck()
 		각각의 가장 가까운 대각선을 기준으로 다시 설정해서 비교해주는 과정이 필요함
 		현재 커비의 콜라이더는 정사각이므로 추가하지는 않았음
 	*/
-	for (int i = 0; i < 8; ++i)
+	for (int i = 0; i < 4; ++i)
 	{
-		if (nullptr != m_pTileCollider[i])
+		if (nullptr != m_pTileColliderSlope[i])
 		{
-			fLengthX = (m_pPlayerCollider->GetFinalPos() - m_pTileCollider[i]->GetFinalPos()).x;
-			fLengthY = (m_pPlayerCollider->GetFinalPos() - m_pTileCollider[i]->GetFinalPos()).y;
-			fRealTimeLength = fPoint(abs(fLengthX), abs(fLengthY)).Length();
-			CTile* tile = (CTile*)m_pTileCollider[i]->GetObj();
-			if (abs(fLengthX) > abs(fLengthY))
+			CTile* tile = (CTile*)m_pTileColliderSlope[i]->GetObj();
+			if (tile->GetGroup() == GROUP_TILE::SLOPE)
 			{
-				m_fTileLength = fPoint(
-					abs((m_pTileCollider[i]->GetScale() / 2).x
-						+ (m_pPlayerCollider->GetScale() / 2).x)
-					, abs(fLengthY)).Length();
-			}
-			else
-			{
-				m_fTileLength = fPoint(
-					abs(fLengthX)
-					, abs((m_pTileCollider[i]->GetScale() / 2).y
-						+ (m_pPlayerCollider->GetScale() / 2).y)).Length();
-			}
-
-			if (m_fTileLength >= fRealTimeLength)
-			{
-				fPoint fPlayerDisPos = fPoint(fLengthX, fLengthY).normalize();
-
-				if (fPlayerDisPos.y <= fLeftUpPos.y)
+				float slopeLength = 0;
+				fPoint slopeNomalize = fPoint(0, 0);
+				float limitLengthX = 0;
+				float limitLengthY = 0;
+				if (tile->GetSlopeRightPos().y > tile->GetSlopeLeftPos().y)
 				{
-					if (tile->GetGroup() == GROUP_TILE::PLATFORM)
-					{
-						if ((m_fTileLength - fRealTimeLength) > 1.f && fDirY <= 0.5f)
-						{
-							continue;
-						}
-					}
+					slopeLength = (tile->GetSlopeRightPos() - tile->GetSlopeLeftPos()).Length();
+					slopeNomalize = (tile->GetSlopeRightPos() - tile->GetSlopeLeftPos()).normalize();
+					fRealTimeLength = m_pPlayerCollider->GetDownPos().x - tile->GetSlopeLeftPos().x;
+					limitLengthX = m_pPlayerCollider->GetDownPos().x - tile->GetSlopeRightPos().x;
+					limitLengthY = tile->GetSlopeRightPos().y - m_pPlayerCollider->GetDownPos().y;
+				}
+				if ((limitLengthX <= 0 && fRealTimeLength >= 0) &&
+					limitLengthY <= (slopeNomalize * fRealTimeLength).y)
+				{
 					if (fDirY >= 0)
 					{
-						GetRigidBody()->SetVelocity(
-							fPoint(GetRigidBody()->GetVelocity().x, 0));
-
-
-						SetPos(fPoint(GetPos().x
-							, (m_pTileCollider[i]->GetFinalPos().y)
-							- ((m_pPlayerCollider->GetOffsetPos().y)
-								+ (m_pPlayerCollider->GetScale() / 2).y
-								+ (m_pTileCollider[i]->GetScale() / 2).y)));
-						info.g_bIsDown = true;
-						GetGravity()->SetIsGround(true);
+						float a = (slopeNomalize * fRealTimeLength).y;
+						SetPos(fPoint(GetPos().x, tile->GetSlopeLeftPos().y -
+							(m_pPlayerCollider->GetScale().y / 2.f
+								+ m_pPlayerCollider->GetOffsetPos().y
+								+ abs((slopeNomalize * fRealTimeLength).y))));
 					}
+					info.g_bIsDown = true;
+					GetGravity()->SetIsGround(true);
+					isCheck = true;
+					break;
 				}
-				else if (tile->GetGroup() == GROUP_TILE::GROUND)
+				else
 				{
-					if (fPlayerDisPos.y >= fRightDownPos.y)
+					m_pTileColliderSlope[i] = nullptr;
+				}
+			}
+		}
+	}
+	if (!isCheck)
+	{
+		for (int i = 0; i < 8; ++i)
+		{
+			if (nullptr != m_pTileCollider[i])
+			{
+				CTile* tile = (CTile*)m_pTileCollider[i]->GetObj();
+				fLengthX = (m_pPlayerCollider->GetFinalPos() - m_pTileCollider[i]->GetFinalPos()).x;
+				fLengthY = (m_pPlayerCollider->GetFinalPos() - m_pTileCollider[i]->GetFinalPos()).y;
+				fRealTimeLength = fPoint(abs(fLengthX), abs(fLengthY)).Length();
+				if (abs(fLengthX) > abs(fLengthY))
+				{
+					m_fTileLength = fPoint(
+						abs((m_pTileCollider[i]->GetScale() / 2).x
+							+ (m_pPlayerCollider->GetScale() / 2).x)
+						, abs(fLengthY)).Length();
+				}
+				else
+				{
+					m_fTileLength = fPoint(
+						abs(fLengthX)
+						, abs((m_pTileCollider[i]->GetScale() / 2).y
+							+ (m_pPlayerCollider->GetScale() / 2).y)).Length();
+				}
+
+				if (m_fTileLength >= fRealTimeLength)
+				{
+					fPoint fPlayerDisPos = fPoint(fLengthX, fLengthY).normalize();
+
+					if (fPlayerDisPos.y <= fLeftUpPos.y)
 					{
-						if (fDirY < 0)
+						if (tile->GetGroup() == GROUP_TILE::PLATFORM)
+						{
+							if ((m_fTileLength - fRealTimeLength) > 1.f && fDirY <= 0.5f)
+							{
+								continue;
+							}
+						}
+						if (fDirY >= 0)
 						{
 							GetRigidBody()->SetVelocity(
 								fPoint(GetRigidBody()->GetVelocity().x, 0));
@@ -502,60 +557,80 @@ void CPlayer::TileCheck()
 
 							SetPos(fPoint(GetPos().x
 								, (m_pTileCollider[i]->GetFinalPos().y)
-								+ ((m_pPlayerCollider->GetOffsetPos().y)
+								- ((m_pPlayerCollider->GetOffsetPos().y)
 									+ (m_pPlayerCollider->GetScale() / 2).y
 									+ (m_pTileCollider[i]->GetScale() / 2).y)));
+							info.g_bIsDown = true;
+							GetGravity()->SetIsGround(true);
 						}
-
-						info.g_bIsUp = true;
 					}
-					else if (fPlayerDisPos.x < fLeftUpPos.x)
+					else if (tile->GetGroup() == GROUP_TILE::GROUND)
 					{
-						if (fDirX > 0)
+						if (fPlayerDisPos.y >= fRightDownPos.y)
 						{
-							GetRigidBody()->SetVelocity(
-								fPoint(0, GetRigidBody()->GetVelocity().y));
+							if (fDirY < 0)
+							{
+								GetRigidBody()->SetVelocity(
+									fPoint(GetRigidBody()->GetVelocity().x, 0));
 
 
-							SetPos(fPoint(
-								(m_pTileCollider[i]->GetFinalPos().x)
-								- ((m_pPlayerCollider->GetOffsetPos().x)
-									+ (m_pPlayerCollider->GetScale() / 2).x
-									+ (m_pTileCollider[i]->GetScale() / 2).x)
-								, GetPos().y));
+								SetPos(fPoint(GetPos().x
+									, (m_pTileCollider[i]->GetFinalPos().y)
+									+ ((m_pPlayerCollider->GetOffsetPos().y)
+										+ (m_pPlayerCollider->GetScale() / 2).y
+										+ (m_pTileCollider[i]->GetScale() / 2).y)));
+							}
 
+							info.g_bIsUp = true;
 						}
+						else if (fPlayerDisPos.x < fLeftUpPos.x)
+						{
+							if (fDirX > 0)
+							{
+								GetRigidBody()->SetVelocity(
+									fPoint(0, GetRigidBody()->GetVelocity().y));
 
-						info.g_bIsRight = true;
+
+								SetPos(fPoint(
+									(m_pTileCollider[i]->GetFinalPos().x)
+									- ((m_pPlayerCollider->GetOffsetPos().x)
+										+ (m_pPlayerCollider->GetScale() / 2).x
+										+ (m_pTileCollider[i]->GetScale() / 2).x)
+									, GetPos().y));
+
+							}
+
+							info.g_bIsRight = true;
+						}
+						else if (fPlayerDisPos.x > fRightDownPos.x)
+						{
+							if (fDirX < 0)
+							{
+								GetRigidBody()->SetVelocity(
+									fPoint(0, GetRigidBody()->GetVelocity().y));
+
+
+								SetPos(fPoint(
+									(m_pTileCollider[i]->GetFinalPos().x)
+									+ ((m_pPlayerCollider->GetOffsetPos().x)
+										+ (m_pPlayerCollider->GetScale() / 2).x
+										+ (m_pTileCollider[i]->GetScale() / 2).x)
+									, GetPos().y));
+
+							}
+
+							info.g_bIsLeft = true;
+						}
 					}
-					else if (fPlayerDisPos.x > fRightDownPos.x)
+					else
 					{
-						if (fDirX < 0)
-						{
-							GetRigidBody()->SetVelocity(
-								fPoint(0, GetRigidBody()->GetVelocity().y));
-
-
-							SetPos(fPoint(
-								(m_pTileCollider[i]->GetFinalPos().x)
-								+ ((m_pPlayerCollider->GetOffsetPos().x)
-									+ (m_pPlayerCollider->GetScale() / 2).x
-									+ (m_pTileCollider[i]->GetScale() / 2).x)
-								, GetPos().y));
-
-						}
-
-						info.g_bIsLeft = true;
+						m_pTileCollider[i] = nullptr;
 					}
 				}
 				else
 				{
 					m_pTileCollider[i] = nullptr;
 				}
-			}
-			else
-			{
-				m_pTileCollider[i] = nullptr;
 			}
 		}
 	}
@@ -702,7 +777,15 @@ void CPlayer::OnCollision(CCollider* other)
 {
 	if (other->GetObj()->GetGroup() == GROUP_GAMEOBJ::TILE)
 	{
-		AddTileCollider((CCollider*)other);
+		CTile* tile = (CTile*)other->GetObj();
+		if (GROUP_TILE::SLOPE == tile->GetGroup())
+		{
+			AddTileColliderSlope((CCollider*)other);
+		}
+		else
+		{
+			AddTileCollider((CCollider*)other);
+		}
 	}
 
 	list<COLLIDER_FUNC>::iterator iter = m_arrFunc.begin();
@@ -722,6 +805,7 @@ void CPlayer::OnCollisionEnter(CCollider* other)
 		{
 			if (m_eAttackType == ATTACK_TYPE::NORMAL)
 				SetMonType(mon->GetType());
+			mon->SetEaten(false);
 			CEventManager::getInst()->EventLoadPlayerState(PLAYERSTATE::EAT);
 		}
 	}

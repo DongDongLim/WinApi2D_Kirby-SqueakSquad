@@ -121,6 +121,9 @@ private:
 	//한번에 만나는 타일은 최대 8개임;
 	CCollider* m_pTileCollider[8];
 
+	//한번에 만나는 타일은 최대 4개임;
+	CCollider* m_pTileColliderSlope[4];
+
 	void SetAnim();
 
 public:
@@ -141,6 +144,7 @@ public:
 
 
 	void AddTileCollider(CCollider* ground);
+	void AddTileColliderSlope(CCollider* ground);
 	void TileCheck();
 
 	void SetAttackType(ATTACK_TYPE type);

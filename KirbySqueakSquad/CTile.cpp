@@ -112,37 +112,68 @@ void CTile::SetSlopePoint()
 	*/
 	if (GROUP_TILE::SLOPE == m_group)
 	{
+		bool istrue = false;
 		vector<CGameObject*> m_arrObj = CSceneManager::getInst()->GetCurScene()->GetGroupObject(GROUP_GAMEOBJ::TILE);
 		for (int i = m_arrObj.size() - 1; i >= 0; --i)
 		{
 			CTile* tile = (CTile*)m_arrObj[i];
-			if (((int)tile->GetPos().x == (int)GetPos().x - SIZE_TILE)
-				&& ((int)tile->GetPos().y == (int)GetPos().y + SIZE_TILE))
-			{
-				m_fLeftPos = fPoint(GetPos().x, GetPos().y + SIZE_TILE);
-				m_fRightPos = fPoint(GetPos().x + SIZE_TILE, GetPos().y + SIZE_TILE/2);
-				break;
-			}
-			else if (((int)tile->GetPos().x == ((int)GetPos().x - SIZE_TILE)
-				&& (int)tile->GetPos().y == (int)GetPos().y) && GROUP_TILE::SLOPE == tile->GetGroup())
-			{
-				m_fLeftPos = fPoint(GetPos().x, GetPos().y + SIZE_TILE / 2);
-				m_fRightPos = fPoint(GetPos().x + SIZE_TILE, GetPos().y);
-				break;
-			}
-			else if ((int)tile->GetPos().x == ((int)GetPos().x + SIZE_TILE)
-					&& (int)tile->GetPos().y == ((int)GetPos().y + SIZE_TILE))
-			{
-				m_fLeftPos = fPoint(GetPos().x, GetPos().y + SIZE_TILE / 2);
-				m_fRightPos = fPoint(GetPos().x + SIZE_TILE, GetPos().y + SIZE_TILE);
-				break;
-			}
-			else if (((int)tile->GetPos().x == ((int)GetPos().x + SIZE_TILE)
-				&& (int)tile->GetPos().y == (int)GetPos().y) && GROUP_TILE::SLOPE == tile->GetGroup())
+
+			if (((int)tile->GetPos().x == ((int)GetPos().x - SIZE_TILE)
+				&& (int)tile->GetPos().y == (int)GetPos().y) && GROUP_TILE::SLOPE != tile->GetGroup())
 			{
 				m_fLeftPos = fPoint(GetPos().x, GetPos().y);
 				m_fRightPos = fPoint(GetPos().x + SIZE_TILE, GetPos().y + SIZE_TILE / 2);
+				istrue = true;
 				break;
+			}
+		}
+		if (!istrue)
+		{
+			for (int i = m_arrObj.size() - 1; i >= 0; --i)
+			{
+				CTile* tile = (CTile*)m_arrObj[i];
+
+				if (((int)tile->GetPos().x == ((int)GetPos().x + SIZE_TILE)
+					&& (int)tile->GetPos().y == (int)GetPos().y) && GROUP_TILE::SLOPE != tile->GetGroup())
+				{
+					m_fLeftPos = fPoint(GetPos().x, GetPos().y + SIZE_TILE / 2);
+					m_fRightPos = fPoint(GetPos().x + SIZE_TILE, GetPos().y);
+					istrue = true;
+					break;
+				}
+			}
+			if (!istrue)
+			{
+				for (int i = m_arrObj.size() - 1; i >= 0; --i)
+				{
+					CTile* tile = (CTile*)m_arrObj[i];
+
+					if (((int)tile->GetPos().x == (int)GetPos().x - SIZE_TILE)
+						&& ((int)tile->GetPos().y == (int)GetPos().y + SIZE_TILE))
+					{
+						m_fLeftPos = fPoint(GetPos().x, GetPos().y + SIZE_TILE);
+						m_fRightPos = fPoint(GetPos().x + SIZE_TILE, GetPos().y + SIZE_TILE / 2);
+						istrue = true;
+						break;
+					}
+				}
+				if (!istrue)
+				{
+					for (int i = m_arrObj.size() - 1; i >= 0; --i)
+					{
+						CTile* tile = (CTile*)m_arrObj[i];
+						if ((int)tile->GetPos().x == ((int)GetPos().x + SIZE_TILE)
+							&& (int)tile->GetPos().y == ((int)GetPos().y + SIZE_TILE))
+						{
+							m_fLeftPos = fPoint(GetPos().x, GetPos().y + SIZE_TILE / 2);
+							m_fRightPos = fPoint(GetPos().x + SIZE_TILE, GetPos().y + SIZE_TILE);
+							istrue = true;
+							break;
+						}
+					}
+
+				}
+
 			}
 		}
 	}
@@ -166,6 +197,16 @@ int CTile::GetY()
 GROUP_TILE CTile::GetGroup()
 {
 	return m_group;
+}
+
+fPoint CTile::GetSlopeLeftPos()
+{
+	return m_fLeftPos;
+}
+
+fPoint CTile::GetSlopeRightPos()
+{
+	return m_fRightPos;
 }
 
 

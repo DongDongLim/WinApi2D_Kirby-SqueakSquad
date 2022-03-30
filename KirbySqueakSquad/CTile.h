@@ -37,6 +37,8 @@ public:
 	int GetX();
 	int GetY();
 	GROUP_TILE GetGroup();
+	fPoint GetSlopeLeftPos();
+	fPoint GetSlopeRightPos();
 
 	virtual void Save(FILE* pFile);
 	virtual void Load(FILE* pFile);

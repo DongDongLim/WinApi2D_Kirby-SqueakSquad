@@ -73,8 +73,6 @@ public:
 	void AddTileCollider(CCollider* ground);
 	void TileCheck();
 
-
-	void SetIsEaten(bool isEaten);
 	void SetSpeed(float speed);
 	void SetAI(AI* ai);
 	void SetMonInfo(const tMonInfo& info);

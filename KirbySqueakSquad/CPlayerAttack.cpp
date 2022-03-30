@@ -128,6 +128,7 @@ void  CPlayerAttack::ThrowAnim()
 			m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackD" ||
 			m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackN")
 		{
+			m_pPlayer->GetAnimator()->SetReverce(!m_pPlayer->GetDir());
 			if(nomalanimtime <= 0)
 				Exit(PLAYERSTATE::IDLE);
 		}

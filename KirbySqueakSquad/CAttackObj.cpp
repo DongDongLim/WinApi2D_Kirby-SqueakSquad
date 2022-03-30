@@ -41,6 +41,8 @@ CAttackObj::CAttackObj()
 	m_pImgEffect[(int)EFFECT_TYPE::NINHALE1] = CResourceManager::getInst()->
 		LoadD2DImage(L"CutterPAtk", L"texture\\Effect\\1.png");
 
+
+	SetDirToGo(fPoint(1, 0).normalize());
 	// 나중에 애니메이션 시간 잴 일 있으면 쓰기
 	nomalanimtime = 0;
 	nomalanimKeeptime = nomalanimtime;
@@ -80,6 +82,11 @@ void CAttackObj::SetVelocity(float velocity)
 void CAttackObj::SetReverceVelocity(float velocity)
 {
 	m_fReverceVelocity = velocity;
+}
+
+void CAttackObj::SetDirToGo(fPoint dir)
+{
+	m_fDirToGo = dir;
 }
 
 void CAttackObj::NomalSetting()
@@ -168,14 +175,29 @@ void CAttackObj::MoveUpdate()
 		if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackSetD")
 		{
 			SetPos(m_pPlayer->GetCollider()->GetFinalPos() - (fPoint(m_fDir.x * 1, 1) * 10.f));
+			SetDirToGo(fPoint(1, 1).normalize());
 		}
 		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackSetU")
 		{
 			SetPos(m_pPlayer->GetCollider()->GetFinalPos() - (fPoint(m_fDir.x * 1, -1) * 10.f));
+			SetDirToGo(fPoint(1, -1).normalize());
 		}
 		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackSetN")
 		{
 			SetPos(m_pPlayer->GetCollider()->GetFinalPos() - (fPoint(m_fDir.x * 1, 0) * 10.f));
+			SetDirToGo(fPoint(1, 0).normalize());
+		}
+		else if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackD"
+			|| m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackU"
+			|| m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackN")
+		{
+			m_eMoveType = MOVETYPE::VARIANCE;
+			GetRigidBody()->SetMaxPositiveVelocity(fPoint(200.f, 100.f));
+			GetRigidBody()->SetMaxNegativeVelocity(fPoint(-200.f, -100.f));
+			SetReverceVelocity(50.f);
+			SetRange(fPoint(m_fDir.x * INF, 0.f));
+			SetStartPos(GetPos());
+			SetVelocity(30.f);
 		}
 		else
 		{
@@ -214,45 +236,46 @@ void CAttackObj::MoveUpdate()
 			if (realDis >= abs(m_fDelateRange))
 				Exit();
 			else
-				GetRigidBody()->AddVelocity(fPoint(m_fDir.x * -m_fReverceVelocity, 0));
+				GetRigidBody()->AddVelocity(fPoint(m_fDir.x * -m_fReverceVelocity * m_fDirToGo.x, m_fReverceVelocity * m_fDirToGo.y));
 		}
 		else
 		{
 			if (realDis >= range)
 			{
-				GetRigidBody()->AddVelocity(fPoint(m_fDir.x * -m_fReverceVelocity, 0));
+				GetRigidBody()->AddVelocity(fPoint(m_fDir.x * -m_fReverceVelocity * m_fDirToGo.x, m_fReverceVelocity * m_fDirToGo.y));
 			}
 			else
-				GetRigidBody()->AddVelocity(fPoint(m_fDir.x * m_fVelocity, 0));
+				GetRigidBody()->AddVelocity(fPoint(m_fDir.x * m_fVelocity * m_fDirToGo.x, m_fVelocity * m_fDirToGo.y));
 
-			if (Key('C'))
+			switch (m_pPlayer->GetAttackType())
 			{
-				if (realDis <= 5 * range)
-				{
-					GetRigidBody()->AddVelocity(fPoint(m_fDir.x * m_fVelocity / 2, 0));
-				}
-				if (Key(VK_UP))
-					GetRigidBody()->AddForce(fPoint(0, -300.f));
-				else if (Key(VK_DOWN))
-					GetRigidBody()->AddForce(fPoint(0, 300.f));
+			case ATTACK_TYPE::NORMAL:
+			{
 			}
-		}
-		switch (m_pPlayer->GetAttackType())
-		{
-		case ATTACK_TYPE::NORMAL:
-		{
-		}
-		break;
-		case ATTACK_TYPE::CUTTER:
-		{
-		}
-		break;
-		case ATTACK_TYPE::THROW:
-		{
-		}
-		break;
-		default:
 			break;
+			case ATTACK_TYPE::CUTTER:
+			{
+				if (Key('C'))
+				{
+					if (realDis <= 5 * range)
+					{
+						GetRigidBody()->AddVelocity(fPoint(m_fDir.x * (m_fVelocity / 2) * m_fDirToGo.x, (m_fVelocity / 2) * m_fDirToGo.y) );
+					}
+					if (Key(VK_UP))
+						GetRigidBody()->AddForce(fPoint(0, -300.f));
+					else if (Key(VK_DOWN))
+						GetRigidBody()->AddForce(fPoint(0, 300.f));
+				}
+			}
+			break;
+			case ATTACK_TYPE::THROW:
+			{
+			}
+			break;
+			default:
+				break;
+			}
+
 		}
 	}
 		break;
@@ -326,9 +349,18 @@ void CAttackObj::Enter()
 
 void CAttackObj::Exit()
 {
-	if (0 != m_aEffect.size())
-		m_aEffect.clear();
-	SetDead();
+	if (m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackD"
+		|| m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackU"
+		|| m_pPlayer->GetAnimator()->GetCurAnim()->GetName() == L"TAttackN")
+	{
+
+	}
+	else
+	{
+		if (0 != m_aEffect.size())
+			m_aEffect.clear();
+		SetDead();
+	}
 }
 
 
@@ -458,17 +490,16 @@ void CAttackObj::OnCollision(CCollider* _pOther)
 			{
 				if (GetCollider()->GetScale().x == 80.f)
 				{
-					float lengthX = abs(_pOther->GetFinalPos().x
-						- GetPos().x) - _pOther->GetScale().x;
-					float lengthY = abs(_pOther->GetFinalPos().y
-						- GetPos().y) - _pOther->GetScale().y;
-					if (m_fRange.x >= lengthX && m_fRange.y >= lengthY)
-					{
-						m_pPlayer->SetIsInhale(true);
-						monster->SetTarget(this);
-						monster->SetEaten(true);
-						Exit();
-					}
+					m_pPlayer->SetIsInhale(true);
+					monster->SetTarget(this);
+					monster->SetEaten(true);
+					Exit();
+				}
+				else if (GetCollider()->GetScale().x == 64.f)
+				{
+					if(nullptr == monster->GetTarget())
+						ChangeAIState(monster->GetAI(), STATE_MON::DEAD);
+
 				}
 				else
 				{

@@ -4,6 +4,7 @@
 #include "CMonster.h"
 #include "CAnimator.h"
 #include "CGravity.h"
+#include "CAttackObj.h"
 
 CInhaleState::CInhaleState(STATE_MON state)
 	: CState(state)
@@ -40,6 +41,13 @@ void CInhaleState::update()
 		{
 			if(nullptr == m_pMonster->GetTarget())
 				ChangeAIState(GetOwnerAI(), STATE_MON::DEAD);
+			else
+			{
+				CAttackObj* atkObj = (CAttackObj*)m_pMonster->GetTarget();
+				m_pMonster->SetPos(m_pMonster->GetTarget()->GetPos());
+				if (MOVETYPE::VARIANCE == atkObj->GetMoveType() && atkObj->isDead())
+					m_pMonster->SetTarget(nullptr);
+			}
 		}
 		else
 		{

@@ -46,8 +46,8 @@ void CSceneManager::render()
 
 void CSceneManager::init()
 {
-	/*
-	m_arrScene[(size_t)GROUP_SCENE::TOOL] = new CScene_Tool;
+	
+	/*m_arrScene[(size_t)GROUP_SCENE::TOOL] = new CScene_Tool;
 	m_arrScene[(size_t)GROUP_SCENE::TOOL]->SetName(L"Tool_Scene");*/
 	
 	m_arrScene[(size_t)GROUP_SCENE::STAGE_01] = new CScene_Stage1;

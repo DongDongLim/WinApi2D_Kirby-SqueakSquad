@@ -33,6 +33,5 @@ void CDeadState::Enter()
 void CDeadState::Exit()
 {
 	m_pMonster->SetLive();
-	m_pMonster->SetIsEaten(false);
 	m_pMonster->SetPos(GetOwnerAI()->GetStartPos());
 }
