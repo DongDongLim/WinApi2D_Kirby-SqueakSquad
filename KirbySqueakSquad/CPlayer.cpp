@@ -18,7 +18,38 @@ void CPlayer::SetAnim()
 		LoadD2DImage(L"NomalP", L"texture\\Animation\\NomalSprite.png");
 	wstring keepPath = CPathManager::getInst()->GetContentPath();
 	wstring path = keepPath;
-	path += L"anim\\Idle.anim";
+	wstring AnimPath = keepPath;
+	path += L"anim\\PlayerNAnim\\*";
+	AnimPath += L"anim\\PlayerNAnim\\";
+
+	WIN32_FIND_DATAA data;
+	WIN32_FIND_DATA dataA;
+	int count = (int)wcslen(path.c_str());
+
+	//변환하면 나오는 문자열의 개수를 저장하는 변수의 주소값
+	size_t convertedChars = 0;
+	// 문자열 길이
+	size_t str_param_len = (wcslen(path.c_str()) * 2) + 1;
+	// 담을 공간
+	char* str = new char[str_param_len];
+	wcstombs_s(&convertedChars, str, str_param_len, path.c_str(), str_param_len);
+	
+	HANDLE hFind = FindFirstFileA(str, &data);
+
+	if (hFind != INVALID_HANDLE_VALUE)
+	{
+		wstring strdata;
+		FindNextFile(hFind, &dataA);
+		while (0 != FindNextFile(hFind, &dataA))
+		{
+			CSceneManager::getInst()->GetCurScene()->LoadAnim(AnimPath + dataA.cFileName, this, pImg);
+		}
+		FindClose(hFind);
+
+		
+	}
+
+	/*
 	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
 	path = keepPath;
 	path += L"anim\\Move.anim";
@@ -86,6 +117,7 @@ void CPlayer::SetAnim()
 	path = keepPath;
 	path += L"anim\\Eating.anim";
 	CSceneManager::getInst()->GetCurScene()->LoadAnim(path, this, pImg);
+	*/
 	pImg = CResourceManager::getInst()->
 		LoadD2DImage(L"CutterP", L"texture\\Animation\\cutterSprite.png");
 	path = keepPath;
@@ -482,31 +514,59 @@ void CPlayer::TileCheck()
 				float limitLengthY = 0;
 				if (tile->GetSlopeRightPos().y > tile->GetSlopeLeftPos().y)
 				{
+					slopeLength = (tile->GetSlopeLeftPos() - tile->GetSlopeRightPos()).Length();
+					slopeNomalize = (tile->GetSlopeLeftPos() - tile->GetSlopeRightPos()).normalize();
+					fRealTimeLength = m_pPlayerCollider->GetDownPos().x - tile->GetSlopeRightPos().x;
+					limitLengthX = m_pPlayerCollider->GetDownPos().x - tile->GetSlopeLeftPos().x;
+					limitLengthY = tile->GetSlopeLeftPos().y - m_pPlayerCollider->GetDownPos().y;
+					if ((limitLengthX <= 0 && fRealTimeLength >= 0) &&
+						limitLengthY <= (slopeNomalize * fRealTimeLength).y)
+					{
+						if (fDirY >= 0)
+						{
+							float a = (slopeNomalize * fRealTimeLength).y;
+							SetPos(fPoint(GetPos().x, tile->GetSlopeLeftPos().y -
+								(m_pPlayerCollider->GetScale().y / 2.f
+									+ m_pPlayerCollider->GetOffsetPos().y
+									+ abs((slopeNomalize * fRealTimeLength).y))));
+						}
+						info.g_bIsDown = true;
+						GetGravity()->SetIsGround(true);
+						isCheck = true;
+						break;
+					}
+					else
+					{
+						m_pTileColliderSlope[i] = nullptr;
+					}
+				}
+				else
+				{
 					slopeLength = (tile->GetSlopeRightPos() - tile->GetSlopeLeftPos()).Length();
 					slopeNomalize = (tile->GetSlopeRightPos() - tile->GetSlopeLeftPos()).normalize();
 					fRealTimeLength = m_pPlayerCollider->GetDownPos().x - tile->GetSlopeLeftPos().x;
 					limitLengthX = m_pPlayerCollider->GetDownPos().x - tile->GetSlopeRightPos().x;
 					limitLengthY = tile->GetSlopeRightPos().y - m_pPlayerCollider->GetDownPos().y;
-				}
-				if ((limitLengthX <= 0 && fRealTimeLength >= 0) &&
-					limitLengthY <= (slopeNomalize * fRealTimeLength).y)
-				{
-					if (fDirY >= 0)
+					if ((limitLengthX <= 0 && fRealTimeLength >= 0) &&
+						limitLengthY <= (slopeNomalize * fRealTimeLength).y)
 					{
-						float a = (slopeNomalize * fRealTimeLength).y;
-						SetPos(fPoint(GetPos().x, tile->GetSlopeLeftPos().y -
-							(m_pPlayerCollider->GetScale().y / 2.f
-								+ m_pPlayerCollider->GetOffsetPos().y
-								+ abs((slopeNomalize * fRealTimeLength).y))));
+						if (fDirY >= 0)
+						{
+							float a = (slopeNomalize * fRealTimeLength).y;
+							SetPos(fPoint(GetPos().x, tile->GetSlopeLeftPos().y -
+								(m_pPlayerCollider->GetScale().y / 2.f
+									+ m_pPlayerCollider->GetOffsetPos().y
+									+ abs((slopeNomalize * fRealTimeLength).y))));
+						}
+						info.g_bIsDown = true;
+						GetGravity()->SetIsGround(true);
+						isCheck = true;
+						break;
 					}
-					info.g_bIsDown = true;
-					GetGravity()->SetIsGround(true);
-					isCheck = true;
-					break;
-				}
-				else
-				{
-					m_pTileColliderSlope[i] = nullptr;
+					else
+					{
+						m_pTileColliderSlope[i] = nullptr;
+					}
 				}
 			}
 		}
